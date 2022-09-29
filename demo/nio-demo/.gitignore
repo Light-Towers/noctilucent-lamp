@@ -1,0 +1,39 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+build/*
+target/*
+**/build/*
+**/target/*
+out/*
+**/out/*
+
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+idea/*
+### Intellij ###
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
+*.iml
+
+**/*.iml
+
+.idea/**
+## File-based project format:
+*.ipr
+*.iws
+
+### 建议使用本地gradle，服务器环境中也需要安装gradle
+**/.gradle/*
+**/gradle/*
+gradlew*
+**/target/**
+
+**/._.DS_Store
+**/*.bak
+
+**/*.log
+
+!/lib/*.jar
