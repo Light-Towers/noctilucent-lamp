@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-<configuration>
-    <property>
-        <name>hbase.zookeeper.quorum</name>
-        <value>172.16.9.89</value>
-    </property>
-</configuration>
