@@ -1,6 +1,6 @@
 package com.study.hbase.dml;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.study.hbase.config.HBaseConnect;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
