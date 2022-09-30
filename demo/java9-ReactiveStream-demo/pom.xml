@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.yjh</groupId>
-    <artifactId>sql</artifactId>
+    <artifactId>reactiveStream</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>sql</name>
+    <name>reactiveStream</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
