@@ -19,10 +19,12 @@
   show databases;
   --过滤数据库
   show databases like 'db_hive*';
+  --查看当前使用的库
+select current_database();
   ```
 
   * 显示数据库信息
-
+  
   ```hive
   desc database db_hive;
   OK
@@ -32,15 +34,13 @@
   --显示详细信息 extended
   desc database extended db_hive;
   --格式化显示详细信息(建议)
-  desc formatted student;
+desc formatted student;
   ```
 
   * 切换
-
+  
   ```hive
   use db_hive;
-  --查看当前使用的库
-  SELECT current_database();
   ```
 
   
@@ -432,17 +432,15 @@ select * from stu_buck tablesample(bucket 1 out of 4 on id);
   -- 注册临时函数
   CREATE [temporary] FUNCTION [dbname.]function_name AS class_name;
   -- 注册永久函数
-  CREATE FUNCTION [db_name.]function_name AS class_name
-    [USING JAR|FILE|ARCHIVE 'file_uri' [, JAR|FILE|ARCHIVE 'file_uri'] ];
-  eg: create function czh3.itclj_udf_lower as 'com.itclj.hive.udf.ItcljUdf' 
-    		using jar 'hdfs:///user/itclj/hive-udf-demo-1.0.0.jar';
+  CREATE FUNCTION [db_name.]function_name AS class_name [USING JAR|FILE|ARCHIVE 'file_uri' [, JAR|FILE|ARCHIVE 'file_uri'] ];
+  eg: create function db_hive.myStringLength as 'com.study.udf.MyStringLength' using jar 'hdfs:///hive-demo-1.0-SNAPSHOT.jar';
   ```
-
+  
 * 使用函数
 
   ```hive
   -- 函数全名是以 db_name.function_name表示，使用的时候可以直接写函数全名，如果函数在当前操作的库下面，使用函数的时候可以不写库名，直接写函数名即可。
-  select id,czh3.itclj_udf_lower(name) from czh3.itclj_09 limit 100 ; 
+  select db_hive.myStringLength("hello"); 
   ```
 
 * 销毁函数
