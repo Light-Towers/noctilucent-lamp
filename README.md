@@ -3,7 +3,7 @@
 The noctilucent-lamp accompanying your study
 
 ## 项目目录描述
-* demo: 项目样例⬇️，详见各demo的`README.md`
+* Code: 项目代码样例⬇️，详见各demo的`README.md`
   * flink-demo
   * hbase-demo
   * hive-demo
@@ -11,5 +11,10 @@ The noctilucent-lamp accompanying your study
   * kafka-demo
   * my-spring-cloud
   * nio-demo
-* notes: 笔记📒
-* other: 其它的东西
+* Interview: 面试题📄
+* Note: 笔记📒
+  * Algorithm: 算法
+  * Bigdata: 大数据
+  * Database: 数据库
+  * Software: 软件
+* other: 杂七杂八
