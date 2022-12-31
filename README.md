@@ -2,7 +2,7 @@
 
 The noctilucent-lamp accompanying your study
 
-<img src="/Users/yangjinhua/Research/noctilucent-lamp/.assets/lamp.jpg" alt="lamp" style="zoom: 50%;" />
+<img src="https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/lamp.jpg" alt="lamp" style="zoom: 50%;" />
 
 ## 项目目录描述
 * Code: 项目代码样例⬇️，详见各demo的`README.md`

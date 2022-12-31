@@ -37,7 +37,7 @@ curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -
 curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"code": "sc.textFile(\"hdfs://ns1/input.txt\").flatMap(_.split(\" \")).map((_,1)).reduceByKey(_+_).saveAsTextFile(\"hdfs://ns1/output.txt\")", "kind":"spark"}' "http://ha-node2:8998/sessions/0/statements"
 ```
 
-![在Livy webui上可以展示运行结果](/Users/yangjinhua/Research/noctilucent-lamp/notes/大数据/Spark/Livy使用.assets/modb_20210908_6e1cf3ee-105d-11ec-b6f0-00163e068ecd.png)
+![在Livy webui上可以展示运行结果](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/modb_20210908_6e1cf3ee-105d-11ec-b6f0-00163e068ecd.png)
 
 <center><p>在Livy webui上可以展示运行结果</p></center>
 
