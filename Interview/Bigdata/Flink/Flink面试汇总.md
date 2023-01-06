@@ -595,8 +595,6 @@ A 用户在11:02 对 App 进行操作，B用户在11:03 操作了 App，
 
 如果觉得阿周讲解的知识点还满意的话，请关注公众号：**3分钟秒懂大数据**，获取更多，更全面的技术博文。并加博主微信：**threeknowbigdata，**拉你进大数据交流群。
 
-![img](https://oss-emcsprod-public.modb.pro/wechatSpider/modb_20210911_9c1a3238-1257-11ec-948d-00163e068ecd.png)
-
 > 21、如果数据延迟非常严重呢？只使用WaterMark可以处理吗？那应该怎么解决？
 
 使用 WaterMark+ EventTimeWindow 机制可以在一定程度上解决数据乱序的问题，但是，WaterMark 水位线也不是万能的，在某些情况下，数据延迟会非常严重，即使通过Watermark + EventTimeWindow也无法等到数据全部进入窗口再进行处理，因为窗口触发计算后，**对于延迟到达的本属于该窗口的数据，Flink默认会将这些延迟严重的数据进行丢弃**
