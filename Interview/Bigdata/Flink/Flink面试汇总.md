@@ -2305,16 +2305,6 @@ JobManager 和 TaskManager 之间关于Task 的部署和Task执行状态的更�
 
 
 
-如果觉得阿周讲解的知识点还满意的话，请关注公众号：**3分钟秒懂大数据**，获取更多，更全面的技术博文。并加博主微信：**threeknowbigdata，**拉你进大数据交流群。
-
-![img](https://oss-emcsprod-public.modb.pro/wechatSpider/modb_20210911_9c1a3238-1257-11ec-948d-00163e068ecd.png)
-
-
-
-
-
-
-
 **接下来问问作业调度的问题**
 
 

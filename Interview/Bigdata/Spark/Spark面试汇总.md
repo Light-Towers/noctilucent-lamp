@@ -2,15 +2,15 @@
 
 ## Spark Core
 
-### 介绍下Spark
+### 什么是Spark
 
-Apache Spark是一个分布式、内存级计算框架。起初为加州大学伯克利分校`AMPLab`的实验性项目，后经过开源，在2014年成为`Apache`基金会顶级项目之一，现已更新至3.2.0版本。
+Apache Spark是一个分布式、内存级计算框架。起初为加州大学伯克利分校`AMPLab`的实验性项目，后经过开源，在2014年成为`Apache`基金会顶级项目之一。Hadoop MapReduce的通用的[并行计算](https://www.zhihu.com/search?q=并行计算&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A25351353})框架，Spark基于[map reduce算法](https://www.zhihu.com/search?q=map reduce算法&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A25351353})实现的[分布式计算](https://www.zhihu.com/search?q=分布式计算&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A25351353})，现已更新至3.2.0版本。
 
 ### Spark的生态体系
 
 Spark体系包含`Spark Core`、`Spark SQL`、`Spark Streaming`、`Spark MLlib`及 `Spark Graphx`。其中Spark Core为核心组件，提供RDD计算模型。在其基础上的众组件分别提供`查询分析`、`实时计算`、`机器学`、`图计算`等功能。
 
-### Spark 有哪些组件
+### Spark有哪些组件
 
 1. Master: 管理集群和节点，不参与计算。
 2. Worker: 计算节点，进程本身不参与计算，和 Master 汇报。
@@ -71,10 +71,6 @@ spark-submit \
   OutputPath
 ```
 
-
-
-
-
 ### Spark运行模式有哪些？说说你最熟悉的一种
 
 * `Local` 仅用于本地开发
@@ -82,7 +78,7 @@ spark-submit \
 * `Yarn` 基于Hadoop Yarn集群调度，国内大量使用
 * `Mesos` 国内几乎不用
 
-Standalone模式是Spark内置的运行模式，常用于小型测试集群。这里我就拿Standalone模式来举例:
+Standalone：是Spark内部默认实现的一种集群管理模式，常用于小型测试集群。这种模式是通过集群中的**Master**来**统一管理资源**，而与Master进行资源请求协商的是Driver内部的StandaloneSchedulerBackend（实际上是其内部的StandaloneAppClient真正与Master通信）。
 
 - Master为资源调度器，负责executors资源调度
 
@@ -111,6 +107,8 @@ Yarn Client模式的driver进程运行在`本地客户端`，因资源调度、�
 ![img](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/Spark%20Yarn%20Client.png)
 
 ### Spark 的运行流程※💯
+
+![深度剖析Spark分布式执行原理](https://pica.zhimg.com/v2-13366ce2e12e3b7d25579d4a574eff44_720w.jpg?source=172ae18b)
 
 ![Spark面试八股文（上万字面试必备宝典）_spark](https://s2.51cto.com/images/blog/202111/12175557_618e3a2deae7924783.png?x-oss-process=image/watermark,size_14,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_30,g_se,x_10,y_10,shadow_20,type_ZmFuZ3poZW5naGVpdGk=/format,webp/resize,m_fixed,w_1184)
 
