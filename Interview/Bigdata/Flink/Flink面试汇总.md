@@ -556,7 +556,7 @@ A 用户在11:02 对 App 进行操作，B用户在11:03 操作了 App，
 
 随着新数据的到来，watermark的值会更新为最新数据事件时间-允许乱序时间值，但是如果这时候来了一条历史数据，watermark值则不会更新。
 
-**总的来说，watermark永远不会倒退，它是为了能接收到尽可能多的乱序数据。**
+总的来说，**watermark永远不会倒退，它是为了能接收到尽可能多的乱序数据。**
 
 那这里的Time值呢？主要是为了等待迟到的数据，如果属于该窗口的数据到来，仍会进行计算，后面会对计算方式仔细说明
 
@@ -588,7 +588,7 @@ A 用户在11:02 对 App 进行操作，B用户在11:03 操作了 App，
 
 
 
-有状态计算如 sum求和，数据类加等。
+有状态计算如 sum求和，数据累加等。
 
 ![img](https://oss-emcsprod-public.modb.pro/wechatSpider/modb_20210911_9c852d86-1257-11ec-948d-00163e068ecd.png)
 
@@ -612,13 +612,14 @@ A 用户在11:02 对 App 进行操作，B用户在11:03 操作了 App，
 
 
 
+
 **（2）**State 按照是否有 key 划分为 **KeyedState** 和 **OperatorState** 两种。
 
 **keyedState特点：**
 
 1. 只能用在keyedStream上的算子中，状态跟特定的key绑定。
 
-2. keyStream流上的每一个key 对应一个state 对象。若一个operator 实例处理多个key，访问相应的多个State，**可对应多个state。**
+2. keyStream流上的每一个key 对应一个state 对象。 (😭后面理解太绕)若一个operator 实例处理多个key，访问相应的多个State，**可对应多个state。**
 
 3. keyedState 保存在StateBackend中
 
@@ -636,9 +637,9 @@ A 用户在11:02 对 App 进行操作，B用户在11:03 操作了 App，
 
 2. 并发改变时有多种重新分配的方式可选：均匀分配；
 
-3. 实现CheckpointedFunction或者 ListCheckpointed 接口。
+3. 实现 CheckpointedFunction 或者 ListCheckpointed 接口。
 
-4. 目前只支持 ListState数据结构。     
+4. 目前只支持 ListState 数据结构。     
 
 
 

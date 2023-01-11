@@ -5,7 +5,7 @@
 
 ## 1.ConcurrentHashMap的整体架构
 
-![image-20230111111527704](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/image-20230111111527704.png)
+![img](https://pdai.tech/images/thread/java-thread-x-concurrent-hashmap-2.png)
 
 我们来看这个图，这个呢是ConcurrentHashMap在jdk 1.8里面的存储结构，它是由数组+单向链表+红黑树来构成的，当我们去初始化一个ConcurrentHashMap实例的时候，默认会初始化一个长度为16的数组，由于ConcurrentHashMap它的核心仍然是Hash表，所以必然会存在Hash冲突的问题，所以讷，ConcurrentHashMap采用链式寻址的方式来解决Hash表的冲突，当Hash冲突比较多的时候，会造成链表长度较长的问题，所以这种情况下会使得ConcurrentHashMap中的一个数组元素的查询复杂度会增加，所以在jdk 1.8里面引入了红黑树这样一个机制，当数组长度大于64，并且链表的长度大于等于8的时候，单向链表就会转化成红黑素，另外呢，随着ConcurrentHashMap的一个动态扩容，一旦链表的长度小于6，红黑树会退化成单向链表。
 
