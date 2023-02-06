@@ -1,16 +1,8 @@
 > 爱问volatile关键字的面试官，大多数情况下都是有一定功底的，因为volatile作为切入点，往底层走可以切入Java内存模型（JMM），往并发方向走又可接切入Java并发编程，当然，再深入追究，JVM的底层操作、字节码的操作、单例都可以牵扯出来。
 
-## JMM三大特性：可见性、有序性、原子性
-
-* 可见性：当一个线程修改了某个共享变量的值，其它线程能够立即看到修改后的值
-* 有序性：程序执行代码指令的顺序应当保证按照程序指定的顺序执行，即便是编译优化，也应当保证程序源语一致
-* 原子性：一个或多个程序指令，要么全部正确执行完毕不能被打断，或者全部不执行
-
-
+## volatile 无法保证原子性
 
 volatile满足特性：可见性、有序性
-
-## volatile 无法保证原子性
 
 使用volatile 和synchronized 锁都可以保证共享变量的可见性。相比synchronized 而言， volatile 在某些场景下可以看作是一个轻量级锁，所以使用volatile 的成本更低， 因为它不会引起线程上下文的切换和调度。
 
@@ -129,7 +121,7 @@ CAS并发原语体现在JAVA语言中就是sun.misc.Unsafe类中的各个方法�
 
 
 
-## 引用
+## Reference
 
 [1]: https://www.cnblogs.com/mainz/p/3556430.html	"为什么volatile不能保证原子性而Atomic可以？"
 [2]: https://www.cnblogs.com/54chensongxia/p/12120117.html	"Java内存模型之有序性问题"
