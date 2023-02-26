@@ -2,9 +2,9 @@
 
 String类型，也就是字符串类型，是Redis中最简单的存储类型。其value是字符串，不过根据字符串的格式不同，又可以分为3类：
 
-	* string：普通字符串
-	* int：整数类型，可以做自增、自减操作
-	* float：浮点类型，可以做自增、自减操作
+* string：普通字符串
+* int：整数类型，可以做自增、自减操作
+* float：浮点类型，可以做自增、自减操作
 
 不管是哪种格式，底层都是字节数组形式存储，只不过是编码方式不同。字符串类型的最大空间不能超过512m
 
@@ -45,6 +45,9 @@ String类型，也就是字符串类型，是Redis中最简单的存储类型。
 * RPOP key：移除并返回列表右侧的第一个元素
 * LRANGE key star end：返回一段角标范围内的所有元素
 * BLPOP和BRPOP：与LPOP和RPOP类似，只不过在没有元素时等待指定时间，而不是直接返回nil
+* LREM key count value: LREM mylist 0 "value"  //从mylist中删除全部等值value的元素   0为全部，正值从头部开始，负值为从尾部开始。 
+* LTRIM: LTRIM mylist 1 -1      //保留mylist中 1到末尾的值，即删除第一个值。
+* LINDEX key index : 获取某个位置的值
 
 # Set
 

@@ -1,16 +1,16 @@
 在服务开发中，单机都会存在单点故障的问题，及服务部署在一台[服务器](https://cloud.tencent.com/product/cvm?from=10680)上，一旦服务器宕机服务就不可用，所以为了让服务高可用，分布式服务就出现了，将同一服务部署到多台机器上，即使其中几台服务器宕机，只要有一台服务器可用服务就可用。
 
-redis也是一样，为了解决单机故障引入了主从模式，但主从模式存在一个问题：master节点故障后服务，需要人为的手动将slave节点切换成为maser节点后服务才恢复。redis为解决这一问题又引入了哨兵模式，哨兵模式能在master节点故障后能自动将salve节点提升成master节点，不需要人工干预操作就能恢复服务可用。
+redis也是一样，为了解决单机故障引入了主从模式，但主从模式存在一个问题：master节点故障后，**需要手动将slave节点切换成为maser节点**后服务才恢复。redis为解决这一问题又引入了哨兵模式，哨兵模式能在master节点故障后能自动将salve节点提升成master节点，不需要人工干预操作就能恢复服务可用。
 
-但是主从模式、哨兵模式都没有达到真正的数据sharding存储，每个redis实例中存储的都是全量数据，所以redis cluster就诞生了，实现了真正的数据分片存储。但是由于redis cluster发布得比较晚(2015年才发布正式版 )，各大厂等不及了，陆陆续续开发了自己的redis数据分片集群模式，比如：Twemproxy、Codis等。
+但是主从模式、哨兵模式都没有达到真正的数据sharding存储，每个redis实例中存储的都是全量数据，所以redis cluster就诞生了，实现了**真正的数据分片存储**。但是由于redis cluster发布得比较晚(2015年才发布正式版 )，各大厂等不及了，陆陆续续开发了自己的redis数据分片集群模式，比如：Twemproxy、Codis等。
 
 ## [**1.主从模式**](https://mp.weixin.qq.com/s?__biz=MzUzMTA2NTU2Ng==&mid=2247487551&idx=1&sn=18f64ba49f3f0f9d8be9d1fdef8857d9&scene=21#wechat_redirect)
 
 redis单节点虽然有通过RDB和AOF持久化机制能将数据持久化到硬盘上，但数据是存储在一台服务器上的，如果服务器出现硬盘故障等问题，会导致数据不可用，而且读写无法分离，读写都在同一台服务器上，请求量大时会出现I/O瓶颈。
 
-为了避免单点故障 和 读写不分离，Redis 提供了复制（replication）功能实现master数据库中的数据更新后，会自动将更新的数据同步到其他slave数据库上。
+为了避免 **单点故障 和 读写不分离**，Redis 提供了复制（replication）功能实现master数据库中的数据更新后，会自动将更新的数据同步到其他slave数据库上。
 
-![img](https://ask.qcloudimg.com/http-save/1305760/4e21a70f58b584019cd151f5a6a56aa4.png?imageView2/2/w/1620);
+![img](https://ask.qcloudimg.com/http-save/1305760/4e21a70f58b584019cd151f5a6a56aa4.png?imageView2/2/w/1620)
 
 如上redis主从结构特点：一个master可以有多个salve节点；salve节点可以有slave节点，从节点是级联结构。
 
@@ -34,17 +34,17 @@ redis单节点虽然有通过RDB和AOF持久化机制能将数据持久化到硬
 
 哨兵模式核心还是主从复制，只不过在相对于主从模式在主节点宕机导致不可写的情况下，多了一个竞选机制：从所有的从节点竞选出新的主节点。竞选机制的实现，是依赖于在系统中启动一个sentinel进程。
 
-![img](https://ask.qcloudimg.com/http-save/1305760/b2f02a2c291b7fe8f6eae853439c7308.png?imageView2/2/w/1620);
+![img](https://ask.qcloudimg.com/http-save/1305760/b2f02a2c291b7fe8f6eae853439c7308.png?imageView2/2/w/1620)
 
 如上图，哨兵本身也有单点故障的问题，所以在一个一主多从的Redis系统中，可以使用多个哨兵进行监控，哨兵不仅会监控主数据库和从数据库，哨兵之间也会相互监控。每一个哨兵都是一个独立的进程，作为进程，它会独立运行。
 
-![img](https://ask.qcloudimg.com/http-save/1305760/f9b2542be25527938d02b61df7bf75ce.png?imageView2/2/w/1620);
+![img](https://ask.qcloudimg.com/http-save/1305760/f9b2542be25527938d02b61df7bf75ce.png?imageView2/2/w/1620)
 
 ##### [**(1)哨兵模式的作用：**](https://mp.weixin.qq.com/s?__biz=MzUzMTA2NTU2Ng==&mid=2247487551&idx=1&sn=18f64ba49f3f0f9d8be9d1fdef8857d9&scene=21#wechat_redirect)
 
-监控所有服务器是否正常运行：通过发送命令返回监控服务器的运行状态，处理监控主服务器、从服务器外，哨兵之间也相互监控。
+监控所有服务器是否正常运行：通过发送命令返回监控服务器的运行状态，处理监控**主服务器、从服务器**外，**哨兵之间**也相互监控。
 
-故障切换：当哨兵监测到master宕机，会自动将slave切换成master，然后通过发布订阅模式通知其他的从服务器，修改配置文件，让它们切换master。同时那台有问题的旧主也会变为新主的从，也就是说当旧的主即使恢复时，并不会恢复原来的主身份，而是作为新主的一个从。
+故障切换：当哨兵监测到master宕机，会自动将slave切换成master，然后通过发布订阅模式通知其他的从服务器，修改配置文件，让它们切换master。同时那台有问题的旧主也会变为新主的从，也就是说当旧的master即使恢复时，并不会恢复原来的master身份，而是作为新master的一个从。
 
 ##### [**(2)哨兵实现原理**](https://mp.weixin.qq.com/s?__biz=MzUzMTA2NTU2Ng==&mid=2247487551&idx=1&sn=18f64ba49f3f0f9d8be9d1fdef8857d9&scene=21#wechat_redirect)
 
@@ -214,6 +214,30 @@ Redis Cluster采用虚拟哈希槽分区而非一致性hash算法，预先分配
 
 
 
+### 哈希槽（slots）的映射
+
+- 使用 CRC16 算法计算键值对信息的Key，会得出一个 16 bit 的值。
+- 将 第1步中得到的 16 bit 的值对 16384 取模，得到的值会在 0 ～ 16383 之间，映射到对应到哈希槽中。
+  - 在一些特殊的情况下，你想把某些key固定到某个slot上面，也就是同一个实例节点上。这时候可以用hash tag能力，强制 key 所归属的槽位等于 tag 所在的槽位。其实现方式为在key中加个{}，例如test_key{1}。使用hash tag后客户端在计算key的crc16时，只计算{}中数据。如果没使用hash tag，客户端会对整个key进行crc16计算。
+
+### 哈希槽（slots）的分配
+
+* 一种是初始化的时候均匀分配 ，使用 cluster create 创建，会将 16384 个slots 平均分配在我们的集群实例上，比如你有n个节点，那每个节点的槽位就是 16384 / n 个了 。
+
+* 另一种是通过 CLUSTER MEET 命令将 node1、node2、ndoe3、node4 4个节点联通成一个集群，刚联通的时候因为还没分配哈希槽，还是处于offline状态。使用 `cluster addslots` 命令来指定 (性能好的实例节点可以多分担一些压力)。
+ ```shell
+  redis-cli -h 192.168.0.1 –p 6379 cluster addslots 0,7120
+  redis-cli -h 192.168.0.2 –p 6379 cluster addslots 7121,9945
+  redis-cli -h 192.168.0.3 –p 6379 cluster addslots 9946,13005
+  redis-cli -h 192.168.0.4 –p 6379 cluster addslots 13006,16383
+ ```
+
+  
+
+
+
 # 参考
 
 [4种 Redis 集群方案介绍+优缺点对比](https://cloud.tencent.com/developer/article/1992856)
+
+[Redis Cluster通信原理](https://cloud.tencent.com/developer/article/1604782)

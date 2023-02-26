@@ -285,3 +285,4 @@
 ## Refrence
 
 [1]: https://www.infoq.cn/article/dvaaj71f4fbqsxmgvdce	"[转]浅析 Redis 分布式锁解决方案"
+[2]: https://www.51cto.com/article/683507.html	"聊聊Redis分布式锁的八大坑"
