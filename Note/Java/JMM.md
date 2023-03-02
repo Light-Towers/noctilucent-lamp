@@ -169,3 +169,10 @@ JMM 可以说是 Java 并发的基础，它的定义将直接影响多线程实�
 
 
 
+
+
+key     hashKey    hashValue
+
+userId  品牌		小米
+
+​		颜色		红色

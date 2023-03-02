@@ -32,3 +32,5 @@ Redis的Hash槽分配不是**一致性Hash**，一致性Hash是成一个hash环�
 2. [redis集群扩容（添加新节点）](https://links.jianshu.com/go?to=https%3A%2F%2Fwww.cnblogs.com%2Fyfacesclub%2Fp%2F11860927.html)
 3. [Redis进阶实践之十二 Redis的Cluster集群动态扩容](https://links.jianshu.com/go?to=https%3A%2F%2Fwww.cnblogs.com%2FPatrickLiu%2Fp%2F8473135.html)
 4. [Redis系列5：深入分析Cluster 集群模式 ](https://www.cnblogs.com/wzh2010/p/15886799.html)
+5. [Redis Cluster通信原理](https://cloud.tencent.com/developer/article/1604782)
+6. [为什么redis cluster至少需要三个主节点](https://www.zhihu.com/question/354518943)

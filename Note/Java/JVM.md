@@ -161,3 +161,6 @@ epoch：保存偏向时间戳
 ## Refrence
 
 [1]: https://cloud.tencent.com/developer/article/1588179 "Java中的对象都是在堆上分配的吗？"
+[2]: https://blog.csdn.net/maosijunzi/article/details/46049117	"java高分局之jstat命令使用"
+[3]: https://cloud.tencent.com/developer/article/1812722	"【JVM进阶之路】十：JVM调优总结"
+

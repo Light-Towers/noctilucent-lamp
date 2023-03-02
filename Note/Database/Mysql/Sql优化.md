@@ -22,3 +22,15 @@ EXPLAIN SELECT * FROM `TABLE_NAME`;
 >
 > system > const > eq_ref > ref > fulltext > ref_or_null > index_merge > unique_subquery > index_subquery > range > index > ALL（优-->差）　一般来说，得保证查询至少达到range级别，最好能达到ref，否则就可能会出现性能问题。
 
+
+
+### Using filesort
+
+**Using filesort** 是什么意思？
+
+MySQL需要**额外的一次传递**，以找出如何按排序顺序检索行。通过根据联接类型浏览所有行并为所有匹配WHERE子句的行保存排序关键字和行的指针来完成排序。然后关键字被排序，并按排序顺序检索行。
+
+filesort 有两种排序方式
+
+1. 对需要排序的记录生成 **<sort_key,rowid>** 的元数据进行排序，该元数据仅包含排序字段和rowid。排序完成后只有按字段排序的rowid，因此还需要通过rowid进行**回表操作获取所需要的列的值**，可能会导致**大量的随机IO读消耗**；
+2. 对需要排序的记录生成 **<sort_key,additional_fields>** 的元数据，该元数据包含排序字段和需要返回的所有列。排序完后不需要回表，但是元数据要比第一种方法长得多，**需要更多的空间用于排序**。
