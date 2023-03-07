@@ -34,3 +34,4 @@ Redis的Hash槽分配不是**一致性Hash**，一致性Hash是成一个hash环�
 4. [Redis系列5：深入分析Cluster 集群模式 ](https://www.cnblogs.com/wzh2010/p/15886799.html)
 5. [Redis Cluster通信原理](https://cloud.tencent.com/developer/article/1604782)
 6. [为什么redis cluster至少需要三个主节点](https://www.zhihu.com/question/354518943)
+7. [为什么 Redis Cluster 是16384个槽位](https://blog.csdn.net/weixin_44742132/article/details/120465808?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-120465808-blog-117930000.pc_relevant_default&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-120465808-blog-117930000.pc_relevant_default&utm_relevant_index=1)

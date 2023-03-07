@@ -64,7 +64,7 @@ String类型，也就是字符串类型，是Redis中最简单的存储类型。
 
 # SortedSet
 
-⚠️ 降序：Z后加REV
+⚠️ `降序：Z后加REV`
 
 **常见命令：**
 
@@ -76,6 +76,24 @@ String类型，也就是字符串类型，是Redis中最简单的存储类型。
 * ZCOUNT key min max：统计score值在给定范围内的所有元素的个数
 * ZINCRBY key increment member：让sorted set中的指定元素自增，步长为指定的increment值
 * ZRANGE key min max：按照score排序后，获取指定排名范围内的元素
-* ZREVRANGE key min max：按照score倒排序后，获取指定排名范围内的元素
-* ZRANGEBYSCORE key min max：按照score排序后，获取指定score范围内的元素
+* **ZREVRANGE** key min max：按照score倒排序后，获取指定排名范围内的元素
+* **ZRANGEBYSCORE** key min max：按照score排序后，获取指定score范围内的元素
 * ZINTER、ZDIFF、ZUNION：求交集、差集、并集
+
+
+
+## 批量删除
+
+1.扫描到指定前缀的key 2.基于linux管道命令删除
+
+> 参考：[Redis删除特定前缀key的优雅实现](https://juejin.cn/post/6844903869412016142)
+
+```shell
+# 扫描到指定前缀的key，然后进行unlink非阻塞删除
+redis-cli --scan --pattern users:* | xargs redis-cli unlink
+# del命令删除： 删除指定前缀的key (keys 和 del 都会阻塞主线程：慎用)
+redis-cli --raw keys users* | xargs redis-cli del 
+# 等同于 (redis) 
+del users*
+```
+
