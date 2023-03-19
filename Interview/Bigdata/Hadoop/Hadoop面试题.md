@@ -1,0 +1,17 @@
+1. MR是什么
+2. MR的详细工作流程
+3. HDFS分布式存储工作机制
+4. HadoopHA的架构原理
+5. YARN的资源调度工作机制
+6. Hadoop的组成结构
+7. MR的shuffle过程
+8. Hadoop的垃圾回收机制
+9. Hadoop怎么离线查看小文件
+10. MR为什么分两部分，为什么不直接map或直接reduce
+11. HDFS小文件怎么处理
+12. map任务和reduce任务在哪运行的
+13. Hadoop文件大小怎么切分/切片原则
+14. YARN的核心组件及调度器
+15. Hadoop的健康问题
+16. HDFS的FSimage和editslog指的是什么
+17. HDFS安全模式
