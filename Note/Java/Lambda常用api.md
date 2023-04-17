@@ -5,3 +5,18 @@
 list.sort(Comparator.comparing(User::getSex).reversed().thenComparing(User::getAge));
 ```
 
+### Stream 求和
+
+```java
+// stream 对 double 求和
+double sumPrice = costList.stream().mapToDouble(Cost::getPrice).sum();
+// stream 对 bigdecimal 求和
+BigDecimal sumPrice = costList.stream().map(Cost::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);	
+```
+
+### List 转 Map
+
+```
+Map<String, Person> map = list.stream().collect(Collectors.toMap(Person::getId, Person -> Person));
+```
+
