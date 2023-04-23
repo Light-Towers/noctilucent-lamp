@@ -1,0 +1,14 @@
+server:
+  port: 8081
+
+elasticsearch:
+  host: centos100
+  port: 9200
+
+
+# 配置日志级别,开启 debug 日志
+logging:
+  level:
+    com:
+      study:
+        '*': debug
