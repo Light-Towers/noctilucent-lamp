@@ -16,7 +16,15 @@ BigDecimal sumPrice = costList.stream().map(Cost::getPrice).reduce(BigDecimal.ZE
 
 ### List 转 Map
 
-```
+```java
 Map<String, Person> map = list.stream().collect(Collectors.toMap(Person::getId, Person -> Person));
+```
+
+
+
+### Map按照Key进行排序
+
+```java
+map.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(entry -> log.info(entry.getKey() + "|" + entry.getValue()));
 ```
 

@@ -77,14 +77,18 @@ public class SpringDataESProductDaoTest {
         List<Product> productList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Product product = new Product();
-            product.setId((long) i);
+            product.setId((long) i*3);
             product.setTitle("[" + i + "]小米手机");
             product.setCategory("手机");
             product.setPrice(1999.0 + i);
             product.setImages("http://www.atguigu/xm.jpg");
+            product.setDesc(i*3 + " 物美价廉啊");
             productList.add(product);
         }
-        productDao.saveAll(productList);
+        Iterable<Product> products = productDao.saveAll(productList);
+        for (Product product : products) {
+            System.out.println(product);
+        }
     }
 
     //分页查询

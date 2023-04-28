@@ -1,11 +1,11 @@
 package com.study.javaclient;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import cn.hutool.json.JSONUtil;
 import org.apache.http.HttpHost;
+import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -30,10 +30,14 @@ public class ESTest_Doc_Insert_Batch {
         request.add(new IndexRequest().index("user").id("1007").source(XContentType.JSON, "name", "wangwu44", "age",60,"sex","男"));
         request.add(new IndexRequest().index("user").id("1008").source(XContentType.JSON, "name", "wangwu555", "age",60,"sex","男"));
         request.add(new IndexRequest().index("user").id("1009").source(XContentType.JSON, "name", "wangwu66666", "age",60,"sex","男"));
+        // 错误数据
+        request.add(new IndexRequest().index("user").id("1009").source(XContentType.JSON, "name", "wangwu66666", "age","50岁","sex","男"));
 
         BulkResponse response = esClient.bulk(request, RequestOptions.DEFAULT);
         System.out.println(response.getTook());
-        System.out.println(response.getItems());
+        for (BulkItemResponse item : response.getItems()) {
+            System.out.println(JSONUtil.toJsonStr(item));
+        }
 
         esClient.close();
     }
