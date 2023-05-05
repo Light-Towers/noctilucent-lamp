@@ -28,3 +28,5 @@ Map<String, Person> map = list.stream().collect(Collectors.toMap(Person::getId, 
 map.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(entry -> log.info(entry.getKey() + "|" + entry.getValue()));
 ```
 
+
+
