@@ -19,4 +19,4 @@ The noctilucent-lamp accompanying your study
   * Bigdata: 大数据
   * Database: 数据库
   * Software: 软件
-* other: 杂七杂八
+* Other: 杂七杂八
