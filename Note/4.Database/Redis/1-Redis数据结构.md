@@ -64,20 +64,21 @@ String类型，也就是字符串类型，是Redis中最简单的存储类型。
 
 # SortedSet
 
-⚠️ `降序：Z后加REV`
+⚠️ `倒序：Z后加REV`
 
 **常见命令：**
 
 * ZADD key score member：添加一个或多个元素到sorted set ，如果已经存在则更新其score值
 * ZREM key member：删除sorted set中的一个指定元素
+* ZREMRANGEBYRANK key start stop: 删除指定下标范围内的元素
 * ZSCORE key member : 获取sorted set中的指定元素的score值
 * ZRANK key member：获取sorted set 中的指定元素的排名
 * ZCARD key：获取sorted set中的元素个数
 * ZCOUNT key min max：统计score值在给定范围内的所有元素的个数
 * ZINCRBY key increment member：让sorted set中的指定元素自增，步长为指定的increment值
-* ZRANGE key min max：按照score排序后，获取指定排名范围内的元素
-* **ZREVRANGE** key min max：按照score倒排序后，获取指定排名范围内的元素
-* **ZRANGEBYSCORE** key min max：按照score排序后，获取指定score范围内的元素
+* ZRANGE key start stop：正序，获取指定下标范围内的元素
+* **ZREVRANGE** key start stop：倒序，获取指定下标范围内的元素
+* **ZRANGEBYSCORE** key min max：正序，获取指定score范围内的元素
 * ZINTER、ZDIFF、ZUNION：求交集、差集、并集
 
 
