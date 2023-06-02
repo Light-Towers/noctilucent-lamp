@@ -19,3 +19,7 @@
 - [ ] [ES索引操作：恢复、关闭、删除](https://blog.51cto.com/wutengfei/3333953)
 - [ ] [Elasticsearch索引恢复流程（上）](https://www.dandelioncloud.cn/article/details/1486329895700779009)
 - [ ] [Python连接es笔记三之es更新操作](https://blog.csdn.net/weixin_43354181/article/details/129456051)
+- [ ] [ES深度分页查询详解](https://blog.csdn.net/w1014074794/article/details/119389765)
+- [ ] [Elasticsearch - 文档分析，IK分词器；文档冲突（十二）](https://blog.csdn.net/MinggeQingchun/article/details/126768243)
+- [ ] [es查询某个字段是否存在或为空](https://blog.csdn.net/qq_19891197/article/details/130288035)
+- [ ] [如何在es中查询null值](https://blog.csdn.net/fu_huo_1993/article/details/128793935)
