@@ -9,6 +9,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+/**
+ * @author osmondy
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +24,9 @@ public class Product {
      */
     @Id
     private Long id;
+
+    @Field(type = FieldType.Keyword, name = "name")
+    private String name;
 
     /**
      * type : 字段数据类型
@@ -43,6 +49,9 @@ public class Product {
      */
     @Field(type = FieldType.Double)
     private Double price;
+
+    @Field(type = FieldType.Integer)
+    private Double quantity;
 
     /**
      * 图片地址

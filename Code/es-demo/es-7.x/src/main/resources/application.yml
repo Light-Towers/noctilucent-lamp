@@ -6,6 +6,7 @@ elasticsearch:
   port: 9200
 
 
+
 # 配置日志级别,开启 debug 日志
 logging:
   level:

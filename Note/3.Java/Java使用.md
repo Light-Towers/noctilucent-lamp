@@ -1,0 +1,1 @@
+[java中Random的使用](https://blog.csdn.net/weixin_58642210/article/details/125498887)

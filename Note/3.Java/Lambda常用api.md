@@ -18,6 +18,8 @@ BigDecimal sumPrice = costList.stream().map(Cost::getPrice).reduce(BigDecimal.ZE
 
 ```java
 Map<String, Person> map = list.stream().collect(Collectors.toMap(Person::getId, Person -> Person));
+// 按某字段分组
+Map<String, List<Person>> map = list.stream().collect(Collectors.groupingBy(Person::getSex));
 ```
 
 

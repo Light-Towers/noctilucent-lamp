@@ -1,0 +1,60 @@
+# 订单索引，一个订单下有多个商品
+PUT order_test
+{
+  "mappings": {
+    "properties": {
+      // 订单状态 0未付款 1未发货 2运输中 3待签收 4已签收
+      "status": {
+        "type": "integer"
+      },
+      // 订单编号
+      "no": {
+        "type": "keyword"
+      },
+      // 下单时间
+      "create_time": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+      },
+      // 订单金额
+      "amount": {
+        "type": "double"
+      },
+      // 创建人
+      "creator":{
+        "type": "keyword"
+      },
+      // 地址
+      "address":{
+        "type": "text",
+        "analyzer": "ik_max_word"
+      },
+      // 地址坐标
+      "point":{
+        "type": "geo_point"
+      },
+      // 商品信息
+      "product":{
+        "type": "nested",
+        "properties": {
+          // 商品ID
+          "id": {
+            "type": "keyword"
+          },
+          // 商品名称
+          "name":{
+            "type": "keyword"
+          },
+          // 商品价格
+          "price": {
+            "type": "double"
+          },
+          // 商品数量
+          "quantity": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
