@@ -51,6 +51,10 @@ desc formatted student;
 
   ```hive
   alter database db_hive set dbproperties('createtime'='20170830');
+  # 修改表注释
+  ALTER TABLE table_name SET TBLPROPERTIES('comment' = '这是表注释!');
+  # 修改字段注释
+  ALTER TABLE table_name CHANGE COLUMN muid muid_new STRING COMMENT '这里是列注释!'; 
   ```
 
 * 删除
@@ -97,12 +101,6 @@ desc formatted student;
   ```
 
   
-
-
-
-
-
-
 
 ## DML
 
@@ -457,4 +455,11 @@ select * from stu_buck tablesample(bucket 1 out of 4 on id);
   ```
 
   
+
+## 查看ORC文件类容
+
+```bash
+hive --orcfiledump /warehouse/tablespace/external/hive/ods.db/mongo/enterprise/EnterpriseBaseInfo/part-ea5b168f-bcfd-43ac-852e-fbdacab85ed8-0-0
+hive --service orcfiledump -d /warehouse/tablespace/external/hive/ods.db/mongo/enterprise/EnterpriseBaseInfo/part-ea5b168f-bcfd-43ac-852e-fbdacab85ed8-0-0 | tail
+```
 

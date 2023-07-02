@@ -17,3 +17,19 @@
 [MongoDB中regex操作符的介绍](https://blog.csdn.net/qq_15260769/article/details/80572161)
 
 [SpringBoot 集成 Spring Data Mongodb 操作 MongoDB 详解](http://www.mydlq.club/article/85/#8mongodb-%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C)
+
+
+
+```javascript
+# 批量修改字段类型
+db.exhibition_participate.updateMany({}, [
+  {
+    $set: {
+      use_status: {
+        $toString: "$use_status"
+      }
+    }
+  }
+])
+```
+

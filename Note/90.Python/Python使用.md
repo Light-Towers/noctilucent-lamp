@@ -10,3 +10,10 @@
 - [ ] [编程之路--Python 定义数组](https://www.cjavapy.com/article/1516/)
 - [ ] [Python 自动化操作 Excel 看这一篇就够了](https://zhuanlan.zhihu.com/p/259583430)
 
+
+
+```bash
+# python 安装环境依赖包
+pip3 install -r requirements.txt
+```
+
