@@ -1,7 +1,5 @@
 # 插件
 
-<img src="https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/image-20221105162353723.png" alt="image-20221105162353723" style="zoom: 33%;" />
-
 
 
 # 删除idea
