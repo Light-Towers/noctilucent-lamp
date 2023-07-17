@@ -1,3 +1,7 @@
+# 基于variety查看Mongo表结构
+
+
+
 Mongo Shell 使用：
 
 ```bash
