@@ -20,8 +20,9 @@
 
 
 
+## 批量修改字段类型
+
 ```javascript
-# 批量修改字段类型
 db.exhibition_participate.updateMany({}, [
   {
     $set: {
@@ -31,5 +32,51 @@ db.exhibition_participate.updateMany({}, [
     }
   }
 ])
+```
+
+
+
+## 设置时区
+
+```bash
+# TODO 待验证
+mongo –eval "printjson(db.getSiblingDB('admin').runCommand({setParameter: 1, timezone: 'Asia/Shanghai'}))"
+```
+
+
+
+
+
+## Mongo 外联表 (left join)
+
+```bash
+db.collection.aggregate([
+        {$match: { journal_id: { $nin: ["", null] }, pid: id }},
+        {
+            $lookup: {          // 与展会表关联
+                from: "exhibition_journal",
+                localField: "journal_id",
+                foreignField: "journal_id",
+                as: "journalInfo"
+            }
+        },
+        {$unwind: "$journalInfo"},
+        {
+            $project: {
+                _id: 0,
+                pid: 1,
+                journal_id: 1,
+                participate_in_date: 1,
+                booth_id: 1,
+                participateExhDate: "$journalInfo.journal_year",
+                exhName: "$journalInfo.journal_name",
+                boothType: "标准展位/特装展位",
+                participateExhNum: 1
+            }
+        },
+        {$sort: {participateExhDate: -1}}, 
+        {$skip: page}, 
+        {$limit: limit}
+    ])
 ```
 

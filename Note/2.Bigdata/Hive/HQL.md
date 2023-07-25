@@ -316,6 +316,14 @@ insert overwrite table student_par select id, name from student where month='201
     hive.error.on.empty.partition=false
     ```
 
+* 修复分区
+
+    ```hive
+    MSCK REPAIR TABLE dw.dws_exhibition;
+    ```
+
+
+
 ### 分桶
 
 分区针对的是数据的存储路径；分桶针对的是数据文件。

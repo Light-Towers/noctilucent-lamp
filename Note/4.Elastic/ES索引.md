@@ -70,7 +70,7 @@ POST 索引名称/文档名称/_delete_by_query
 3：删除所有数据：（注意请求方式是Post，只删除数据，不删除表结构）
 
 ```
-POST /testindex/testtype/_delete_by_query?pretty
+POST /testindex/_delete_by_query?pretty
 {
     "query": {
         "match_all": {
