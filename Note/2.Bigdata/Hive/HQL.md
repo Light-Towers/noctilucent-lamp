@@ -80,6 +80,8 @@ desc formatted student;
 
   ```hive
   alter table student set serdeproperties ("field.delim"=" ");
+  ## 表字段
+  ALTER TABLE table_name ADD|REPLACE COLUMNS (col_name data_type [COMMENT col_comment], ...)
   ```
 
 * 截断/清空
@@ -467,7 +469,7 @@ select * from stu_buck tablesample(bucket 1 out of 4 on id);
 ## 查看ORC文件类容
 
 ```bash
-hive --orcfiledump /warehouse/tablespace/external/hive/ods.db/mongo/enterprise/EnterpriseBaseInfo/part-ea5b168f-bcfd-43ac-852e-fbdacab85ed8-0-0
-hive --service orcfiledump -d /warehouse/tablespace/external/hive/ods.db/mongo/enterprise/EnterpriseBaseInfo/part-ea5b168f-bcfd-43ac-852e-fbdacab85ed8-0-0 | tail
+hive --orcfiledump /user/hive/warehouse/test/test_b/dt=2023-07-30/000000_0
+hive --service orcfiledump -d /user/hive/warehouse/test/test_b/dt=2023-07-30/000000_0 | tail
 ```
 
