@@ -46,7 +46,7 @@ POST indexName/_delete_by_query
     }
   }
 }
-## 修改分片、副本
+## 设置分片(初始化设置，不可修改)，修改副本
 PUT ka_exhibition_info_prod/_settings
 {
     "index": {
@@ -87,3 +87,43 @@ POST _reindex?refresh
 > ​	[ES数据库重建索引——Reindex(数据迁移) ](https://www.cnblogs.com/Ace-suiyuan008/p/9985249.html)
 >
 > ​	[使用es reindex api 修改和迁移数据](https://blog.csdn.net/weixin_38920212/article/details/102461563)
+>
+> ​	[通过reindex迁移ES数据](http://dbaselife.com/project-16/doc-884/)
+
+## 取消reindex操作
+
+```json
+#获取任务ID
+GET _tasks?detailed=true&actions=*reindex
+#取消任务
+POST _tasks/Eoc8_cOHR1WUpfoGfKJLuQ:9180876/_cancel
+```
+
+> 参考：[如何在Elasticsearch中停止重建索引？](https://www.soinside.com/question/kehDPLDxL9R88tSsVP4DFY)
+
+## 主分片迁移
+
+```json
+POST /_cluster/reroute
+{
+    "commands": [
+        {
+            "move": {
+                "index": "ik_company_info_prod",
+                "shard": 2,
+                "from_node": "node-34",
+                "to_node": "node-33"
+            }
+        },
+        {
+            // 分配副本（仅wei分配）
+            "allocate_replica": {
+                "index": "ik_company_info_prod",
+                "shard": 5,
+                "node": "node-34"
+            }
+        }
+    ]
+}
+```
+

@@ -75,6 +75,8 @@ export PATH=$PATH:$HIVE_HOME/bin
 
    ```bash
    bin/start-cluster.sh
+   # flink 历史服务
+   bin/historyserver.sh start|stop
    ```
 
 5. 开启Flink SQL客户端
@@ -137,5 +139,4 @@ export PATH=$PATH:$HIVE_HOME/bin
    ```bash
    INSERT INTO hive_test SELECT * FROM mongo_test;
    ```
-
 
