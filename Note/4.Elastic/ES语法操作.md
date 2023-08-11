@@ -42,8 +42,7 @@ POST ik_company_bd_info_prod/_update_by_query
 POST indexName/_delete_by_query
 {
   "query": { 
-    "match_all": {
-    }
+    "match_all": {}
   }
 }
 ## 设置分片(初始化设置，不可修改)，修改副本
@@ -116,7 +115,7 @@ POST /_cluster/reroute
             }
         },
         {
-            // 分配副本（仅wei分配）
+            // 分配副本（仅未分配副本适用）
             "allocate_replica": {
                 "index": "ik_company_info_prod",
                 "shard": 5,
@@ -124,6 +123,17 @@ POST /_cluster/reroute
             }
         }
     ]
+}
+```
+
+分片迁移前需要关闭集群的动态分片；删除副本视情况而定。
+
+```json
+PUT _cluster/settings 
+{ 
+  "persistent": { 
+    "cluster.routing.allocation.enable": "none"		//"none":关闭； "all":开启
+  }
 }
 ```
 
