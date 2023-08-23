@@ -34,7 +34,7 @@ db.exhibition_participate.updateMany({}, [
 ])
 ```
 
-
+> https://www.mongodb.com/docs/manual/reference/operator/aggregation/toString/
 
 ## 设置时区
 
@@ -78,5 +78,11 @@ db.collection.aggregate([
         {$skip: page}, 
         {$limit: limit}
     ])
+```
+
+## 统计字段所有值
+
+```javascript
+db.CollectionName.distinct( "field");
 ```
 
