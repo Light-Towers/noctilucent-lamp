@@ -137,3 +137,43 @@ PUT _cluster/settings
 }
 ```
 
+
+
+## 二、字段操作
+
+## 增加新的字段
+
+```python
+PUT /zq_test/_mapping
+{
+    "properties": {
+        "hight": {
+            "type": "integer"
+        }
+    }
+}
+```
+
+## ES 删除字段
+
+ES 已经建立好的索引数据，无法直接删除一个字段。除非新建索引。但是我们通过文档删除字段。通过脚本更新的方式，删除设计文档中的字段内容，达到该字段数据为 `None` 的形式
+
+### 删除指定文档中所有的某一个字段数据
+
+```python
+body = {
+        "script": f"ctx._source.remove('{field}')",
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "exists": {
+                            "field": field
+                        }
+                    }
+                ]
+            }
+        }
+    }
+es.update_by_query(index, body)
+```
