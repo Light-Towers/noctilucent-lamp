@@ -79,9 +79,16 @@ desc formatted student;
 * 修改
 
   ```hive
-  alter table student set serdeproperties ("field.delim"=" ");
-  ## 表字段
-  ALTER TABLE table_name ADD|REPLACE COLUMNS (col_name data_type [COMMENT col_comment], ...)
+  -- 重命名表
+  ALTER TABLE table_name RENAME TO new_table_name
+  -- 修改
+  ALTER TABLE student set serdeproperties ("field.delim"=" ");
+  -- 增加列: 新增列的位置位于末尾
+  ALTER TABLE table_name ADD COLUMNS (col_name data_type [COMMENT col_comment], ...)
+  -- 更新列: 修改指定列的列名、数据类型、注释信息以及在表中的位置
+  ALTER TABLE table_name CHANGE [COLUMN] col_old_name col_new_name column_type [COMMENT col_comment] [FIRST|AFTER column_name]
+  -- 替换列: 用新的列集替换表中原有的全部列
+  ALTER TABLE table_name REPLACE COLUMNS (col_name data_type [COMMENT col_comment], ...)
   ```
 
 * 截断/清空
