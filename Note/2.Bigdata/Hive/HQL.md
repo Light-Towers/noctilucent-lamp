@@ -81,7 +81,7 @@ desc formatted student;
   ```hive
   -- 重命名表
   ALTER TABLE table_name RENAME TO new_table_name
-  -- 修改
+  -- 修改表属性
   ALTER TABLE student set serdeproperties ("field.delim"=" ");
   -- 增加列: 新增列的位置位于末尾
   ALTER TABLE table_name ADD COLUMNS (col_name data_type [COMMENT col_comment], ...)

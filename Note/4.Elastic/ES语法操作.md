@@ -67,7 +67,7 @@ GET /_analyze
 
 ## 索引数据迁移
 
-```json
+```http
 POST _reindex?refresh
 {
   "source": {
@@ -77,6 +77,9 @@ POST _reindex?refresh
   "dest": {
     "index": "ik_company_info_prod",
     "version_type": "internal"
+  }，
+  "script": {
+    "source": "ctx._source.exhNameBak = ctx._source.remove(\"exhName\"); ctx._source.exhStartDateBak = ctx._source.remove(\"exhStartDate\")"
   }
 }
 ```

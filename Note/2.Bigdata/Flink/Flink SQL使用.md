@@ -21,3 +21,10 @@ SET 'table.local-time-zone' = 'Asia/Shanghai';
 SET 'table.local-time-zone' = 'UTC';
 ```
 
+
+
+
+
+> 难：
+>
+> https://juejin.cn/post/7003903405005471757
