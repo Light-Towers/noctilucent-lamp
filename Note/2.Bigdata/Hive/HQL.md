@@ -480,3 +480,10 @@ hive --orcfiledump /user/hive/warehouse/test/test_b/dt=2023-07-30/000000_0
 hive --service orcfiledump -d /user/hive/warehouse/test/test_b/dt=2023-07-30/000000_0 | tail
 ```
 
+
+
+
+
+Hive Bug
+
+https://blog.csdn.net/weixin_38070561/article/details/126895259

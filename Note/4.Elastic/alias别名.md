@@ -35,3 +35,15 @@ POST /_aliases
 }
 ```
 
+## 重命名别名 
+
+```http
+POST /_aliases
+{
+  "actions": [
+    {"remove": {"index": "l1", "alias": "a1"}},
+    {"add": {"index": "l1", "alias": "a2"}}
+  ]
+}
+```
+

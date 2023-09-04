@@ -86,3 +86,9 @@ db.collection.aggregate([
 db.CollectionName.distinct( "field");
 ```
 
+## 创建索引
+
+```javascript
+db.app_enterprise_info.createIndex({ pid: 1 }, { unique: true })
+```
+

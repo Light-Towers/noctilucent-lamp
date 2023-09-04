@@ -91,6 +91,8 @@ POST _reindex?refresh
 > ​	[使用es reindex api 修改和迁移数据](https://blog.csdn.net/weixin_38920212/article/details/102461563)
 >
 > ​	[通过reindex迁移ES数据](http://dbaselife.com/project-16/doc-884/)
+>
+> ​	[ES索引重建reindex详解](https://blog.csdn.net/w1014074794/article/details/120483334)
 
 ## 取消reindex操作
 
@@ -180,3 +182,15 @@ body = {
     }
 es.update_by_query(index, body)
 ```
+
+
+
+
+
+```http
+PUT ik_company_info_prod_change_2/_mapping
+{
+  "dynamic": true
+}
+```
+
