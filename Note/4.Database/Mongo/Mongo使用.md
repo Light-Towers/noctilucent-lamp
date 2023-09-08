@@ -84,6 +84,8 @@ db.collection.aggregate([
 
 ```javascript
 db.CollectionName.distinct( "field");
+// 或者
+db.CollectionName.aggregate([ {$match:{"age" : 18}}, {$project:{"name":true}}, {$group:{_id:"$name"}}, {$group:{_id:null,count:{$sum:1}}} ])
 ```
 
 ## 创建索引
