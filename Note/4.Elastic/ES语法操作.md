@@ -186,10 +186,37 @@ es.update_by_query(index, body)
 
 
 
-```http
+```bash
 PUT ik_company_info_prod_change_2/_mapping
 {
   "dynamic": true
+}
+```
+
+
+
+
+
+## 内嵌字段统计
+
+```bash
+GET my_index/_search
+{
+  "size": 0, 
+  "aggs": {
+    "nest_user": {
+      "nested": {
+        "path": "user"
+      },
+      "aggs": {
+        "user_count": {
+          "value_count": {
+            "field": "user.first"
+          }
+        }
+      }
+    }
+  }
 }
 ```
 
