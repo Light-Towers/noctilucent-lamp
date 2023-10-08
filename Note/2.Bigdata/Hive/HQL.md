@@ -55,6 +55,8 @@ desc formatted student;
   ALTER TABLE table_name SET TBLPROPERTIES('comment' = '这是表注释!');
   # 修改字段注释
   ALTER TABLE table_name CHANGE COLUMN muid muid_new STRING COMMENT '这里是列注释!'; 
+  # 删除表属性
+  ALTER TABLE my_table UNSET TBLPROPERTIES ('comment', 'created_by');
   ```
 
 * 删除
