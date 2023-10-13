@@ -97,4 +97,11 @@ select `exh_id`,`exh_name`,dt from test.test_b
 
 ## 四、 解决方案
 
-通过外表挂载回写数据
+1. 通过外表挂载回写数据
+
+2. hive-3.1.3 后支持。[Jira:HIVE-20126](https://issues.apache.org/jira/browse/HIVE-20126)
+
+   ```sql
+   set orc.force.positional.evolution=true;
+   ```
+
