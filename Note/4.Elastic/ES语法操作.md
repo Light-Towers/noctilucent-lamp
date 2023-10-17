@@ -1,7 +1,20 @@
-## 更新字段值
+## 替换/索引文档
 
-```json
+```http
+PUT customer/_doc/2 
+{
+  "name": "Jane Doe"
+}
+```
+
+## 更新文档
+
+```http
 POST ka_company_info_prod/_update/2
+{
+  "doc": { "name": "Jane Doe", "age": 20 }
+}
+// 或者
 {
   "script" : "ctx._source.baikePopularity=25311775"
 }
