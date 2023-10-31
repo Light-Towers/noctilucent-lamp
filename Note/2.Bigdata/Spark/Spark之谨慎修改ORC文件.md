@@ -87,13 +87,13 @@ select `exh_id`,`exh_name`,dt from test.test_b
 
 ##### 3.2.1 Hive元数据
 
-![image-20230801114447520](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20230801114447520.png)
+![image-20230801114447520](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/image-20230801114447520.png)
 
 ##### 3.2.1 ORC文件Schema
 
 `hive --orcfiledump /user/hive/warehouse/test/test_b/dt=2023-07-30/000000_0`
 
-![image-20230801114648394](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20230801114648394.png)
+![image-20230801114648394](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/image-20230801114648394.png)
 
 ## 四、 解决方案
 

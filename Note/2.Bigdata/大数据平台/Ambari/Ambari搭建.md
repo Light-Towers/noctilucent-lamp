@@ -87,4 +87,4 @@ npm config set registry https://registry.npm.taobao.org
 
 
 
-![image-20230715222144478](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20230715222144478.png)
+![image-20230715222144478](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/image-20230715222144478.png)
