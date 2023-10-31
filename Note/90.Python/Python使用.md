@@ -17,3 +17,32 @@
 pip3 install -r requirements.txt
 ```
 
+
+
+### 执行另一个脚本
+
+```python
+import os
+# 显示当前文件夹下的全部目录和文件夹
+# dir 显示磁盘目录命令
+os.system('dir')
+
+# 删除指定文件夹下的文件
+os.system('del e:\\test\\test.txt')
+
+# 删除一个空文件夹
+# rd(RMDIR):在DOS操作系统中用于删除一个目录 + 要删除文件夹
+os.system('rd e:\\test')
+
+# 关闭进程
+# taskkill是用来终止进程的 + 进程名
+os.system('taskkill  /F /IM chrome.exe')
+
+## 执行另一个Python脚本
+## python命令 + B.py + 参数：IC.txt'
+str=('python B.py IC.txt')
+p=os.system(str)
+## //打印执行结果 0表示 success ， 1表示 fail
+print(p)
+```
+
