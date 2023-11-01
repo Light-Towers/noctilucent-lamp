@@ -13,7 +13,7 @@ GET /order/_search?size=0
 }
 ```
 
-查询
+## function_score 查询
 
 ```http
 {

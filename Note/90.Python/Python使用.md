@@ -19,6 +19,12 @@ pip3 install -r requirements.txt
 
 
 
+## [Python元组操作及方法总结](https://www.jianshu.com/p/44d3a02ef34b)
+
+
+
+
+
 ### 执行另一个脚本
 
 ```python
