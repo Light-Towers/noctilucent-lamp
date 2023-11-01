@@ -199,3 +199,32 @@ GET /order/_search?size=0
 }
 ```
 
+
+
+## _source关键字使用
+
+* `"_source": false` - 无需返回_source内容。
+* `"_source": "name"` - 只显示所指定的字段。
+* `"_source": ["name","level"]` - 使用数组指定多个字段
+* 使用includes 和 excludes来包含显示或排除字段
+
+```http
+GET _search
+{
+  "_source": false,
+// "_source": "name",
+// "_source": ["name","level"],
+// "_source": {
+//     "includes": ["name","level"],
+//	   "excludes": []
+//   },
+  "query": {
+    "term": { 
+      "level": {  #需要搜索的字段名字
+        "value": 2  #搜索的结果
+      }
+    }
+  }
+}
+```
+
