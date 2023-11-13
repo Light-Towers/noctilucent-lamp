@@ -90,7 +90,7 @@ cp -r /etc/spark/conf/yarn-conf/yarn-site.xml /opt/cloudera/parcels/CDH/lib/spar
   spark.submit.deployMode=client
   spark.eventLog.dir=hdfs://master01:8020/user/spark/applicationHistory
   spark.yarn.historyServer.address=http://master02:18088
-  spark.yarn.jars=local:/opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/lib/spark3/jars/*
+  spark.yarn.jars=local:/opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/lib/spark3/jars/*	 # 修改`spark.yarn.jars`路径
   spark.driver.extraLibraryPath=/opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/lib/hadoop/lib/native
   spark.executor.extraLibraryPath=/opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/lib/hadoop/lib/native
   spark.yarn.am.extraLibraryPath=/opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/lib/hadoop/lib/native
