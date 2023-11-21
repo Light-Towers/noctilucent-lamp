@@ -1,3 +1,28 @@
+# 集群信息
+
+## 获取集群分配状态
+
+```http
+GET /_cluster/allocation/explain?pretty
+```
+
+## 节点信息
+
+```http
+GET _cat/nodes?v
+```
+
+## 集群健康状态
+
+```http
+GET _cat/health
+```
+
+
+
+
+# 文档操作
+
 ## 替换/索引文档
 
 ```http
@@ -22,7 +47,7 @@ POST ka_company_info_prod/_update/2
 
 > 参考：
 >
-> ​	[修改数据](https://endymecy.gitbooks.io/elasticsearch-guide-chinese/content/getting-started/modifying-data.html)
+>     [修改数据](https://endymecy.gitbooks.io/elasticsearch-guide-chinese/content/getting-started/modifying-data.html)
 
 ## 批量更新字段值
 
@@ -47,8 +72,6 @@ POST ik_company_bd_info_prod/_update_by_query
   }
 }
 ```
-
-
 
 ```json
 ## 清空索引数据
@@ -98,13 +121,13 @@ POST _reindex?refresh
 
 > 参考：
 >
-> ​	[ES数据库重建索引——Reindex(数据迁移) ](https://www.cnblogs.com/Ace-suiyuan008/p/9985249.html)
+>     [ES数据库重建索引——Reindex(数据迁移) ](https://www.cnblogs.com/Ace-suiyuan008/p/9985249.html)
 >
-> ​	[使用es reindex api 修改和迁移数据](https://blog.csdn.net/weixin_38920212/article/details/102461563)
+>     [使用es reindex api 修改和迁移数据](https://blog.csdn.net/weixin_38920212/article/details/102461563)
 >
-> ​	[通过reindex迁移ES数据](http://dbaselife.com/project-16/doc-884/)
+>     [通过reindex迁移ES数据](http://dbaselife.com/project-16/doc-884/)
 >
-> ​	[ES索引重建reindex详解](https://blog.csdn.net/w1014074794/article/details/120483334)
+>     [ES索引重建reindex详解](https://blog.csdn.net/w1014074794/article/details/120483334)
 
 ## 取消reindex操作
 
@@ -154,8 +177,6 @@ PUT _cluster/settings
 }
 ```
 
-
-
 ## 二、字段操作
 
 ## 增加新的字段
@@ -195,20 +216,12 @@ body = {
 es.update_by_query(index, body)
 ```
 
-
-
-
-
 ```bash
 PUT ik_company_info_prod_change_2/_mapping
 {
   "dynamic": true
 }
 ```
-
-
-
-
 
 ## 内嵌字段统计
 
@@ -233,3 +246,33 @@ GET my_index/_search
 }
 ```
 
+
+## 内嵌字段查询
+
+```bash
+POST my_index/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "nested": {
+            "path": "recruitment",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match": {
+                      "recruitment.jobName": "大数据"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
