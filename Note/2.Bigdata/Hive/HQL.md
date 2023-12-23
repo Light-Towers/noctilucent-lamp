@@ -1,5 +1,7 @@
 # HQl
 
+> SQL 语法： https://cloud.tencent.com/document/product/1342/61800
+
 ## DDL
 
 ### 库

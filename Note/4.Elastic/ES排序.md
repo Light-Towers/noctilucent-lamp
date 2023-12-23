@@ -24,6 +24,9 @@ GET /indexName/_search
 
 地理坐标排序略有不同。
 
+**lon(longitude): 经度**
+**lat(latitude): 纬度**
+
 **语法说明**：
 
 ```http
