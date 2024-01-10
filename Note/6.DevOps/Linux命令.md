@@ -40,7 +40,7 @@ iostat[参数][时间][次数]
 
 实例：
 
-```
+```bash
 [root@BrianZhu test]# iostat -k 或者 -m 1 10  # 查看磁盘i/o每一秒刷新1次 刷新10次
 Linux 3.10.0-693.11.1.el7.x86_64 (BrianZhu)     03/12/2018     _x86_64_    (1 CPU)
 
@@ -80,3 +80,45 @@ kB_wrtn：写入的总数量数据量
 
 这些单位都为Kilobytes。
 ```
+
+
+
+# screen
+
+### 安装：
+
+```bash
+# centos
+yum -y install screen
+# unbuntu
+apt-get -y install screen
+```
+
+### 参数：
+
+```bash
+-A 　将所有的视窗都调整为目前终端机的大小。
+-d     <作业名称> 　将指定的screen作业离线。
+-h     <行数> 　指定视窗的缓冲区行数。
+-m 　即使目前已在作业中的screen作业，仍强制建立新的screen作业。
+-r      <作业名称> 　恢复离线的screen作业。
+-R 　先试图恢复离线的作业。若找不到离线的作业，即建立新的screen作业。
+-s 　指定建立新视窗时，所要执行的shell。
+-S    <作业名称> 　指定screen作业的名称。
+-v 　显示版本信息。
+-x 　恢复之前离线的screen作业。
+-ls或--list 　显示目前所有的screen作业。
+-wipe 　检查目前所有的screen作业，并删除已经无法使用的screen作业。
+```
+
+**在每个screen session 下，命令都以 ctrl+a、ctrl-a，常用的几个操作如下：**
+
+```
+ctrl-a x   # 锁住当前的shell window，需用用户密码解锁
+ctrl-a d   # detach，暂时离开当前session，将当前 screen session 转到后台执行，并会返回没进 screen 时的状态，此时在 screen session 里，每个shell client内运行的 process (无论是前台/后台)都在继续执行，即使 logout 也不影响
+ctrl-a z   # 把当前session放到后台执行，用 shell 的 fg 命令则可回去。
+```
+
+### 中止 screen 会话
+
+有几种方法来中止 screen 会话。你可以按下 Ctrl+d ，或者在命令行中使用 exit 命令。
