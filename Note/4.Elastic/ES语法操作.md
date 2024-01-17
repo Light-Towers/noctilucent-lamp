@@ -100,7 +100,7 @@ GET /_analyze
 }
 ```
 
-## 索引数据迁移
+## 索引数据迁移-reindex
 
 ```http
 POST _reindex?refresh
@@ -129,7 +129,7 @@ POST _reindex?refresh
 >
 >     [ES索引重建reindex详解](https://blog.csdn.net/w1014074794/article/details/120483334)
 
-## 取消reindex操作
+* 取消reindex操作
 
 ```json
 #获取任务ID

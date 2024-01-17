@@ -4,22 +4,22 @@
 POST /_aliases
 {
     "actions" : [
-        { "add" : { "index" : "ik_company_info_prod", "alias" : "company_alias" } }
+        { "add" : { "index" : "index_test", "alias" : "company_alias" } }
     ]
 }
-##或者
+## 或者
 POST /_aliases
 {
     "actions" : [
-        { "add" : { "index" : "ik_company_info_prod", "alias" : "gudong" } },
-        { "add" : { "index" : "ik_company_info_prod", "alias" : "gudong", "is_write_index": true } }
+        { "add" : { "index" : "index_test", "alias" : "gudong" } },
+        { "add" : { "index" : "index_test", "alias" : "gudong", "is_write_index": true } }
     ]
 }
-##或者
+## 或者，列表形式
 POST /_aliases
 {
     "actions" : [
-        { "add" : { "indices" : ["ik_company_info_prod", "ik_company_info_prod2"], "alias" : "gudong" } }
+        { "add" : { "indices" : ["index_test", "index_test2"], "alias" : "gudong" } }
     ]
 }
 ```
@@ -30,7 +30,7 @@ POST /_aliases
 POST /_aliases
 {
     "actions" : [
-        { "remove" : { "index" : "ik_company_info_prod", "alias" : "company_alias" } }
+        { "remove" : { "index" : "index_test", "alias" : "company_alias" } }
     ]
 }
 ```
@@ -38,11 +38,12 @@ POST /_aliases
 ## 重命名别名 
 
 ```http
+## 此为原子操作
 POST /_aliases
 {
   "actions": [
-    {"remove": {"index": "l1", "alias": "a1"}},
-    {"add": {"index": "l1", "alias": "a2"}}
+    {"remove": {"index": "index_test", "alias": "a1"}},
+    {"add": {"index": "index_test", "alias": "a2"}}
   ]
 }
 ```
