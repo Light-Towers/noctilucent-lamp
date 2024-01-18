@@ -23,3 +23,4 @@
 - [ ] [Elasticsearch - 文档分析，IK分词器；文档冲突（十二）](https://blog.csdn.net/MinggeQingchun/article/details/126768243)
 - [ ] [es查询某个字段是否存在或为空](https://blog.csdn.net/qq_19891197/article/details/130288035)
 - [ ] [如何在es中查询null值](https://blog.csdn.net/fu_huo_1993/article/details/128793935)
+- [ ] [优化：ElasticSearch性能优化详解](https://pdai.tech/md/db/nosql-es/elasticsearch-y-peformance.html#cpu-%E9%85%8D%E7%BD%AE)

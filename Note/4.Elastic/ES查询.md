@@ -1,3 +1,13 @@
+// TODO 需要整理
+
+query 的 match_phrase、match_phrase_prefix  [一文搞懂match、match_phrase与match_phrase_prefix的检索过程](https://zhuanlan.zhihu.com/p/142641300) [ElasticSearch query_string vs multi_match cross_fields query](https://www.cnblogs.com/hapjin/p/10289244.html)
+
+query_string  phrase  
+
+
+
+
+
 ## 聚合查询
 
 ```http
