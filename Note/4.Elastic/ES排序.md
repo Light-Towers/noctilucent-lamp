@@ -1,3 +1,5 @@
+**[深度探索 Elasticsearch 8.X：function_score 参数解读与实战案例分析](https://zhuanlan.zhihu.com/p/646115404)、 [ES 自定义打分 Function score query](https://segmentfault.com/a/1190000037700644)**
+
 ES 默认是根据相关度算分 （must/should）（_score）来排序，但是也支持自定义方式对搜索结果排序。除text字段类型外，可排序字段类型有：keyword类型、数值类型、地理坐标类型、日期类型等。
 
 ### 1.普通字段排序
