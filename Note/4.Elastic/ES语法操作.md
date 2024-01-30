@@ -216,12 +216,7 @@ body = {
 es.update_by_query(index, body)
 ```
 
-```bash
-PUT ik_company_info_prod_change_2/_mapping
-{
-  "dynamic": true
-}
-```
+
 
 ## 内嵌字段统计
 

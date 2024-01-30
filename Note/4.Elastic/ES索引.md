@@ -4,9 +4,10 @@ ES 的索引一旦建立，对Mapping的修改只能新增字段，不能对Mapp
 
 如果是新增加的字段，根据 Dynamic 的设置分为以下三种状况：
 
-- 当 Dynamic 设置为 true 时，一旦有新增字段的文档写入，Mapping 也同时被更新。
-- 当 Dynamic 设置为 false 时，索引的 Mapping 是不会被更新的，新增字段的数据无法被索引，也就是无法被搜索，但是信息会出现在 _source 中。
-- 当 Dynamic 设置为 strict 时，文档写入会失败。
+- **true**：一旦有新增字段的文档写入，Mapping 也同时被更新 (default)。
+- **false**：索引的 Mapping 是不会被更新的，新增字段的数据无法被索引，也就是无法被搜索，但是信息会出现在 _source 中。
+- **strict**：文档写入会失败。
+- **runtime**：新字段作为[runtime fields](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/runtime.html)添加到Mapping中。这些字段不会被索引，而是在查询时从_source加载 (`7.11新增`)。
 
 动态映射参数可以在创建索引时设置，`(TODO 待验证)`
 
@@ -36,7 +37,7 @@ Delete _all
 
 ## 删除字段
 
-参考：https://www.jianshu.com/p/c9f73f72c4ac
+> 参考：https://www.jianshu.com/p/c9f73f72c4ac
 
 
 
@@ -110,3 +111,102 @@ POST /testindex/_delete_by_query?pretty
 　　5： 同一个索引下面，字段名称尽量不要重复；
 
 　　6： 字段名称如果有重复情况，一定要使用相同的字段类型，要么都是integer，要么都是text。
+
+
+
+## runtime fields
+
+### 1、背景
+有这么一种情况，比如我们的线路名称字段lineName字段在设置mapping的时候使用的是text类型，但是后期发现需要使用这个字段来进行聚合操作，那么我们除了对索引进行reindex操作外，还有什么办法可以解决这个问题呢？此处我们通过runtime field来解决。
+
+### 2、runtime field介绍
+#### 2.1 runtime field可以实现的功能
+运行时字段是在查询时评估的字段。是在es7.11之后增加的运行时字段使您能够：
+
+1. 将字段添加到现有文档，而无需重新索引数据
+2. 在不了解数据结构的情况下开始处理数据
+3. 在查询时覆盖从索引字段返回的值
+4. 定义特定用途的字段，而不修改原始mapping
+
+### 2.2 runtime field优缺点
+1. runtime field是运行时增加的字段，不会被索引和存储，不会增加索引的大小。
+2. runtime field 可以像普通字段一样使用，可以进行查询,排序,聚合等操作。
+3. 可以动态的添加字段。
+4. 可以在查询时覆盖字段的值。即fields中和_source中可以返回同名的字段，但是值可能不一样。
+5. 阻止mapping爆炸，可以先使用后定义。
+6. 针对经常被搜索或聚合等操作的字段，不适合使用runtime field，而应该定义在mapping中。
+7. runtime field不会出现在_source中，需要通过fields api来获取。
+
+## 3、创建runtime field的方式
+### 3.1 通过mapping的方式创建
+
+```http
+## 添加runtime field
+PUT /index_script_fields
+{
+  "mappings": {
+    "runtime": {
+      "aggLineName": {
+        "type": "keyword",
+        "script": {
+          "source": "emit(doc['lineName'].value)"
+        }
+      }
+    },
+    "properties": {
+      "lineId": {
+        "type": "keyword"
+      },
+      "lineName": {
+        "type": "text"
+      }
+    }
+  }
+}
+
+## 更新 runtime field
+POST /index_script_fields/_mapping
+{
+  "runtime": {
+    "aggLineName": {
+      "type": "keyword",
+      "script": {
+        "source": "emit(doc['lineName'].value)"
+      }
+    }
+  }
+}
+
+## 删除 runtime field
+POST /index_script_fields/_mapping
+{
+  "runtime": {
+    "aggLineName": null 
+  }
+}
+```
+
+### 3.2 通过search request定义runtime field
+
+```http
+## 定义一个runtime field，字段名和_source字段名一致
+GET /index_script_fields/_search
+{
+  "runtime_mappings": {
+    "lineName": {
+      "type": "keyword",
+      "script": "emit(params['_source']['lineName']+'new')"
+    }
+  }, 
+  "query": {
+    "match_all": {}
+  },
+  "fields": [
+    "lineName"
+  ]
+}
+
+```
+
+> [elasticsearch中使用runtime fields](https://blog.csdn.net/fu_huo_1993/article/details/128840069)
+
