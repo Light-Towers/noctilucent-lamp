@@ -180,3 +180,5 @@ InnoDB 存储引擎支持 **多粒度（granular）锁定**，就是说**允许�
 [三分钟入门 InnoDB 存储引擎中的表锁和行锁](https://cloud.tencent.com/developer/article/1850835)
 
 [面试官问你B树和B+树，就把这篇文章丢给他](https://segmentfault.com/a/1190000020416577)
+
+[数据库应该放入K8S里吗？](https://mp.weixin.qq.com/s/4a8Qy4O80xqsnytC4l9lRg)
