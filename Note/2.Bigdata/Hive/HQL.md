@@ -19,7 +19,7 @@
   ```hive
   --显示所有数据库
   show databases;
-  --过滤数据库
+  --过滤数据库， 语法： SHOW (DATABASES | SCHEMAS) [LIKE 'identifier'];
   show databases like 'db_hive*';
   --查看当前使用的库
 select current_database();
@@ -70,6 +70,20 @@ desc formatted student;
   ```
 
 ### 表
+
+* 查看表
+
+  ```hive
+  -- 查看某库下有哪些表
+  -- 语法：SHOW TABLES [IN database_name] ['identifier'];
+  show tables in dw 'load*';
+  -- 查看表的创建信息
+  show create table dw.test;
+  -- 查看表的扩展信息，语法：SHOW TABLE EXTENDED [IN/FROM database_name] LIKE 'identifier' [PARTITION(partition_spec)];
+  show table extended like 'test_partition';
+  ```
+
+  
 
 * 创建
 
