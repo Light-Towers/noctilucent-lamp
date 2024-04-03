@@ -1,4 +1,6 @@
-背景：Ubuntu Server 20.04 LTS，默认 gcc-9，工具链升级至 gcc-11，和 Ubuntu 22.04 LTS 保持一致。
+# Ubuntu 工具链升级 gcc 流程
+
+背景：将 Ubuntu 20.04 LTS，上默认的 gcc-9，工具链升级至 gcc-11。
 
 # 第一步：添加工具链
 
@@ -19,11 +21,9 @@ sudo apt install gcc-11 g++-11
 # 第四步：配置新安装的 gcc 优先级
 
 ```bash
-
 cd /usr/bin/
 
 #降低旧版本优先级
-
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 10
 
 sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 10
@@ -33,21 +33,17 @@ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 10
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 20
 
 sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 20
-
 ```
 
 # 第五步：确认
 
 ```bash
-
 gcc -v
-
 ```
 
 输出：
 
 ```bash
-
 Using built-in specs.
 
 COLLECT_GCC=gcc
@@ -67,7 +63,6 @@ Thread model: posix
 Supported LTO compression algorithms: zlib zstd
 
 gcc version 11.1.0 (Ubuntu 11.1.0-1ubuntu1~20.04)
-
 ```
 
 
