@@ -122,3 +122,17 @@ ctrl-a z   # 把当前session放到后台执行，用 shell 的 fg 命令则可�
 ### 中止 screen 会话
 
 有几种方法来中止 screen 会话。你可以按下 Ctrl+d ，或者在命令行中使用 exit 命令。
+
+
+
+
+
+### journalctl
+
+```bash
+# 指定开始时间
+journalctl -u kibana.service --since "08:00:00"
+# 实时
+journalctl -u kibana.service -f
+```
+

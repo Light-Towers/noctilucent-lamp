@@ -23,7 +23,7 @@
 ### 存储库
 
 ```http
-PUT /_snapshot/my_repository
+PUT /_snapshot/es_bak_repo
 {
   "type": "url",
   "settings": {
@@ -31,7 +31,7 @@ PUT /_snapshot/my_repository
   }
 }
 // 或者
-POST /_snapshot/es_bak_20240329
+POST /_snapshot/es_bak_repo
 {
   "type": "fs",
   "settings": {
@@ -41,23 +41,23 @@ POST /_snapshot/es_bak_20240329
     "compress": true
   }
 }
-//查看存储库
+//查看所有存储库
 GET /_cat/repositories
+//查看所有存储库
+GET /_snapshot/_all
+//查看指定存储库
+GET /_snapshot/es_bak_repo
+//验证存储库
+POST /_snapshot/es_bak_repo/_verify
+//删除存储库
+DELETE /_snapshot/es_bak_repo
 ```
 
 ### 快照
 
 ```http
-//删除
-DELETE /_snapshot/es_bak_20240329
-//验证
-POST /_snapshot/es_bak_20240329/_verify
-//查看所有
-GET /_snapshot/_all
-//指定库名
-GET /_snapshot/es_bak_20240329
 //创建快照
-PUT /_snapshot/es_bak_20240329/test_snapshot?wait_for_completion=true
+PUT /_snapshot/es_bak_repo/test_snapshot?wait_for_completion=true
 {
     "indices":"my-index",
     "include_global_state": false,
@@ -66,15 +66,21 @@ PUT /_snapshot/es_bak_20240329/test_snapshot?wait_for_completion=true
     }
 }
 //创建动态名称的快照   //需要对特殊字符转义 PUT /_snapshot/es_bak_20240329/<snapshot-{now/d}>
-PUT /_snapshot/es_bak_20240329/%3Csnapshot-%7Bnow%2Fd%7D%3E
+PUT /_snapshot/es_bak_repo/%3Csnapshot-%7Bnow%2Fd%7D%3E
 {"indices": "my-index"}
 //查看快照名
-GET /_snapshot/es_bak_20240329/test_snapshot/_status
+GET /_snapshot/es_bak_repo/test_snapshot/_status
 //删除快照
-DELETE /_snapshot/es_bak_20240329/snaps*
+DELETE /_snapshot/es_bak_repo/snaps*
 ```
 
 
+
+## 从快照恢复
+
+```http
+POST /_snapshot/<repository>/<snapshot>/_restore
+```
 
 
 

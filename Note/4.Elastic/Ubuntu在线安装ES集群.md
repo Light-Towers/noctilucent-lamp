@@ -1,5 +1,7 @@
 # Ubuntu在线安装ES集群
 
+本文基于Ubuntu 22.04.2 LTS 安装 Elasticsearch 7.6.2。Centos系列命令不一样的同理
+
 ## 前提：
 ### 1. 创建elasticsearch用户
 
@@ -143,7 +145,7 @@ xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 
 重启ES集群
 
-// 如果在创建节点证书时输入了密码，运行以下命令以将密码存储在Elasticsearch密钥库中：
+* 如果在创建节点证书时输入了密码，运行以下命令以将密码存储在Elasticsearch密钥库中：
 
 ```bash
 sudo /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
@@ -155,7 +157,10 @@ sudo /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.tran
 sudo /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
 ```
 
-### 6.携带用户名、密码验证ES
+### 6.验证ES
+
+携带用户名、密码验证ES
+
 ```bash
 curl --user elastic:mingyang100 http://localhost:9200/_cat/health?v
 ```
@@ -256,6 +261,10 @@ sudo dpkg -i kibana-7.6.2-amd64.deb
 ```bash
 vim /etc/kibana/kibana.yml
 ...
+# 端口号
+server.port: 5601
+# 绑定地址
+server.host: "0.0.0.0"
 #elasticsearch用户名、密码
 elasticsearch.username: "elastic"
 elasticsearch.password: "mingyang100"
