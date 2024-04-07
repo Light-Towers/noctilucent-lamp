@@ -1,4 +1,4 @@
-### Elasticsearch 快照和恢复
+# Elasticsearch 快照和恢复
 
 
 
@@ -22,15 +22,25 @@
 
 ### 存储库
 
-```http
+```bash
+#查看
+##查看存储库列表
+GET /_cat/repositories
+##查看所有存储库详细信息
+GET /_snapshot/_all
+##查看指定存储库
+GET /_snapshot/es_bak_repo
+
+#创建
+##创建存储库
 PUT /_snapshot/es_bak_repo
 {
   "type": "url",
   "settings": {
-    "url": "https://pan.baidu.com/disk/main#/transfer/send?surl=ABkAAAAddddAABEHbw"
+    "url": "https:#pan.baidu.com/disk/main#/transfer/send?surl=ABkAAAAddddAABEHbw"
   }
 }
-// 或者
+##或者
 POST /_snapshot/es_bak_repo
 {
   "type": "fs",
@@ -41,22 +51,23 @@ POST /_snapshot/es_bak_repo
     "compress": true
   }
 }
-//查看所有存储库
-GET /_cat/repositories
-//查看所有存储库
-GET /_snapshot/_all
-//查看指定存储库
-GET /_snapshot/es_bak_repo
-//验证存储库
+
+#验证存储库
 POST /_snapshot/es_bak_repo/_verify
-//删除存储库
+#删除存储库
 DELETE /_snapshot/es_bak_repo
 ```
 
 ### 快照
 
-```http
-//创建快照
+```bash
+#查看快照
+##查看所有快照
+GET /_snapshot/es_bak_repo/_all
+##查看快照详细状态信息，支持多个快照Id查询
+GET /_snapshot/es_bak_repo/test_snapshot/_status
+
+#创建快照
 PUT /_snapshot/es_bak_repo/test_snapshot?wait_for_completion=true
 {
     "indices":"my-index",
@@ -65,23 +76,32 @@ PUT /_snapshot/es_bak_repo/test_snapshot?wait_for_completion=true
         "message": "测试快照"
     }
 }
-//创建动态名称的快照   //需要对特殊字符转义 PUT /_snapshot/es_bak_20240329/<snapshot-{now/d}>
+##创建动态名称快照
+##需要对特殊字符转义 PUT /_snapshot/es_bak_20240329/<snapshot-{now/d}>
 PUT /_snapshot/es_bak_repo/%3Csnapshot-%7Bnow%2Fd%7D%3E
 {"indices": "my-index"}
-//查看快照名
-GET /_snapshot/es_bak_repo/test_snapshot/_status
-//删除快照
+
+#删除快照
 DELETE /_snapshot/es_bak_repo/snaps*
 ```
 
-
-
 ## 从快照恢复
 
-```http
-POST /_snapshot/<repository>/<snapshot>/_restore
+```bash
+#从快照中恢复
+POST /_snapshot/es_bak_repo/test_snapshot/_restore
+#恢复索引：重命名，修改副本
+POST _snapshot/es_bak_repo/test_snapshot/_restore
+{
+  "indices": "exhibition_v5",
+  "rename_pattern": "exhibition_v5",
+  "rename_replacement": "exhibition_test",
+  "index_settings": {
+    "index.number_of_replicas": 0
+  }
+}
 ```
 
 
 
-[Elasticsearch 快照和恢复](https://blog.51cto.com/forlinkext/9023647)
+[Elasticsearch 快照和恢复](https:#blog.51cto.com/forlinkext/9023647)

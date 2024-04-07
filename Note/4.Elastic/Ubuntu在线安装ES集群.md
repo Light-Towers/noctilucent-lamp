@@ -1,6 +1,6 @@
-# Ubuntu在线安装ES集群
+# 一、ES集群安装
 
-本文基于Ubuntu 22.04.2 LTS 安装 Elasticsearch 7.6.2。Centos系列命令不一样的同理
+本文基于Ubuntu 22.04.2 LTS 安装 Elasticsearch 7.6.2。Centos系命令虽然不一样，但操作类似
 
 ## 前提：
 ### 1. 创建elasticsearch用户
@@ -83,7 +83,7 @@ path.data: /data0/elasticsearch
 path.logs: /var/log/elasticsearch
 network.host: 0.0.0.0
 http.port: 9200
-discovery.seed_hosts: ["192.168.100.209"]
+discovery.seed_hosts: ["172.168.100.209"]
 cluster.initial_master_nodes: ["node-1"]
 ```
 
@@ -110,16 +110,16 @@ curl http://localhost:9200/_cat/nodes?pretty
 ```bash
 sudo /usr/share/elasticsearch/bin/elasticsearch-certutil ca
 Please enter the desired output file [elastic-stack-ca.p12]:        //回车
-Enter password for elastic-stack-ca.p12 :                           //证书的密码：mingyang100
+Enter password for elastic-stack-ca.p12 :                           //证书的密码：admin100
 ```
 
 ### 2.集群证书生成
 
 ```bash
 sudo /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
-Enter password for CA (elastic-stack-ca.p12) :                       //输入CA证书密码：mingyang100
+Enter password for CA (elastic-stack-ca.p12) :                       //输入CA证书密码：admin100
 Please enter the desired output file [elastic-certificates.p12]:     //回车
-Enter password for elastic-certificates.p12 :                        //集群证书密码：mingyang100p12
+Enter password for elastic-certificates.p12 :                        //集群证书密码：admin100p12
 ```
 
 ### 3.拷贝证书：
@@ -153,6 +153,9 @@ sudo /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.tran
 ```
 
 ### 5.密码配置
+
+以交互的方式设置用户名和密码:(`记住你所设置的密码`)
+
 ```bash
 sudo /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
 ```
@@ -162,7 +165,7 @@ sudo /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
 携带用户名、密码验证ES
 
 ```bash
-curl --user elastic:mingyang100 http://localhost:9200/_cat/health?v
+curl --user elastic:admin100 http://localhost:9200/_cat/health?v
 ```
 
 ## 分词器安装
@@ -182,8 +185,6 @@ mkdir /usr/share/elasticsearch/plugins/ik
 #解压
 unzip elasticsearch-analysis-ik-7.6.2.zip -d /usr/share/elasticsearch/plugins/ik
 ```
-
-
 
 ## 调优
 
@@ -208,9 +209,7 @@ vim /etc/elasticsearch/jvm.options
 ...
 ```
 
-
-
-# Kibana安装
+# 二、Kibana安装
 
 参照ES安装方式
 
@@ -267,7 +266,7 @@ server.port: 5601
 server.host: "0.0.0.0"
 #elasticsearch用户名、密码
 elasticsearch.username: "elastic"
-elasticsearch.password: "mingyang100"
+elasticsearch.password: "admin100"
 #日志
 logging.dest: /var/log/kibana/kibana.log
 #汉化
