@@ -93,9 +93,11 @@ POST /_snapshot/es_bak_repo/test_snapshot/_restore
 #恢复索引：重命名，修改副本
 POST _snapshot/es_bak_repo/test_snapshot/_restore
 {
-  "indices": "exhibition_v5",
-  "rename_pattern": "exhibition_v5",
-  "rename_replacement": "exhibition_test",
+  "indices": "exhibition_v5",					#恢复指定索引或索引模式
+  "ignore_unavailable": true,          			#忽略不存在的索引
+  "include_global_state": false,       			#不恢复集群全局状态（如模板、设置等）
+  "rename_pattern": "exhibition_v5",			#源索引名称匹配模式
+  "rename_replacement": "exhibition_test",		#目标索引名称替换模式
   "index_settings": {
     "index.number_of_replicas": 0
   }
