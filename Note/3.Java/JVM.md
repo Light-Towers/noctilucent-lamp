@@ -158,6 +158,27 @@ epoch：保存偏向时间戳
 
 
 
+## JVM参数：
+
+```bash
+-Xmx2048m	#设置最大堆内存大小为2048MB。
+-Xms2048m	#设置初始堆内存大小也为2048MB，避免程序运行过程中堆内存动态调整带来的额外开销。
+-Xmn1024m	#设定年轻代（Young Generation）的大小为1024MB。
+-Xss512k	#每个线程的栈大小设为512KB。
+-XX:SurvivorRatio=8	#年轻代中Eden区与Survivor区的比例为8:1，即Survivor区占年轻代的1/9。
+-XX:+UseG1GC	#启用G1垃圾收集器（Garbage-First Garbage Collector），适用于大内存多核机器。
+-XX:MaxGCPauseMillis=200	#设置G1目标最大暂停时间为目标为200毫秒。
+-XX:MaxTenuringThreshold=14	#对象在年轻代中的晋升阈值最大为14次垃圾回收。
+-XX:ParallelGCThreads=8	#设置并行垃圾回收线程数为8。
+-XX:ConcGCThreads=8	#设置并发标记阶段的垃圾回收线程数为8。
+-XX:G1ReservePercent=10	#为G1预留堆内存的10%作为预留区域。
+-XX:MetaspaceSize=128m	#设置元空间（MetaSpace）的初始大小为128MB。
+-XX:MaxMetaspaceSize=256M	#限制元空间的最大大小为256MB。
+-XX:+DisableExplicitGC	#禁止在代码中显式调用System.gc()方法进行垃圾回收。
+```
+
+
+
 ## Refrence
 
 [1]: https://cloud.tencent.com/developer/article/1588179 "Java中的对象都是在堆上分配的吗？"

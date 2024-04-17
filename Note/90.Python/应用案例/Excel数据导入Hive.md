@@ -8,6 +8,7 @@ CREATE EXTERNAL TABLE `dw.load_huikan_test`(
       `email` string COMMENT '公司邮箱',
       `desc` string COMMENT '公司介绍',
       `tel_phone` string COMMENT '公司电话',
+	  `contact` string COMMENT '联系人',
       `mobile_phone` string COMMENT '手机')
     PARTITIONED BY (`dt` string)
     ROW FORMAT DELIMITED
@@ -67,7 +68,7 @@ def write_dataframe_to_hive(df):
     value_str = ""
     for row in df.itertuples():
         #row[0]是索引， 处理特殊字符。  对于每个字段使用引号包起来
-        value_arr = ['\'{}\''.format(re.sub(r'[\n\r\']+', ' ', str(v))) if not (isinstance(v, float) and np.isnan(v)) else '\'null\'' for v in row[1:7]]
+        value_arr = ['\'{}\''.format(re.sub(r'[\n\r\']+', ' ', str(v))) if not (isinstance(v, float) and np.isnan(v)) else '\'null\'' for v in row[1:8]]
         # 使用 ', '.join() 替换原始的字符串拼接，提高代码可读性和效率
         value_str += ",({})".format(', '.join(value_arr))
         
