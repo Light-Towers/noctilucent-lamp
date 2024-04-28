@@ -320,3 +320,15 @@ db.copyDatabase("database1","database1","host:port","testuser","testpass","SCRAM
 14. **`--fixDottedHashIndex`**
     - **作用**：启用后，将所有对点字段（名称中包含点的字段）的哈希索引转换为目标数据库中的单字段升序索引。
     - **用途**：解决点字段在哈希索引中的兼容性问题，因为MongoDB版本低于4.2时不支持此特性。如果您向旧版本恢复或希望避免此类索引，使用此选项。
+
+
+
+
+
+## Refrence
+
+[1]: https://www.mongodb.com/try/download/database-tools	"工具下载地址"
+[2]: https://cloud.tencent.com/developer/article/2000614	"MongoDB数据库备份（mongodump）以及恢复（mongorestore）工具实践"
+[3]: https://www.cnblogs.com/dbabd/p/13139556.html	"MongoDB 逻辑备份工具mongodump"
+[4]: https://www.jianshu.com/p/32340411bbfc	"mongo数据同步的三种方案"
+[5]: https://m.starcto.com/mongodb/296.html	"MongoDB事务开发之写操作事务writeConcern"
