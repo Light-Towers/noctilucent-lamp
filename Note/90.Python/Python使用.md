@@ -52,3 +52,25 @@ p=os.system(str)
 print(p)
 ```
 
+
+
+
+
+## Pandas使用
+
+```python
+import pandas as pd
+
+# 1.读取某一个excel的某一个sheet
+df = pd.read_excel('D:/0-mingyang/文档/会刊/2023-04-08 300家 2023第28届中国中西部（合肥）医疗器械展览会  第二版.xlsx', sheet_name=0)
+# print(df)
+# 2.获取列标题
+df.columns
+# 3.获取列行标题
+df.index
+# 4.制定打印某一列
+df["工资水平"]
+# 5.描述数据
+df.describe()
+```
+
