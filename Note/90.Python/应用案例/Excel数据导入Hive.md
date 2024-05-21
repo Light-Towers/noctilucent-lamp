@@ -21,6 +21,8 @@ CREATE EXTERNAL TABLE `dw.load_huikan_test`(
 
 Python代码：
 
+pip install pandas impyla openpyxl
+
 ```python
 # -*- coding: utf-8 -*-
 # 1.导入pandas模块
