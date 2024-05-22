@@ -74,3 +74,15 @@ df["工资水平"]
 df.describe()
 ```
 
+
+
+
+
+## Python 传参
+
+[使用python脚本传递参数：（三种方式可收藏）](https://www.cnblogs.com/mrwhite2020/p/16812198.html)
+
+[Python argparse中的action=store_true用法小结](https://www.jb51.net/article/274927.htm)
+
+
+
