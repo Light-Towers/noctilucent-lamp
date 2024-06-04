@@ -23,6 +23,26 @@ pip3 install -r requirements.txt
 
 
 
+## 虚拟环境
+
+```bash
+# 安装virtualenv
+pip install virtualenv
+
+# 创建虚拟环境
+python3 -m venv venv/test
+# 或者（or）
+#--system-site-packages 继承父环境的包
+virtualenv venv/test --python=python3.8
+
+# 激活
+. venv/test/bin/activate
+# 退出虚拟环境
+deactivate
+```
+
+
+
 
 
 ### 执行另一个脚本
