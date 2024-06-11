@@ -22,4 +22,55 @@ spark 常用参数说明
 - `--conf spark.speculation=true`: 启用推测执行，可以帮助提高任务执行的总体速度，特别是在某些任务执行缓慢的情况下。
 - `--conf spark.sql.files.openCostInBytes=33554432`: 设置打开文件的成本估计，影响数据本地性优化时的决策，这里设置为32MB。
 - `--conf spark.sql.files.maxPartitionBytes=268435456`: 设置单个HDFS文件读取时的最大分区大小为256MB。
-- `/root/osmondy/firstApp2.py`: 指定要提交运行的Python应用程序路径。
+- `/root/osmondy/firstApp.py`: 指定要提交运行的Python应用程序路径。
+
+
+
+## Pyspark通用执行脚本
+
+```python
+# -*- coding:utf-8 -*-
+# firstApp.py
+from pyspark import SparkContext
+from pyspark.sql.session import SparkSession
+
+# 以下三行为新增内容
+import os, sys
+
+# reload(sys)
+# sys.setdefaultencoding('utf8')
+
+if __name__ == "__main__":
+    # sc = SparkContext(appName='dws_actor_exhibition')
+    # spark = SparkSession(sc)
+    spark = SparkSession.builder \
+        .appName('Spark任务') \
+        .config("hive.metastore.uris", "thrift://master02:9083") \
+        .config("hive.merge.mapfiles", "true") \
+        .config("hive.merge.mapredfiles", "true") \
+        .config("hive.merge.size.per.task", "256000000") \
+        .config("mapred.max.split.size", "256000000") \
+        .config("mapred.min.split.size.per.node", "192000000") \
+        .config("mapred.min.split.size.per.rack", "192000000") \
+        .config("hive.input.format", "org.apache.hadoop.hive.ql.io.CombineHiveInputFormat") \
+        .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer") \
+        .config("spark.KryoSerializer.buffer.max", "2000m") \
+        .config("spark.sql.hive.convertMetastoreOrc", "false") \
+        .config("spark.hadoop.mapred.input.dir.recursive", "true") \
+        .config("spark.sql.session.timeZone", "UTC+8") \
+        .enableHiveSupport() \
+        .getOrCreate()
+
+    # 读取sql文件
+    sql_url = spark.conf.get("spark.sql.url")
+    with open(sql_url, 'r') as f:
+        content = f.read()
+
+    # print('原始内容::::=============================', content)
+    spark.sql("set spark.sql.adaptive.enabled=true")
+    spark.sql("set spark.sql.adaptive.coalescePartitions.enabled=true")
+    spark.sql("set spark.sql.files.openCostInBytes=102400")
+    # sql查询。
+    spark.sql(content).show()
+```
+
