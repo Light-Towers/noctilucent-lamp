@@ -80,6 +80,8 @@ db.collection.aggregate([
     ])
 ```
 
+> [**mongodb3.0性能测试 mongodb lookup性能**](https://blog.51cto.com/u_16099331/7094088)
+
 ## 统计字段所有值
 
 ```javascript
