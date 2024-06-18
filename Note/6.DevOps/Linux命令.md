@@ -1,3 +1,7 @@
+# [原理解析：linux下rm删除与恢复](https://www.sklinux.com/posts/devops/rm%E6%96%87%E4%BB%B6%E5%88%A0%E9%99%A4%E4%B8%8E%E6%81%A2%E5%A4%8D/)
+
+
+
 # [iostart](https://www.cnblogs.com/brianzhu/p/8550251.html)
 
 Linux系统中的 iostat命令可以对系统的磁盘IO和CPU使用情况进行监控。iostat属于sysstat软件包，可以用yum -y install sysstat 直接安装。
