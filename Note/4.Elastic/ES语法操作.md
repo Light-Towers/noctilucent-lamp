@@ -114,7 +114,7 @@ POST _reindex?refresh
     "version_type": "internal"
   }，
   "script": {
-    "source": "ctx._source.exhNameBak = ctx._source.remove(\"exhName\"); ctx._source.exhStartDateBak = ctx._source.remove(\"exhStartDate\")"
+    "source": "ctx._source.exhNameBak = ctx._source.remove('exhName'); ctx._source.exhStartDateBak = ctx._source.remove('exhStartDate')"
   }
 }
 ```
