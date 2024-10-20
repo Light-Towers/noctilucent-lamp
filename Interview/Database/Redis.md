@@ -64,3 +64,4 @@ Redis 是一种基于内存实现的Key-Value数据结构的NoSql数据库，**�
 ## Refrence
 
 [1]: https://xiaolincoding.com/redis/base/redis_interview.html#%E8%AE%A4%E8%AF%86-redis	"Redis 常见面试题"
+[2]: http://kaito-kidd.com/2021/03/14/redis-trap/	"颠覆认知——Redis会遇到的15个「坑」，你踩过几个？"
