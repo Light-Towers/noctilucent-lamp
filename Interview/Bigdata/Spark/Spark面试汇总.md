@@ -651,3 +651,8 @@ https://blog.csdn.net/lovetechlovelife/article/details/115013020
 [4]: https://tech.meituan.com/2016/05/12/spark-tuning-pro.html	"Spark性能优化指南——高级篇"
 [5]: https://cloud.tencent.com/developer/article/1004904	"Spark Scheduler 内部原理剖析"
 
+
+
+***
+下面的这个需要时间去研究
+[[SPARK][CORE] 面试问题之什么是 external shuffle service？] (https://cloud.tencent.com/developer/article/2020877?pos=comment)
