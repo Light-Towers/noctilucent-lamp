@@ -61,8 +61,7 @@ https://flink.apache.org/zh/downloads/
 cd /opt/software/flink/flink-1.17.1/
 \# 执行打包命令：
 mvn clean install -DskipTests -Dfast -Drat.skip=true -Dhaoop.version=3.0.0-cdh6.3.2 -Pvendor-repos -Dinclude-hadoop -Dscala-2.12 -T2C
-等待15分钟编译成功：
-​![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps1.jpg)
+等待15分钟编译成功。
 
 编译完成的结果就是flink/flink-dist/target/flink-1.17.1-bin目录下的flink-1.17.1文件夹，接下来把flink-1.17.1打包成tar包
 
@@ -120,7 +119,7 @@ CDH_MAX=6
 
 编译失败：原因：找不到start-scala-shell.sh
 
-![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps2.jpg)
+![image2023-8-28_11-58-8](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/image2023-8-28_11-58-8.png)
 
 解决:
 
@@ -132,9 +131,9 @@ CDH_MAX=6
 
 结果：
 
-成功编译成*FLINK-1.17.1-BIN-SCALA_2.12_build* 文件夹
+成功编译成 *FLINK-1.17.1-BIN-SCALA_2.12_build* 文件夹
 
-![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps3.jpg)
+![image2023-8-28_11-58-44](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/image2023-8-28_11-58-44.png)
 
  
 
@@ -150,7 +149,7 @@ CDH_MAX=6
 
 个人测试执行：[root@master01 flink-parcel]# ./build.sh csd
 
- ![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps4.jpg)
+![image2023-8-28_11-59-10](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/image2023-8-28_11-59-10.png)
 
 编译完成后在flink-parcel项目根目录下会生成2个jar包，FLINK-1.17.1.jar和FLINK_ON_YARN-1.17.1.jar
 
@@ -202,14 +201,4 @@ systemctl start cloudera-scm-agent
 
 ## **CM操作步骤：**
 
- ![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps5.jpg)
-
-![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps6.jpg)
-
-![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps7.jpg)
-
-![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps8.jpg)
-
-![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps9.jpg)
-
-![img](file:///C:\Users\osmondy\AppData\Local\Temp\ksohtml7076\wps10.jpg)
+ ![image-20241104091628994](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/image-20241104091628994.png)
