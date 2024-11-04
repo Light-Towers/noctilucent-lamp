@@ -57,7 +57,7 @@ create database dataease;
 ```
 
 windows 下修改代码
-```shell
+```yaml
 #修改application.yml
 spring:
   servlet:
@@ -77,7 +77,7 @@ spring:
     password: 123456
 
 #修改CalciteProvider.java
-//    private final String FILE_PATH = "/opt/dataease2.0/drivers";
+#    private final String FILE_PATH = "/opt/dataease2.0/drivers";
     private final String FILE_PATH = "D:\\Study\\github\\dataease\\drivers";
 ```
 
