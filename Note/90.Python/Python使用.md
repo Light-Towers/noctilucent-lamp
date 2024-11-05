@@ -106,3 +106,53 @@ df.describe()
 
 
 
+
+
+## extend、+、append
+
+#### 1. **`extend` 方法**
+
+- **功能**：将一个可迭代对象中的所有元素添加到当前列表的末尾。**效率更高**：因为 `extend` 方法直接在原列表上操作，不需要创建新的列表。
+
+- **行为**：就地修改原列表，不返回新列表。
+
+- **适用场景**：当你希望直接修改原列表，而不创建新的列表时。适用大型列表。
+
+  ```python
+  original_list = [1, 2, 3]
+  another_list = [4, 5, 6]
+  original_list.extend(another_list)
+  print(original_list)  # 输出: [1, 2, 3, 4, 5, 6]
+  ```
+
+#### 2. **`+` 运算符**
+
+- **功能**：将两个列表合并成一个新的列表。
+
+- **行为**：创建并返回一个新的列表，原列表保持不变。
+
+- **适用场景**：当你希望保留原列表不变，同时创建一个新的合并后的列表时。
+
+  ```python
+  original_list = [1, 2, 3]
+  another_list = [4, 5, 6]
+  new_list = original_list + another_list
+  print(original_list)  # 输出: [1, 2, 3]
+  print(new_list)       # 输出: [1, 2, 3, 4, 5, 6]
+  ```
+
+
+#### 3. **`append` 方法**
+
+- **功能**：将一个对象作为整体添加到当前列表的末尾。
+
+- **行为**：就地修改原列表，不返回新列表。
+
+- **适用场景**：当你希望将一个对象（如列表、元组、字典等）作为一个整体添加到列表中时。
+
+  ```python
+  original_list = [1, 2, 3]
+  another_list = [4, 5, 6]
+  original_list.append(another_list)
+  print(original_list)  # 输出: [1, 2, 3, [4, 5, 6]]
+  ```
