@@ -74,6 +74,8 @@ ln -s /usr/local/bin/virtualenv /usr/bin/virtualenv
 #这个最新版python3了
 ```
 
+## Conda方式安装（推荐）
+
 ## 替换pip镜像源
 
 创建配置文件 `~/.pip/pip.conf`
