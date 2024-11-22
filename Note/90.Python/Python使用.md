@@ -104,6 +104,32 @@ df.describe()
 
 [Python argparse中的action=store_true用法小结](https://www.jb51.net/article/274927.htm)
 
+### 模块导入
+
+不生成pyc文件
+
+当 import导入另一个模块的时候会生成python3会生成 __pycache__，如何不生成编译文件呢：
+1.使用 -B参数 即
+
+```bash
+python3 -B test.py
+```
+
+2.设置环境变量
+
+```bash
+export PYTHONDONTWRITEBYTECODE=1
+```
+
+3. 在导入的地方写
+
+```python
+import sys
+sys.dont_write_bytecode = True
+```
+
+以上三种方式都可以实现不生成pyc文件。
+
 
 
 
