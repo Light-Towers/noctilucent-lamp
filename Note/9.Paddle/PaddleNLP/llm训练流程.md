@@ -1,8 +1,27 @@
+# 安装依赖
+
+```bash
+# 安装最新版本的PaddleNLP
+pip install --pre --upgrade paddlenlp==3.0.0b0.post20240820 -f https://www.paddlepaddle.org.cn/whl/paddlenlp.html
+```
+
+### 验证是否安装成功
+
+```python
+import paddlenlp
+print(paddlenlp.__version__)
+```
+
+
+
 # 数据预处理
+
 ## 准备工作
 ### 1.原始数据转换 jsonl 格式
 ```bash
-python /paddle/PaddleNLP/llm/tools/preprocess/trans_to_json.py  --input_path /paddle/data/mingpian/ --output_path /paddle/data/mingpian/mingpian_sample
+python /paddle/PaddleNLP/llm/tools/preprocess/trans_to_json.py  \
+ --input_path /paddle/data/mingpian/  \
+ --output_path /paddle/data/mingpian/mingpian_sample
 ```
 
 
@@ -180,10 +199,48 @@ python -m paddle.distributed.launch --gpus "0,1,2,3,4,5,6,7" predict/export_mode
 
 # 推理
 ```bash
-python -m paddle.distributed.launch --gpus "0,1,2,3,4,5,6,7" predict/predictor.py --model_name_or_path /path/to/a8w8c8_tp8 --mode static --inference_model 1 --block_attn 1 --dtype bfloat16 --quant_type a8w8 --cachekv_int8_type static
+python -m paddle.distributed.launch --gpus "0,1,2,3,4,5,6,7" predict/predictor.py \
+ --model_name_or_path /path/to/a8w8c8_tp8 \
+ --mode static --inference_model 1 \
+ --block_attn 1 --dtype bfloat16 \
+ --quant_type a8w8 --cachekv_int8_type static
 ```
 
 
+
+# 部署
+
+```bash
+cd PaddleNLP/llm
+
+#导入当前llm目录
+export PYTHONPATH=./:$PYTHONPATH
+
+python -m paddle.distributed.launch --gpus "0" ./predict/flask_server.py \
+    --model_name_or_path Qwen/Qwen2-0.5B \
+    --port 8010 \
+    --flask_port 8011 \
+    --dtype "float16"
+```
+
+
+
+
+
+
+
+# Python Api
+
+使用 PaddleNLP 调用 llm 大模型api代码
+
+```python
+from paddlenlp.transformers import AutoTokenizer, AutoModelForCausalLM
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2-0.5B")
+model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2-0.5B", dtype="float16")
+input_features = tokenizer("你好！请自我介绍一下。", return_tensors="pd")
+outputs = model.generate(**input_features, max_length=128)
+print(tokenizer.batch_decode(outputs[0]))
+```
 
 
 
