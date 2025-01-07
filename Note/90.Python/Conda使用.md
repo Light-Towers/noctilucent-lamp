@@ -1,3 +1,54 @@
+# conda 安装
+
+1.下载Miniconda安装脚本。可以从Miniconda的官方网站下载脚本，或者使用以下命令来下载最新版本的脚本：
+
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+```
+
+2.运行安装脚本。运行以下命令：
+
+```shell
+sh Miniconda3-latest-Linux-x86_64.sh
+```
+
+3.根据提示进行安装。
+
+```bash
+#1.阅读许可协议，按回车继续
+In order to continue the installation process, please review the license
+agreement.
+Please, press ENTER to continue
+>>> ENTER
+
+#2.接受许可协议，yes
+Do you accept the license terms? [yes|no]
+>>> yes
+
+#3.设置安装路径，此处使用/opt/miniconda3
+Miniconda3 will now be installed into this location:
+/root/miniconda3
+
+  - Press ENTER to confirm the location
+  - Press CTRL-C to abort the installation
+  - Or specify a different location below
+
+[/root/miniconda3] >>> /opt/miniconda3
+
+#4.更新环境变量，yes
+Do you wish to update your shell profile to automatically initialize conda?
+This will activate conda on startup and change the command prompt when activated.
+If you'd prefer that conda's base environment not be activated on startup,
+   run the following command when conda is activated:
+
+conda config --set auto_activate_base false
+
+You can undo this by running `conda init --reverse $SHELL`? [yes|no]
+[no] >>> yes
+```
+
+
+
 # **conda常用命令**
 
 ```bash
