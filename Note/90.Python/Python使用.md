@@ -41,10 +41,6 @@ virtualenv venv/test --python=python3.8
 deactivate
 ```
 
-
-
-
-
 ### 执行另一个脚本
 
 ```python
@@ -71,8 +67,12 @@ p=os.system(str)
 ## //打印执行结果 0表示 success ， 1表示 fail
 print(p)
 ```
+### 检查安装位置
 
-
+```bash
+# --user-site 用户包安装路径
+python -m site --user-site
+```
 
 
 
