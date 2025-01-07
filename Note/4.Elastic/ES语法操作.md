@@ -112,22 +112,38 @@ POST _reindex?refresh
   "dest": {
     "index": "ik_company_info_prod",
     "version_type": "internal"
-  }，
+  },
   "script": {
     "source": "ctx._source.exhNameBak = ctx._source.remove('exhName'); ctx._source.exhStartDateBak = ctx._source.remove('exhStartDate')"
   }
 }
 ```
 
+以下是 `version_type` 的几种常见取值及其含义：
+
+- **internal**（默认值）：
+  - 使用内部版本号进行版本控制。
+  - 如果文档存在版本冲突（即多个请求尝试同时更新同一文档），Elasticsearch 会拒绝后续的更新请求。
+- **external**：
+  - 使用外部提供的版本号进行版本控制。
+  - 外部版本号必须是递增的正整数。
+  - 如果提供的版本号小于或等于当前文档的版本号，则请求会被拒绝。
+- **external_gte**：
+  - 类似于 `external`，但允许提供的版本号等于当前文档的版本号。
+  - 即使提供的版本号与当前版本号相同，请求也会被接受。
+- **force**：
+  - 强制覆盖现有文档，忽略版本冲突。
+  - 这种方式不推荐使用，因为它可能会导致数据丢失或不一致。
+
 > 参考：
 >
->     [ES数据库重建索引——Reindex(数据迁移) ](https://www.cnblogs.com/Ace-suiyuan008/p/9985249.html)
+>  [ES数据库重建索引——Reindex(数据迁移) ](https://www.cnblogs.com/Ace-suiyuan008/p/9985249.html)
 >
->     [使用es reindex api 修改和迁移数据](https://blog.csdn.net/weixin_38920212/article/details/102461563)
+>  [使用es reindex api 修改和迁移数据](https://blog.csdn.net/weixin_38920212/article/details/102461563)
 >
->     [通过reindex迁移ES数据](http://dbaselife.com/project-16/doc-884/)
+>  [通过reindex迁移ES数据](http://dbaselife.com/project-16/doc-884/)
 >
->     [ES索引重建reindex详解](https://blog.csdn.net/w1014074794/article/details/120483334)
+>  [ES索引重建reindex详解](https://blog.csdn.net/w1014074794/article/details/120483334)
 
 * 取消reindex操作
 
