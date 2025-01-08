@@ -34,6 +34,22 @@ db.exhibition_participate.updateMany({}, [
 ])
 ```
 
+## 强制终止任务
+```javascript
+/* 查看数据库当前正在执行的操作，输出各参数的说明请参考如下：
+    client：该请求是由哪个客户端发起的。
+    opid：操作的唯一标识符。
+    secs_running：表示该操作已经执行的时间，单位为秒。
+    microsecs_running：表示该操作已经执行的时间，单位为微秒。
+    ns：该操作目标集合。
+    op：表示操作的类型。通常是查询、插入、更新、删除中的一种。
+    locks：跟锁相关的信息。
+*/ 
+db.currentOp()
+// 杀死一个操作
+db.killOp([$OPID])
+```
+
 > https://www.mongodb.com/docs/manual/reference/operator/aggregation/toString/
 
 ## 设置时区
