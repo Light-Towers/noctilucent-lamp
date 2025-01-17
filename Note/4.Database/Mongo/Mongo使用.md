@@ -106,9 +106,30 @@ db.CollectionName.distinct( "field");
 db.CollectionName.aggregate([ {$match:{"age" : 18}}, {$project:{"name":true}}, {$group:{_id:"$name"}}, {$group:{_id:null,count:{$sum:1}}} ])
 ```
 
-## 创建索引
-
+## 集合
 ```javascript
+// 创建集合
+db.createCollection("app_enterprise_info")
+// 删除集合
+db.app_enterprise_info.drop()
+```
+
+## 索引
+```javascript
+// 查询索引
+db.app_enterprise_info.getIndexes()
+
+// 创建索引
 db.app_enterprise_info.createIndex({ pid: 1 }, { unique: true })
+// 创建联合索引
+db.app_enterprise_info.createIndex({
+    "pid": NumberInt("1"),
+    "name": NumberInt("1"),
+}, {
+    name: "pid_1_name_1"
+});
+
+// 删除索引
+db.app_enterprise_info.dropIndex({ pid: 1 })
 ```
 
