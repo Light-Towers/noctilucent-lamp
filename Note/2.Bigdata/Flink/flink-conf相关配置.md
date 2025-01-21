@@ -11,18 +11,22 @@
 ```yaml
 # jobManager 的IP地址
 jobmanager.rpc.address: localhost
-
 # JobManager 的端口号
 jobmanager.rpc.port: 6123
-
+# 外部访问地址
+jobmanager.bind-host: 0.0.0.0
+# JobManager的总进程内存大小
+jobmanager.memory.process.size: 3200m
 # JobManager JVM heap 内存大小
 jobmanager.heap.size: 1024m
 
+taskmanager.bind-host: 0.0.0.0
+# TaskManager的总进程内存大小
+# 请注意，这考虑了TaskManager进程中的所有内存使用情况，包括JVM元空间和其他开销
+taskmanager.memory.process.size: 15360m
 # TaskManager JVM heap 内存大小
 taskmanager.heap.size: 1024m
-
 # 每个 TaskManager 提供的任务 slots 数量大小
-
 taskmanager.numberOfTaskSlots: 1
 
 # 程序默认并行计算的个数
@@ -51,6 +55,22 @@ parallelism.default: 1
 ### 容错和检查点 配置
 
 ```yaml
+# 如果启用了检查点，将用于存储操作状态检查点的后端。当 `execution.checkpointing.interval>0` 时，启用检查点。
+# 检查点执行间隔时间，默认 3min
+execution.checkpointing.interval: 3min
+# 外表保留策略: [DELETE_ON_CANCELLATION, RETAIN_ON_CANCELLATION]
+execution.checkpointing.externalized-checkpoint-retention: DELETE_ON_CANCELLATION
+# 最大并行检查点数
+execution.checkpointing.max-concurrent-checkpoints: 1
+# execution.checkpointing.min-pause: 0
+# 执行模式: [EXACTLY_ONCE, AT_LEAST_ONCE]
+execution.checkpointing.mode: EXACTLY_ONCE
+# 超时时间
+execution.checkpointing.timeout: 10min
+# execution.checkpointing.tolerable-failed-checkpoints: 0
+# 检查对齐
+# execution.checkpointing.unaligned: false
+
 # 用于存储和检查点状态
 # state.backend: filesystem
 
@@ -72,6 +92,12 @@ parallelism.default: 1
 
 #  Web 的运行时监视器端口
 rest.port: 8081
+
+# REST客户端将连接到的地址
+rest.address: master01
+
+# 绑定地址设置: 面向外部的网络接口可以访问的地址
+rest.bind-address: 0.0.0.0
 
 # 是否从基于 Web 的 jobmanager 启用作业提交
 # jobmanager.web.submit.enable: false
