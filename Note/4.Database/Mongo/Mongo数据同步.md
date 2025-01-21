@@ -91,7 +91,7 @@ mongorestore -h host:port -u username -p passwd --authenticationDatabase admin -
 mongorestore到表级别,mongorestore database1 的database1col表
 
 ```bash
-mongorestore -h host:port -u username -p passwd --authenticationDatabase admin -d database1 -c database1col /mongotest/database1/database1col.bson --forceTableScan
+mongorestore -h host:port -u username -p passwd --authenticationDatabase admin -d database1 -c database1col /mongotest/database1/database1col.bson
 #或者参数优化后
 mongorestore -h host:port -u username -p passwd --authenticationDatabase admin \
  -d database1 -c database1col \
