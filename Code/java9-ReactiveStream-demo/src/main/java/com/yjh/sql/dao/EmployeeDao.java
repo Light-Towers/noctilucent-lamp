@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
- * @author yangjinhua
+ * @author osmondy
  */
 @Repository
 public interface EmployeeDao extends JpaRepository<Employee,String> {

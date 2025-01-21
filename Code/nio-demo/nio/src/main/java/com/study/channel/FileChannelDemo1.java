@@ -8,7 +8,7 @@ public class FileChannelDemo1 {
     //FileChannel读取数据到buffer中
     public static void main(String[] args) throws Exception {
         //创建FileChannel
-        String fileUrl = "/Users/yangjinhua/Downloads/尚硅谷Java NIO课程（2021最新版）/nio-code/atguigu_nio/src/com/atguigu/resource/01.txt";
+        String fileUrl = "/Users/osmondy/Downloads/尚硅谷Java NIO课程（2021最新版）/nio-code/atguigu_nio/src/com/atguigu/resource/01.txt";
         RandomAccessFile aFile = new RandomAccessFile(fileUrl,"rw");
         FileChannel channel = aFile.getChannel();
 

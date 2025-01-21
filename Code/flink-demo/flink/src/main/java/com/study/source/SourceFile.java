@@ -19,7 +19,7 @@ public class SourceFile {
         env.setParallelism(4);
 
         // 1、从文件中读取文件数据
-        String inputPath = "/Users/yangjinhua/Research/flink-demo/flink/src/main/resources/hello.txt";
+        String inputPath = "/Users/osmondy/Research/flink-demo/flink/src/main/resources/hello.txt";
         DataStream<String> inputDataStream = env.readTextFile(inputPath);
         // 从分布式文件系统中读取
         // DataStream<String> inputDataStream = env.readTextFile("hdfs:///resources/hello.txt");

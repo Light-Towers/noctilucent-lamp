@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * 自定义序列化器
  *
- * @author yangjinhua
+ * @author osmondy
  */
 public class StringSerializer implements Serializer<String> {
     private String encoding = "UTF8";

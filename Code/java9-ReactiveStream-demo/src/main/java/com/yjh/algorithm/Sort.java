@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 /**
  * 排序
- * @author yangjinhua
+ * @author osmondy
  */
 public class Sort {
 

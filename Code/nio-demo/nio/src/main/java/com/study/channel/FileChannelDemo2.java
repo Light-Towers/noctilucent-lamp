@@ -9,7 +9,7 @@ public class FileChannelDemo2 {
 
     public static void main(String[] args) throws Exception {
         // 打开FileChannel
-        String fileUrl = "/Users/yangjinhua/Downloads/尚硅谷Java NIO课程（2021最新版）/nio-code/atguigu_nio/src/com/atguigu/resource/02.txt";
+        String fileUrl = "/Users/osmondy/Downloads/尚硅谷Java NIO课程（2021最新版）/nio-code/atguigu_nio/src/com/atguigu/resource/02.txt";
         RandomAccessFile aFile = new RandomAccessFile(fileUrl,"rw");
         FileChannel channel = aFile.getChannel();
 

@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 /**
  * 自定义业务事件
- * @author yangjinhua
+ * @author osmondy
  */
 public class Event {
     public String user;

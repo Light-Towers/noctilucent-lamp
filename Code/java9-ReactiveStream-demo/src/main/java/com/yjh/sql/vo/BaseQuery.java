@@ -15,7 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
- * @author yangjinhua
+ * @author osmondy
  */
 public abstract class BaseQuery<T> {
     /**

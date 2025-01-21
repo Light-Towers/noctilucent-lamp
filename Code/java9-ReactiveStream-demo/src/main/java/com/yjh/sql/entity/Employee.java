@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 /**
  * 雇员
- * @author yangjinhua
+ * @author osmondy
  */
 @Data
 @Table

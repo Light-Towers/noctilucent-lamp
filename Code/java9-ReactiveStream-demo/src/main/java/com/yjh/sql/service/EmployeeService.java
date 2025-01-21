@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 /**
- * @author yangjinhua
+ * @author osmondy
  */
 public interface EmployeeService {
     Employee findByNameAndPassword(String name, String password);

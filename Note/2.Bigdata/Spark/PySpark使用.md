@@ -7,7 +7,7 @@
  --driver-memory 4g \
  --num-executors 4  --executor-cores 4  --executor-memory 16g \
  --conf spark.default.parallelism=50 \
-  /root/yangjinhua/firstApp2.py
+  /root/firstApp2.py
 ```
 
 - `--queue dws_person_exhibition`: 指定在YARN中使用的队列名称，这里是`dws_person_exhibition`队列。
