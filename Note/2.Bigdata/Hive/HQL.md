@@ -2,6 +2,12 @@
 
 > SQL 语法： https://cloud.tencent.com/document/product/1342/61800
 
+
+- [ ] (待消化好文) Hive 优化：https://cloud.tencent.com/developer/article/1453464
+- [ ] 《Hive性能调优实战》-林志煌 : https://weread.qq.com/web/reader/a503221071a486c0a503e7akc81322c012c81e728d9d180
+> 别人整理的大数据笔记： https://github.com/fancyChuan/bigdata-hub/tree/master?tab=readme-ov-file
+- [ ] (待消化) Hive SQL的编译过程: https://tech.meituan.com/2014/02/12/hive-sql-to-mapreduce.html
+
 ## DDL
 
 ### 库
