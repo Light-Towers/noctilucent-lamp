@@ -62,6 +62,12 @@ cp -r /usr/local/mongodb/data/db /usr/local/mongodb/data/db3
 -q query，mongo的查询条件
 -o output，mongodump数据存放位置
 --forceTableScan 强制扫描整个表(解决版本不一致问题)
+--gzip 压缩数据
+--drop 删除目标库
+--numParallelCollections 并行表数
+--numInsertionWorkersPerCollection  决定恢复过程中每个集合的并发插入操作数量
+--noIndexRestore  忽略索引
+--batchSize 每次批量处理的数据量
 ```
 
 mongodump到库级别,mongodump database1 database2两个库
@@ -102,10 +108,10 @@ mongorestore -h host:port -u username -p passwd --authenticationDatabase admin \
 ```
 
 ### (三) 通过db.copyDatabase实现
-
+@Deprecated 新版本已被弃用
 1.去源机器的源数据库新建一个账户(跟在admin新建的一致就行，每个数据库都需要新建一个)
 
-```bash
+```javascript
 mongo host:port -u username -p passwd --authenticationDatabase admin
 use admin
 db.createUser({user:'testuser',pwd:'testpass',roles:['userAdminAnyDatabase']})
@@ -123,7 +129,7 @@ mongo host:port -u username -p passwd --authenticationDatabase admin
 
 需要用到源机器的ip\端口\库名，目标机器--需要新增的库名\新建的用户名\密码
 
-```bash
+```javascript
 db.copyDatabase("database1","database1","host:port","testuser","testpass","SCRAM-SHA-1")
 ```
 
@@ -148,8 +154,22 @@ db.copyDatabase("database1","database1","host:port","testuser","testpass","SCRAM
 缺点：版本4不支持。速度较慢。
 
 
+### 跨库数据同步
+```javascript
+db.exhibition_booth.aggregate([
+//   { $out: "test_table" }
+  { $out: { db: "test", coll: "test_table" } }
+])
 
-
+// 或者使用 cloneCollectionAsCapped，但必须指定集合大小
+db.runCommand(
+   {
+     cloneCollectionAsCapped: 'exhibition_booth',
+     toCollection: 'exhibition_booth-backup',
+     size: 1000
+   }
+)
+```
 
 
 
