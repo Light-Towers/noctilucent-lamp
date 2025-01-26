@@ -140,3 +140,57 @@ journalctl -u kibana.service --since "08:00:00"
 journalctl -u kibana.service -f
 ```
 
+
+# 压缩
+```bash
+# tar压缩文件夹
+tar -zcvf /tmp/test.tar.gz /tmp/test
+# tar解压至指定目录
+tar -zxvf /data3/bigdata/202410/software_registration.tar.gz -C /tmp
+
+# unzip解压文件至指定目录
+unzip xiaowang_stock.zip -d /tmp
+
+# gunzip解压至指定目录文件
+gunzip -c /data3/20231115/company_abnormal/split.json.gz > /tmp/20231115_company_abnormal.json
+
+```
+
+# find
+```bash
+# -maxdepth 最大搜索深度
+# -type 查找类型
+# 指定目录，模糊匹配查找文件
+find /data3/ -maxdepth 1 -name "sdx_date_up_*_enterprise.zip"
+# 指定目录，精确匹配查找文件
+find /data3/ -maxdepth 3 -wholename "*/company_base/split.json.gz" -type f
+# 查找目录下所有文件夹，并执行命令：打印文件名绝对路径
+find /data0/file2hive/drawer -type d -name "exhibitor" -exec sh -c 'for file in "$0"/*; do echo "File: $file"; done' {} \;
+```
+
+# awk
+awk 是一种强大的文本处理工具，适用于在 Linux/Unix 系统中进行数据提取和报告生成。
+它可以读取文件或标准输入（stdin），并根据指定的模式对每一行进行处理。
+```bash
+awk 'pattern { action }' filename
+```
+* pattern：可选，用于选择特定的行。如果省略，则默认对所有行执行操作。
+* action：对匹配的行执行的操作，默认是打印整行。
+## 常用选项
+* -F fs：指定字段分隔符 fs，默认为空格或制表符。
+* -v var=value：定义用户变量。
+* --field-separator fs：与 -F 相同，指定字段分隔符。
+
+示例
+```bash
+#打印文件中的所有行
+awk '{ print }' filename
+#打印第二列
+awk '{ print $2 }' filename
+#使用自定义分隔符
+awk -F: '{ print $1 }' filename  # 使用冒号作为分隔符
+#根据条件筛选
+awk '$1 == "apple" { print $0 }' filename  # 打印第一列等于 "apple" 的行
+#计算总和
+awk '{ sum += $1 } END { print sum }' filename  # 计算第一列的总和
+```
