@@ -22,6 +22,10 @@
 - `--conf spark.speculation=true`: 启用推测执行，可以帮助提高任务执行的总体速度，特别是在某些任务执行缓慢的情况下。
 - `--conf spark.sql.files.openCostInBytes=33554432`: 设置打开文件的成本估计，影响数据本地性优化时的决策，这里设置为32MB。
 - `--conf spark.sql.files.maxPartitionBytes=268435456`: 设置单个HDFS文件读取时的最大分区大小为256MB。
+- `--conf spark.mongodb.input.uri=mongodb://127.0.0.1/test.myCollection?readPreference=primaryPreferred`: 指定MongoDB的URI，用于读取数据。
+- `--conf spark.mongodb.output.uri=mongodb://127.0.0.1/test.myCollection`: 指定MongoDB的URI，用于写入数据。
+- `--conf spark.mongodb.input.partitioner=MongoSamplePartitioner`: 指定MongoDB的输入分区器，这里使用MongoSamplePartitioner。
+- `--packages org.mongodb.spark:mongo-spark-connector_2.12:3.0.1`: 指定MongoDB Spark Connector的包，这里使用3.0.1版本。
 - `/root/osmondy/firstApp.py`: 指定要提交运行的Python应用程序路径。
 
 
