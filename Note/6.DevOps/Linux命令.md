@@ -194,3 +194,12 @@ awk '$1 == "apple" { print $0 }' filename  # 打印第一列等于 "apple" 的�
 #计算总和
 awk '{ sum += $1 } END { print sum }' filename  # 计算第一列的总和
 ```
+
+
+# systemctl
+设置开机自启
+```bash
+systemctl enable docker.service
+## 查看已启用的服务
+systemctl list-unit-files | grep enable
+```
