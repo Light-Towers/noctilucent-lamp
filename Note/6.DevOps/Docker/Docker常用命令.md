@@ -5,7 +5,8 @@
 * 示例：
     ```bash
     # 创建mysql容器
-    docker run --name mysql -v /d/MySQL/conf:/etc/mysql/conf.d -v /d/MySQL/logs:/logs -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456-d mysql
+    ## windows下my.cnf文件不生效(权限)问题：`chmod 644 /etc/mysql/conf.d/my.cnf`
+    docker run -itd --name mysql -v /d/mount/docker/MySQL/data:/var/lib/mysql -v /d/mount/docker/MySQL/conf:/etc/mysql/conf.d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql:8
     # 创建elasticsearch容器
     docker run -itd --name elasticsearch -p 9200:9200 -p 9300:9300 -e ES_JAVA_OPTS="-Xms2g -Xmx2g" -e "discovery.type=single-node" elasticsearch:7.14.2
     ```
