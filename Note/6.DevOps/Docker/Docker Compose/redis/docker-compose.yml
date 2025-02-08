@@ -1,0 +1,33 @@
+version: "3"
+
+# 定义服务，可以多个
+services:
+  redis-6371: # 服务名称
+    image: redis # 创建容器时所需的镜像
+    container_name: redis-6371 # 容器名称
+    restart: always # 容器总是重新启动
+    network_mode: "host" # host 网络模式
+    volumes: # 数据卷，目录挂载
+      - ./redis-cluster/6371/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis-cluster/6371/data:/data
+    command: redis-server /usr/local/etc/redis/redis.conf # 覆盖容器启动后默认执行的命令
+
+  redis-6372:
+    image: redis
+    container_name: redis-6372
+    restart: always
+    network_mode: "host"
+    volumes:
+      - ./redis-cluster/6372/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis-cluster/6372/data:/data
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-6373:
+    image: redis
+    container_name: redis-6373
+    restart: always
+    network_mode: "host"
+    volumes:
+      - ./redis-cluster/6373/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis-cluster/6373/data:/data
+    command: redis-server /usr/local/etc/redis/redis.conf

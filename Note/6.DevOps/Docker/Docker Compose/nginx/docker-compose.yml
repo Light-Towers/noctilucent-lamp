@@ -1,0 +1,13 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    volumes:
+      - /home/quant_group/data/nginx/conf/certs/:/etc/nginx/certs/
+      - /home/quant_group/data/nginx/conf/conf.d/:/etc/nginx/conf.d/
+    ports:
+      - 80:80
+      - 443:443
+      - 1230:1230

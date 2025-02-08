@@ -1,0 +1,119 @@
+version: '3'
+services:
+  es1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    container_name: es1
+    # entrypoint: ["sh", "/apps/docker-entrypoint-es-plugins.sh"]
+    restart: always
+    environment:
+      - node.name=es1
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es2,es3
+      - cluster.initial_master_nodes=es1,es2,es3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2G -Xmx2G"
+      - TZ="Asia/Shanghai"
+      - node.master=true
+      - node.data=true      
+      # - http.cors.enabled=true
+      # - http.cors.allow-origin=*
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./es/plugins:/usr/share/elasticsearch/plugins
+      # - ./es/apps:/apps:rw
+      - /data/elastic/es1/data:/usr/share/elasticsearch/data
+      - /data/elastic/es_repository:/usr/share/elasticsearch/backup   # 备份目录(需要共享)
+      # - /data/elastic/es1/logs:/usr/share/elasticsearch/logs
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic
+  es2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    container_name: es2
+    # entrypoint: ["sh", "/apps/docker-entrypoint-es-plugins.sh"]
+    restart: always
+    environment:
+      - node.name=es2
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es1,es3
+      - cluster.initial_master_nodes=es1,es2,es3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2G -Xmx2G"
+      - TZ="Asia/Shanghai"
+      - node.master=true
+      - node.data=true
+      # - http.cors.enabled=true
+      # - http.cors.allow-origin=*
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./es/plugins:/usr/share/elasticsearch/plugins
+      # - ./es/apps:/apps:rw
+      - /data/elastic/es2/data:/usr/share/elasticsearch/data
+      - /data/elastic/es_repository:/usr/share/elasticsearch/backup   # 备份目录(需要共享)
+      # - /data/elastic/es2/logs:/usr/share/elasticsearch/logs
+    ports:
+      - 9201:9200
+      - 9301:9300      
+    networks:
+      - elastic
+  es3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    container_name: es3
+    # entrypoint: ["sh", "/apps/docker-entrypoint-es-plugins.sh"]
+    restart: always
+    environment:
+      - node.name=es3
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es1,es2
+      - cluster.initial_master_nodes=es1,es2,es3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2G -Xmx2G"
+      - TZ="Asia/Shanghai"
+      - node.master=true
+      - node.data=true
+      # - http.cors.enabled=true
+      # - http.cors.allow-origin=*
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./es/plugins:/usr/share/elasticsearch/plugins
+      # - ./es/apps:/apps:rw
+      - /data/elastic/es3/data:/usr/share/elasticsearch/data
+      - /data/elastic/es_repository:/usr/share/elasticsearch/backup   # 备份目录(需要共享)
+      # - /data/elastic/es3/logs/logs:/usr/share/elasticsearch/logs
+    ports:
+      - 9202:9200
+      - 9302:9300
+    networks:
+      - elastic
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.12.1
+    container_name: kibana
+    restart: always
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - es1
+      - es2
+      - es3
+    networks:
+      - elastic
+ 
+networks:
+  elastic:
+    driver: bridge

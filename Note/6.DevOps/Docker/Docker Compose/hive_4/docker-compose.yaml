@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  metastore:
+    image: apache/hive:${HIVE_VERSION}
+    restart: unless-stopped
+    container_name: metastore_4
+    hostname: metastore
+    environment:
+      DB_DRIVER: mysql
+      SERVICE_NAME: 'metastore'
+      SERVICE_OPTS: '-Xmx1G -Djavax.jdo.option.ConnectionDriverName=com.mysql.cj.jdbc.Driver
+                     -Djavax.jdo.option.ConnectionURL=jdbc:mysql://192.168.100.38:13306/metastore_4
+                     -Djavax.jdo.option.ConnectionUserName=root
+                     -Djavax.jdo.option.ConnectionPassword=123456'
+    ports:
+        - '49083:9083'
+    volumes:
+        - /data/hive_4/warehouse:/opt/hive/data/warehouse
+        - type: bind
+          source: ./lib/mysql-connector-j-8.0.33.jar.jar
+          target: /opt/hive/lib/mysql-connector-j-8.0.33.jar.jar
+    networks:
+      - hive
+
+  hiveserver2:
+    image: apache/hive:${HIVE_VERSION}
+    depends_on:
+      - metastore
+    restart: unless-stopped
+    container_name: hiveserver2_4
+    environment:
+      HIVE_SERVER2_THRIFT_PORT: 10000
+      SERVICE_OPTS: '-Xmx1G -Dhive.metastore.uris=thrift://metastore:9083
+                    -Dhive.metastore.warehouse.dir=/opt/hive/data/warehouse'
+      IS_RESUME: 'true'
+      SERVICE_NAME: 'hiveserver2'
+    ports:
+      - '40000:10000'
+      - '40002:10002'
+    volumes:
+      - /data/hive_4/warehouse:/opt/hive/data/warehouse
+    networks:
+      - hive
+
+networks:
+  hive:
+    name: hive_4

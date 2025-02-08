@@ -1,0 +1,42 @@
+[
+  {
+    "targets": ["172.29.2.5:9527","192.168.188.217:9527"],
+    "labels": {
+      "env": "test",
+      "job_name": "caesar-gateway",
+      "owner":"yangjinhua"
+    }
+  },
+  {
+    "targets": ["172.29.2.5:10086"],
+    "labels": {
+      "env": "test",
+      "job_name": "caesar-tenant",
+      "owner":"yangjinhua"
+    }
+  },
+  {
+    "targets": ["172.29.2.5:8098"],
+    "labels": {
+      "env": "test",
+      "job_name": "caesar-search",
+      "owner":"liushangru"
+    }
+  },
+  {
+    "targets": ["172.29.2.5:1202"],
+    "labels": {
+      "env": "test",
+      "job_name": "caesar-recommend",
+      "owner":"hutiankuo"
+    }
+  },
+  {
+    "targets": ["172.29.2.5:9919"],
+    "labels": {
+      "env": "test",
+      "job_name": "caesar-data",
+      "owner":"zhangqingbin"
+    }
+  }
+]

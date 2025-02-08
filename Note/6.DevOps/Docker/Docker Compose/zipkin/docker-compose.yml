@@ -1,0 +1,10 @@
+version: '3'
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    network_mode: host
+    ports:
+      - 9411:9411
+    environment:
+      - JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -Xlog:gc*:./app_gc.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+IgnoreUnrecognizedVMOptions

@@ -1,0 +1,24 @@
+version: "3"
+services:
+  nacos:
+    hostname: nacos
+    container_name: nacos
+    image: nacos/nacos-server:${NACOS_VERSION}
+    environment:
+      PREFER_HOST_MODE: hostname #如果支持主机名可以使用hostname,否则使用ip，默认也是ip
+      SPRING_DATASOURCE_PLATFORM: mysql #数据源平台 仅支持mysql或不保存empty
+      MODE: standalone
+      MYSQL_SERVICE_HOST: bigdata-test-01
+      MYSQL_SERVICE_DB_NAME: nacos_config
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: 123456
+      NACOS_APPLICATION_PORT: 8848
+      JVM_XMS: 256m
+      VM_XMX: 256m
+    volumes:
+      - /home/quant_group/data/nacos/single-logs/nacos:/home/nacos/logs
+      - ./init.d/custom.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - "8848:8848"
+    restart: always
