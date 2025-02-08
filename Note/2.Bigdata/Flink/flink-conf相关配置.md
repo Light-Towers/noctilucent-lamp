@@ -1,10 +1,29 @@
+# Flink配置文件
+
+version：flink-1.20
+
+## 目录结构
+
 前面文章我们已经知道 Flink 是什么东西了，安装好 Flink 后，我们再来看下安装路径下的配置文件吧。
 
-![img](https://zhisheng-blog.oss-cn-hangzhou.aliyuncs.com/images/2818Hy.jpg)
+```bat
+conf/
+├── config.yaml
+├── log4j-cli.properties
+├── log4j-console.properties
+├── log4j.properties
+├── log4j-session.properties
+├── logback-console.xml
+├── logback-session.xml
+├── logback.xml
+├── masters
+├── workers
+└── zoo.cfg
+```
 
 安装目录下主要有 flink-conf.yaml 配置、日志的配置文件、zk 配置、Flink SQL Client 配置。
 
-## flink-conf.yaml
+## 1、config.yaml
 
 ### 基础配置
 
@@ -169,10 +188,6 @@ rest.bind-address: 0.0.0.0
 # historyserver.archive.fs.refresh-interval: 10000
 ```
 
-查看下另外两个配置 slaves / master
-
-![img](https://zhisheng-blog.oss-cn-hangzhou.aliyuncs.com/images/ZGIGc6.jpg)
-
 ## 2、slaves
 
 里面是每个 worker 节点的 IP/Hostname，每一个 worker 结点之后都会运行一个 TaskManager，一个一行。
@@ -226,7 +241,7 @@ logback-yarn.xml
 logback.xml
 ```
 
-## sql-client-defaults.yaml
+## 6、sql-client-defaults.yaml
 
 ```yaml
 execution:
@@ -256,7 +271,7 @@ deployment:
   gateway-port: 0
 ```
 
-Flink sql client ：你可以从官网这里了解 https://ci.apache.org/projects/flink/flink-docs-stable/dev/table/sqlClient.html
+Flink sql client ：你可以从官网这里了解 https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/dev/table/sqlclient/
 
 ### 总结
 

@@ -48,7 +48,7 @@ export PATH=$PATH:$HIVE_HOME/bin
 
 ## Flink 配置
 
-1. 将 flink-sql-connector-hive-3.1.2_2.12-1.16.2.jar[(下载)](https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-hive-3.1.2_2.12/1.16.2/flink-sql-connector-hive-3.1.2_2.12-1.16.2.jar)和 flink-sql-connector-mongodb-1.0.1-1.16.jar[(下载)](https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-mongodb/1.0.1-1.16/flink-sql-connector-mongodb-1.0.1-1.16.jar)包拷贝到lib目录下。
+1. 将 flink-sql-connector-hive-3.1.2_2.12-1.16.2.jar下载到lib目录下。
 
    有2种添加Hive依赖的方式，因为有对应hive版本的flink捆绑包，此处选择第一种方式。
 
@@ -58,7 +58,7 @@ export PATH=$PATH:$HIVE_HOME/bin
    >
    > **NOTE**: the recommended way to add dependency is to use a bundled jar. Separate jars should be used only if bundled jars don’t meet your needs.
 
-2. 移动 `planner` 相关jar包
+2. ~~移动 `planner` 相关jar包 （Flink新版本已不再需要此操作）~~
 
    ```bash
    mv $FLINK_HOME/opt/flink-table-planner_2.12-1.16.2.jar $FLINK_HOME/lib/flink-table-planner_2.12-1.16.2.jar
@@ -86,6 +86,8 @@ export PATH=$PATH:$HIVE_HOME/bin
    ```
 
 ## Mongo 数据同步到 Hive
+
+mongo所需jar包，放在lib/目录：flink-connector-mongodb-1.2.0-1.19.jar、flink-sql-connector-mongodb-cdc-3.3.0.jar
 
 
 1. 创建 Mongo 关联表
