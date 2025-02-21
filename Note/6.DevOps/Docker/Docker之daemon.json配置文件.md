@@ -41,7 +41,7 @@ Linux上配置文件的默认位置是 /etc/docker/daemon.json。该--config-fil
 {
     "authorization-plugins": [],
     #Docker运行时使用的根路径,默认/var/lib/docker
-    "data-root": "", 
+    "data-root": "/data/docker", 
     #设定容器DNS的地址，在容器的 /etc/resolv.conf文件中可查看
     "dns": [],
     #容器 /etc/resolv.conf 文件，其他设置
@@ -57,8 +57,8 @@ Linux上配置文件的默认位置是 /etc/docker/daemon.json。该--config-fil
     #docker主机的标签，很实用的功能,例如定义：–label nodeName=host-121
     "labels": [],
     "live-restore": true,
-    "log-driver": "",
-    "log-opts": {},
+    "log-driver": "json-file",	#指定日志驱动为 json-file(默认)。其它：syslog、journald、fluentd
+    "log-opts": {"max-size":"20m", "max-file":"3"}  #单个日志文件的最大大小为 20MB；保留日志文件最大数量为 3。
     "mtu": 0,
     #Docker守护进程的PID文件
     "pidfile": "",

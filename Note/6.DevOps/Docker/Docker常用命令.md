@@ -28,7 +28,7 @@
 * 用法：docker ps [OPTIONS]
 * 示例：docker ps -a（列出所有容器，包括已停止的）
 ```bash
-#查看docker完整命令
+#列出所有容器, --no-trunc 不截断输出
 docker ps -a --no-trunc
 #停止所有容器
 docker ps -a | grep "Exited" | awk '{print $1}' | xargs docker stop
