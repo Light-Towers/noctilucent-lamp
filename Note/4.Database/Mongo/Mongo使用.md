@@ -119,7 +119,7 @@ db.app_enterprise_info.drop()
 // 查询索引
 db.app_enterprise_info.getIndexes()
 
-// 创建索引
+// 创建唯一索引
 db.app_enterprise_info.createIndex({ pid: 1 }, { unique: true })
 // 创建联合索引
 db.app_enterprise_info.createIndex({
