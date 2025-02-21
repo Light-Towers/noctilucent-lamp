@@ -1,7 +1,7 @@
 version: '3'
 services:
   es1:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    image: elasticsearch:7.12.1
     container_name: es1
     # entrypoint: ["sh", "/apps/docker-entrypoint-es-plugins.sh"]
     restart: always
@@ -34,7 +34,7 @@ services:
     networks:
       - elastic
   es2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    image: elasticsearch:7.12.1
     container_name: es2
     # entrypoint: ["sh", "/apps/docker-entrypoint-es-plugins.sh"]
     restart: always
@@ -67,7 +67,7 @@ services:
     networks:
       - elastic
   es3:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    image: elasticsearch:7.12.1
     container_name: es3
     # entrypoint: ["sh", "/apps/docker-entrypoint-es-plugins.sh"]
     restart: always
@@ -100,7 +100,7 @@ services:
     networks:
       - elastic
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.12.1
+    image: kibana:7.12.1
     container_name: kibana
     restart: always
     ports:
