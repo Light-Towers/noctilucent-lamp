@@ -74,8 +74,8 @@ SET table.exec.spill-compression.block-size = 128kb;
 
 -- 设置全局并行度
 SET 'parallelism.default' = '20';
--- 设置 Hive 源的并行度自动推导关闭，推断最大并行度设置为 50
-SET 'table.exec.hive.infer-source-parallelism' = 'false';
+-- 开启 Hive 源的并行度自动推导(默认使用系统default并行度)，且推断最大并行度设置为 50
+SET 'table.exec.hive.infer-source-parallelism' = 'true';
 SET 'table.exec.hive.infer-source-parallelism.max' = '50';
 SET 'write.batch.size' = '10000';   -- 批量写入大小
 -- 启用 mini-batch 处理
