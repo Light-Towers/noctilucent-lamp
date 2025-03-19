@@ -19,7 +19,7 @@ pip install -r requirements.txt
 # 下载whl包   # -r requirements.txt
 pip download magic-pdf[full]==1.2.2 -d /home/aistudio/ext-whl-libs -i https://mirrors.aliyun.com/pypi/simple --extra-index-url https://wheels.myhloli.com
 # 离线安装，
-pip install --no-index --find-links=/home/aistudio/data/ext-whl-libs magic-pdf[full]==1.2.2 --user  # 安装
+pip install --no-index --find-links=/home/aistudio/ext-whl-libs magic-pdf[full]==1.2.2 --user  # 安装
 ```
 
 
