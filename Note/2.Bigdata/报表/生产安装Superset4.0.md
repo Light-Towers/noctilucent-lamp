@@ -123,4 +123,15 @@ export LD_PRELOAD=/lib64/libstdc++.so.6
 nohup superset run --host 0.0.0.0 -p 8088 > ./log/superset.log 2>&1 &
 ```
 
+## 三、定制开发
+### 3.1 修改浏览器标签名
+1. 找到 Superset 的配置文件，通常位于 superset/config.py
+2. 添加或修改 APP_NAME 参数： APP_NAME = "您想要的名称"
+3. 保存文件并重启 Superset 服务
 
+### 3.2 修改显示图标
+进入 `superset/static/assets/images` 目录，替换如下文件：
+- superset-logo-horiz.png
+- favicon.png
+- s.png
+- superset.png
