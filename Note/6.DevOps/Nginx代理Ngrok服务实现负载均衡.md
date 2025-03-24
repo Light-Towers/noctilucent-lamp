@@ -8,7 +8,7 @@
 
 **开始实操：**
 
-安装flask: `pip install flask`， 用flask写一个简单的api服务:
+### 1.1 安装flask: `pip install flask`， 用flask写一个简单的api服务:
 
 ```python
 from flask import Flask, jsonify
@@ -29,7 +29,16 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 ```
 
-ngrok启动命令：ngrok http 5000 --host-header="localhost"
+### 1.2 ngrok命令：
+
+```bash
+# 安装 ngrok 的 python 客户端
+pip install pyngrok
+pyngrok		# 下载安装ngrok
+
+ngrok config add-authtoken <token>	# 配置token
+ngrok http 5000 --host-header="localhost"	# 映射端口
+```
 
 得到的公网域名地址：https://90c7-180-76-140-37.ngrok-free.app
 
@@ -220,3 +229,81 @@ upstream backend {
 > 通过两种配置方案的对比实践，深刻理解到动态化配置在代理架构中的重要性。分层方案虽增加初期配置复杂度，但为后续扩展保留了充足空间。未来可结合服务发现机制，实现全动态的代理集群管理。
 
 🌟如你有好的方案，欢迎分享，一起交流。
+
+
+
+
+
+## 五、内网穿透工具
+
+内网穿透工具可以帮助用户通过公网访问内网资源（如NAS、服务器、摄像头等），以下是一些常用且高效的工具，适用于不同场景和需求：
+
+---
+
+### **一、免费 & 开源工具**
+1. **Ngrok**  
+   - **特点**：简单易用，支持多平台，无需公网IP，提供临时域名（付费可自定义）。  
+   - **适用场景**：临时测试、开发调试（如微信本地开发）。  
+   - **官网**：[ngrok.com](https://ngrok.com)
+
+2. **FRP (Fast Reverse Proxy)**  
+   - **特点**：开源、灵活，支持TCP/UDP/HTTP/HTTPS，需自备服务器部署服务端。  
+   - **适用场景**：长期稳定的内网穿透，适合有一定技术基础的用户。  
+   - **项目地址**：[GitHub - fatedier/frp](https://github.com/fatedier/frp)
+
+3. **ZeroTier**  
+   - **特点**：基于虚拟局域网（VPN），无需配置端口转发，支持P2P直连。  
+   - **适用场景**：组网需求（如远程访问多台内网设备）。  
+   - **官网**：[zerotier.com](https://www.zerotier.com)
+
+4. **Serveo**  
+   - **特点**：纯SSH实现，无需安装客户端，支持自定义域名。  
+   - **适用场景**：快速临时穿透，适合SSH转发。  
+   - **使用方式**：`ssh -R 80:localhost:3000 serveo.net`
+
+---
+
+### **二、国产工具（适合国内网络）**
+1. **花生壳（Oray）**  
+   - **特点**：国内老牌工具，提供免费版（带宽限制）和付费版，支持HTTP/TCP/UDP。  
+   - **适用场景**：个人轻量级穿透需求，如远程桌面、摄像头访问。  
+   - **官网**：[oray.com](https://hsk.oray.com)
+
+2. **NPS (内网穿透代理)**  
+   - **特点**：开源、高性能，支持多协议和多用户管理，需自建服务端。  
+   - **适用场景**：企业级内网穿透，替代商业方案。  
+   - **项目地址**：[GitHub - ehang-io/nps](https://github.com/ehang-io/nps)
+
+---
+
+### **三、商业工具（付费但稳定）**
+1. **Tailscale**  
+   - **特点**：基于WireGuard的VPN工具，自动组网，支持多平台，免费版可满足个人需求。  
+   - **适用场景**：跨地区设备安全互联（如远程办公）。  
+   - **官网**：[tailscale.com](https://tailscale.com)
+
+2. **Cloudflare Tunnel**  
+   - **特点**：集成Cloudflare的CDN和防火墙，无需暴露公网IP，支持HTTPS。  
+   - **适用场景**：企业级Web服务穿透，安全性高。  
+   - **官网**：[cloudflare.com](https://www.cloudflare.com/products/tunnel)
+
+3. **Localtonet**  
+   - **特点**：简单易用，支持HTTP/TCP/UDP，提供免费版和付费自定义域名。  
+   - **适用场景**：开发测试、快速分享本地服务。  
+   - **官网**：[localtonet.com](https://localtonet.com)
+
+---
+
+### **四、选择建议**
+- **临时测试**：Ngrok、Serveo。  
+- **长期稳定使用**：FRP（自建服务器）或 ZeroTier（P2P组网）。  
+- **国内网络优化**：花生壳、NPS。  
+- **企业级需求**：Cloudflare Tunnel、Tailscale。  
+- **无需配置**：ZeroTier、Tailscale（自动组网）。
+
+---
+
+### **五、注意事项**
+1. **安全性**：内网穿透可能暴露内网服务，建议开启身份验证、HTTPS、IP白名单等。  
+2. **带宽限制**：免费工具通常限速，商业需求建议选择付费方案。  
+3. **协议支持**：根据需求选择TCP/UDP/HTTP等协议支持的工具。
