@@ -178,7 +178,7 @@ docker-compose image prune -a
 * 功能：将容器的文件系统导出为 tar 归档。
 * 用法：docker export [OPTIONS] CONTAINER
 ```bash
-#eg: docker export 11 centos2
+#eg: docker export centos -o container.tar
 ```
 ## history
 * 功能：显示镜像的历史。
