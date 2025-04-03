@@ -1,5 +1,7 @@
 # conda 安装
 
+**Miniconda 与 Anaconda 的区别** Miniconda 是 Anaconda 的轻量版，仅包含 `conda`、Python 及其基础依赖，不包含 `anaconda` 元包（该元包包含 Anaconda 完整发行版的 250+ 工具包）。
+
 1.下载Miniconda安装脚本。可以从Miniconda的官方网站下载脚本，或者使用以下命令来下载最新版本的脚本：
 
 ```bash
