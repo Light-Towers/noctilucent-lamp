@@ -25,3 +25,63 @@ docker container update --restart=always 容器名字
 ##修改时区 
 -e TZ="Asia/Shanghai" 
 ```
+
+
+
+
+# 安装/升级
+## 停止 docker 
+如果系统安装过docker
+```bash
+# 停止所有 docker 容器
+docker stop $(docker ps -aq)
+# 停止 docker 服务
+sudo systemctl stop docker
+```
+备份docker文件（默认路径为/var/lib/docker）
+```bash
+sudo mv /var/lib/docker /var/lib/docker.bak
+```
+
+## 卸载 docker
+```bash
+sudo  yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine
+```
+                  
+## 安装 yum-utils
+```bash
+sudo yum install -y yum-utils
+```
+## 添加 docker 源
+```bash
+# [官网源](https://download.docker.com/linux/centos/docker-ce.repo)国内无法访问，本次使用阿里源
+sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+```
+
+## 安装 docker
+在线安装 docker。（安装过程可能会遇到 GPG key 网络问题）
+```bash
+sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+```
+## 启动 docker 服务
+```bash
+# 启动 docker 服务
+sudo systemctl start docker
+# 设置 docker 开机自启
+sudo systemctl enable docker
+```
+
+## 验证 docker
+```bash
+# 验证 docker 版本
+docker version
+# 查看 docker compose 版本
+docker compose version
+```
