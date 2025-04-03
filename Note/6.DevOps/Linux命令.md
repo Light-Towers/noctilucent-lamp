@@ -199,7 +199,10 @@ awk '{ sum += $1 } END { print sum }' filename  # 计算第一列的总和
 # systemctl
 设置开机自启
 ```bash
+## 查看是否开机自启
+systemctl is-enabled docker
+## 设置开机自启
 systemctl enable docker.service
-## 查看已启用的服务
-systemctl list-unit-files | grep enable
+## 查看已启用的服务  ## --type=service 显示服务类型
+systemctl list-unit-files  --type=service | grep docker
 ```
