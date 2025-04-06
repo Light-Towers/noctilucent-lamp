@@ -1,4 +1,4 @@
-## OSI参考模型
+## OSI七层网络参考模型
 
 ![img](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/OSI%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B.png)
 
