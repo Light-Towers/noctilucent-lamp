@@ -112,6 +112,58 @@ Need support? Get in touch on Slack: https://datahub.com/slack/
 
 至此，DataHub搭建完成，登录DataHub UI：`http://localhost:9002`, username & password: `datahub`
 
+
+
+# 特性
+
+1. **Assertions（断言）**
+   用于定义和监控数据质量规则，包括表、字段、模式的质量检查（如新鲜度、数据量、SQL自定义断言等），支持与第三方工具（如 DBT、Great Expectations）集成。
+2. **Access Management（访问管理）**
+   支持将外部系统的角色与 DataHub 数据资产关联，实现统一的访问控制视图，便于数据消费者发现和申请访问权限。
+3. **Automations（自动化）**
+   提供元数据管理自动化能力，如文档传播、术语传播、标签同步等，提升治理效率和一致性。
+4. **Business Attributes（业务属性）**
+   允许定义具有业务含义的属性，并可在多个数据实体间复用，实现标准化的业务元数据管理。[Beta]
+5. **Business Glossary（业务术语表）**
+   支持构建和管理企业级的业务术语词汇表，便于统一数据语言和理解。
+6. **Compliance Forms（合规表单）**
+   通过表单方式批量收集、补充和验证关键元数据，推动合规治理落地。
+7. **Data Contract（数据契约）**
+   明确数据生产者与消费者之间的数据质量和结构约定，结合断言实现可验证的数据契约。
+8. **Data Products（数据产品）**
+   支持以产品化方式管理和发布数据资产。
+9. **Dataset Usage and Query History（数据集使用与查询历史）**
+   展示数据集被访问和查询的历史，帮助理解数据流动和使用情况。
+10. **Domains（领域）**
+    支持将数据资产分组到逻辑领域（如部门、业务线），便于分布式治理。
+11. **Incidents（事件/告警）**
+    提供数据质量或元数据变更的事件通知和追踪能力。[DataHub Cloud]
+12. **Ingestion（元数据采集）**
+    介绍如何从各类数据源采集元数据到 DataHub。
+13. **Lineage（血缘）**
+    展示和管理数据资产之间的上下游依赖关系。
+14. **Metadata Tests（元数据测试）**
+    提供无代码配置的元数据监控与自动化操作。[DataHub Cloud]
+15. **Ownership（所有权）**
+    管理数据资产的负责人和责任人。
+16. **Policies（策略）**
+    配合角色实现细粒度的权限控制。
+17. **Posts（公告/动态）**
+    支持在平台内发布公告或动态。
+18. **Properties（属性）**
+    包括自定义属性和结构化属性，用于扩展和补充元数据。
+19. **Schema history（模式历史）**
+    跟踪数据集的结构变更历史。
+20. **Search（搜索）**
+    介绍如何通过搜索发现各类数据资产。
+21. **Sync Status（同步状态）**
+    展示元数据同步的最新状态。
+22. **Tags（标签）**
+    用于对数据资产进行灵活的标签分类和检索。
+
+
+
+
 ## 元数据摄取
 
 > 官网文档： https://docs.datahub.com/docs/metadata-ingestion
@@ -178,7 +230,7 @@ Need support? Get in touch on Slack: https://datahub.com/slack/
 
 支持时间范围与字段级的数据血缘追踪
 
-![image-20250514162557396](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250514162557396.png)
+![datahub-lineage](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/datahub-lineage.png)
 
 ## CLI 命令使用
 
