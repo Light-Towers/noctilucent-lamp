@@ -27,5 +27,5 @@ target/
 /.nb-gradle/
 build/
 
-### VS Code ###
-.vscode/
+### 以. 开头的文件 ###
+.*/
