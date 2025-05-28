@@ -12,7 +12,8 @@
 
 #### 使用方式
 
-elasticsearch-dump是一款开源的ES数据迁移工具，github地址: [https://github.com/taskrabbit/elasticsearch-dump](https://cloud.tencent.com/developer/tools/blog-entry?target=https%3A%2F%2Fgithub.com%2Ftaskrabbit%2Felasticsearch-dump&source=article&objectId=1145944)
+elasticsearch-dump是一款开源的ES数据迁移工具，github地址: 
+https://github.com/elasticsearch-dump/elasticsearch-dump
 
 1. 安装elasticsearch-dump
 
@@ -80,11 +81,11 @@ path.repo: ["/usr/local/services/test"]
 
 ```text
 curl -XPUT http://172.16.0.39:9200/_snapshot/my_backup -H 'Content-Type: application/json' -d '{
-        "type": "fs",
-        "settings": {
-        "location": "/usr/local/services/test" 
-        "compress": true
-    }
+    "type": "fs",
+    "settings": {
+        "location": "/usr/local/services/test",
+        "compress": true
+    }
 }'
 ```
 
@@ -122,7 +123,7 @@ curl -XPUT http://172.16.0.39:9200/_snapshot/my_backup/snapshot_1?wait_for_compl
 5. 从快照恢复
 
 ```text
-curl -XPUT http://172.16.0.20:9200/_snapshot/my_backup/snapshot_1/_restore
+curl -XPOST http://172.16.0.20:9200/_snapshot/my_backup/snapshot_1/_restore
 ```
 
 6. 查看快照恢复状态
