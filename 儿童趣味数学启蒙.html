@@ -345,7 +345,7 @@
             animation: twinkle 1.5s ease-in-out infinite;
         }
 
-        /* 新增运算模式选择按钮样式 */
+        /* 运算模式选择按钮样式 */
         .operation-mode {
             display: flex;
             justify-content: center;
@@ -454,6 +454,7 @@
             color: #ff6b6b;
         }
         
+        /* 修改后的提示框样式 */
         .hint-bubble {
             background: linear-gradient(145deg, #fff9c4, #fff3b0);
             border: 3px solid #ffe66d;
@@ -466,37 +467,34 @@
             top: 50%;
             transform: translate(-50%, -50%);
             z-index: 999;
-            max-width: 320px;
+            max-width: 500px; /* 增大宽度 */
+            width: 90%;
             display: none;
             animation: slideIn 0.3s ease-out;
-        }
-
-        .hint-bubble {
             opacity: 0;
         }
         
-        .hint-bubble.visible {
-            opacity: 1;
-            display: block;
-        }
-
         .shape-hint {
             gap: 15px;
             margin: 20px 0;
-            font-size: 2.5rem;
+            font-size: 1.8rem; /* 缩小图形 */
+            display: flex;
+            flex-wrap: wrap; /* 允许换行 */
+            justify-content: center;
         }
-
-        .shape {
-            transition: all 0.3s;
-            cursor: pointer;
-            display: inline-block;
+        
+        /* 添加提示框外部点击区域 */
+        .hint-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 998;
+            display: none;
         }
-    
-        .shape:hover {
-            transform: scale(1.3) rotate(15deg);
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
-        }
-
+        
         .hint-bubble > div:first-child {
             font-weight: bold;
             color: #1a535c;
@@ -641,6 +639,10 @@
                 font-size: 1.2rem;
             }
             
+            .shape-hint {
+                font-size: 1.5rem;
+            }
+            
             .game-over-stats {
                 width: 95%;
                 padding: 15px;
@@ -700,7 +702,7 @@
             </div>
         </div>
         
-        <!-- 新增运算模式选择 -->
+        <!-- 运算模式选择 -->
         <div class="operation-mode">
             <button class="mode-btn active" data-mode="addition">
                 <i class="fas fa-plus-circle"></i> 加法
@@ -789,6 +791,10 @@
             </div>
         </div>
         
+        <!-- 提示框外部点击层 -->
+        <div class="hint-overlay" id="hintOverlay"></div>
+        
+        <!-- 提示框 -->
         <div class="hint-bubble" id="hintBubble">
             <div>试试用形状来数数：</div>
             <div class="shape-hint" id="shapeHint">
@@ -823,6 +829,7 @@
             const newBtn = document.getElementById('newBtn');
             const hintBtn = document.getElementById('hintBtn');
             const hintBubble = document.getElementById('hintBubble');
+            const hintOverlay = document.getElementById('hintOverlay');
             const shapeHint = document.getElementById('shapeHint');
             const feedbackElement = document.getElementById('feedback');
             const feedbackText = feedbackElement.querySelector('.feedback-text');
@@ -856,10 +863,11 @@
             let totalCount = 0;
             let score = 0;
             let difficulty = 'easy';
-            let operationMode = 'addition'; // 默认为加法
+            let operationMode = 'addition';
             let starsEarned = 0;
             let timerInterval;
             let timeLeft = 15 * 60; // 15分钟（900秒）
+            let autoClose = null;
             
             // 形状数组
             const shapes = [
@@ -882,6 +890,9 @@
                 }
             });
             
+            // 为提示框覆盖层添加点击事件，点击关闭提示
+            hintOverlay.addEventListener('click', closeHint);
+            
             restartBtn.addEventListener('click', () => {
                 gameOverScreen.style.display = 'none';
                 initGame();
@@ -896,7 +907,7 @@
                 });
             });
             
-            // 新增模式选择事件
+            // 模式选择事件
             modeBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     modeBtns.forEach(b => b.classList.remove('active'));
@@ -913,7 +924,7 @@
                 totalCount = 0;
                 score = 0;
                 starsEarned = 0;
-                timeLeft = 15 * 60; // 15分钟
+                timeLeft = 15 * 60;
                 
                 // 重置星星
                 stars.forEach(star => star.classList.remove('filled'));
@@ -1058,8 +1069,8 @@
                 const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
                 randomAnimal.classList.add('active');
                 
-                // 隐藏提示
-                hintBubble.style.display = 'none';
+                // 关闭提示
+                closeHint();
             }
             
             // 检查答案
@@ -1094,10 +1105,10 @@
                         stars[starsEarned].classList.add('filled');
                         starsEarned++;
                         
-                        // 新增：检查是否收集全部星星
+                        // 检查是否收集全部星星
                         if (starsEarned === stars.length) {
                             showTrophyAnimation();
-                            endGame(true); // 传入true表示胜利结束
+                            endGame(true);
                         }
 
                         // 显示额外奖励信息
@@ -1127,7 +1138,8 @@
             function showHint() {
                 // 确保关闭已有提示
                 if(hintBubble.style.display === 'block') {
-                    hintBubble.style.display = 'none';
+                    closeHint();
+                    return;
                 }
 
                 // 创建形状提示内容
@@ -1175,11 +1187,12 @@
                 
                 shapeHint.innerHTML = hintHtml;
                 
-                // 显示提示层并添加动画
+                // 显示提示层和覆盖层
+                hintOverlay.style.display = 'block';
                 hintBubble.classList.add('visible');
                 hintBubble.style.display = 'block';
                 
-                gsap.to(hintBubble, {
+                gsap.to([hintBubble, hintOverlay], {
                     duration: 0.3,
                     opacity: 1,
                     ease: "power2.out"
@@ -1195,27 +1208,21 @@
                 });
 
                 // 自动隐藏逻辑（10秒后）
-                const autoClose = setTimeout(() => {
-                    gsap.to(hintBubble, {
-                        duration: 0.3,
-                        opacity: 0,
-                        onComplete: () => {
-                            hintBubble.style.display = 'none';
-                        }
-                    });
-                }, 10000);
-
-                // 点击关闭提示
-                hintBubble.addEventListener('click', function closeBubble() {
-                    clearTimeout(autoClose);
-                    gsap.to(hintBubble, {
-                        duration: 0.3,
-                        opacity: 0,
-                        onComplete: () => {
-                            hintBubble.style.display = 'none';
-                        }
-                    });
-                }, {once: true});
+                autoClose = setTimeout(closeHint, 10000);
+            }
+            
+            // 关闭提示
+            function closeHint() {
+                gsap.to([hintBubble, hintOverlay], {
+                    duration: 0.3,
+                    opacity: 0,
+                    onComplete: () => {
+                        hintBubble.style.display = 'none';
+                        hintOverlay.style.display = 'none';
+                    }
+                });
+                
+                if (autoClose) clearTimeout(autoClose);
             }
             
             // 更新统计信息
@@ -1282,7 +1289,7 @@
                 }
             }
 
-            // 新增奖杯动画函数
+            // 奖杯动画
             function showTrophyAnimation() {
                 const trophy = document.createElement('div');
                 trophy.className = 'trophy-animation';
