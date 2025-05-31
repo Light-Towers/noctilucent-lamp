@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>儿童数学启蒙游戏 - 趣味加法挑战</title>
+    <title>儿童数学启蒙游戏 - 趣味数学挑战</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- 新增GSAP动画库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
     <style>
         * {
@@ -181,6 +180,7 @@
             justify-content: center;
             gap: 15px;
             margin: 15px 0;
+            flex-wrap: wrap;
         }
         
         .btn {
@@ -291,6 +291,7 @@
             justify-content: center;
             gap: 20px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
         
         .diff-btn {
@@ -338,13 +339,57 @@
         }
         
         .star.filled {
-            color: #FFDD00;  /* 调整为更饱和的金黄色 */
+            color: #FFDD00;
             text-shadow: 0 0 10px rgba(255, 221, 0, 0.8), 
-                         0 0 20px rgba(255, 221, 0, 0.6);  /* 增加双层光晕效果 */
-            animation: twinkle 1.5s ease-in-out infinite;  /* 新增闪烁动画 */
+                         0 0 20px rgba(255, 221, 0, 0.6);
+            animation: twinkle 1.5s ease-in-out infinite;
         }
 
-        /* 新增闪烁动画 */
+        /* 新增运算模式选择按钮样式 */
+        .operation-mode {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            padding: 12px 20px;
+            border-radius: 50px;
+            background: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .mode-btn.active {
+            background: #ff9e6d;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 158, 109, 0.4);
+        }
+        
+        .crossed {
+            position: relative;
+        }
+        
+        .crossed:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #ff6b6b;
+            transform: translateY(-50%) rotate(-15deg);
+            border-radius: 2px;
+        }
+        
         @keyframes twinkle {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.8; transform: scale(1.1); }
@@ -426,24 +471,21 @@
             animation: slideIn 0.3s ease-out;
         }
 
-        /* 新增初始透明度 */
         .hint-bubble {
             opacity: 0;
         }
-        /* 新增可见状态 */
+        
         .hint-bubble.visible {
             opacity: 1;
             display: block;
         }
 
-        /* 新增形状提示布局样式 */
         .shape-hint {
             gap: 15px;
             margin: 20px 0;
             font-size: 2.5rem;
         }
 
-        /* 新增形状动画效果 */
         .shape {
             transition: all 0.3s;
             cursor: pointer;
@@ -455,7 +497,6 @@
             filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
         }
 
-        /* 新增提示标题样式 */
         .hint-bubble > div:first-child {
             font-weight: bold;
             color: #1a535c;
@@ -464,7 +505,6 @@
             font-size: 1.6rem;
         }
 
-        /* 新增提示说明文字样式 */
         .hint-bubble > div:last-child {
             color: #4ecdc4;
             font-weight: bold;
@@ -472,13 +512,11 @@
             margin-top: 15px;
         }
 
-        /* 新增入场动画 */
         @keyframes slideIn {
             0% { opacity: 0; transform: translate(-50%, -40px); }
             100% { opacity: 1; transform: translate(-50%, -50%); }
         }
 
-        /* 新增形状颜色增强 */
         .circle { color: #ff6b6b; text-shadow: 0 2px 4px rgba(255,107,107,0.3); }
         .triangle { color: #4ecdc4; text-shadow: 0 2px 4px rgba(78,205,196,0.3); }
         .square { color: #ff9e6d; text-shadow: 0 2px 4px rgba(255,158,109,0.3); }
@@ -547,32 +585,89 @@
         }
         
         @media (max-width: 768px) {
-            .game-area {
-                flex-direction: column;
+            .container {
+                padding: 20px;
             }
             
             .title {
-                font-size: 2.2rem;
+                font-size: 2rem;
+                text-shadow: 2px 2px 0 #ffe66d;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
             }
             
             .problem-display {
-                font-size: 3.5rem;
+                font-size: 3rem;
+                margin: 15px 0;
+                height: auto;
             }
             
             .number {
-                width: 60px;
-                height: 60px;
-                line-height: 60px;
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+                margin: 0 8px;
             }
             
             .answer-input {
-                width: 90px;
-                height: 80px;
-                font-size: 3rem;
+                width: 80px;
+                height: 60px;
+                font-size: 2.5rem;
+            }
+            
+            .button-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            .hint-bubble {
+                max-width: 90%;
+                padding: 15px;
+                font-size: 1.2rem;
+            }
+            
+            .game-over-stats {
+                width: 95%;
+                padding: 15px;
+            }
+            
+            .animal {
+                font-size: 2rem;
+            }
+            
+            .progress-container {
+                height: 15px;
+            }
+            
+            .star {
+                font-size: 1.5rem;
+            }
+            
+            .operator, .equals {
+                font-size: 2rem;
+            }
+            
+            .mode-btn {
+                padding: 10px 15px;
+                font-size: 1rem;
             }
         }
         
-        /* 新增奖杯动画样式 */
         .trophy-animation {
             position: absolute;
             top: 50%;
@@ -595,7 +690,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title">🐾 趣味加法挑战 🐾</h1>
+            <h1 class="title">🐾 趣味数学挑战 🐾</h1>
             <p class="subtitle">帮助小动物们解决数学问题，收集星星奖励！</p>
             
             <div class="timer-container">
@@ -603,6 +698,19 @@
                 <div class="timer-label">剩余时间:</div>
                 <div class="timer" id="timer">15:00</div>
             </div>
+        </div>
+        
+        <!-- 新增运算模式选择 -->
+        <div class="operation-mode">
+            <button class="mode-btn active" data-mode="addition">
+                <i class="fas fa-plus-circle"></i> 加法
+            </button>
+            <button class="mode-btn" data-mode="subtraction">
+                <i class="fas fa-minus-circle"></i> 减法
+            </button>
+            <button class="mode-btn" data-mode="mixed">
+                <i class="fas fa-random"></i> 加减混合
+            </button>
         </div>
         
         <div class="animals">
@@ -621,7 +729,7 @@
             <div class="math-problem">
                 <div class="problem-display" id="problemDisplay">
                     <span class="number" id="num1">5</span>
-                    <span class="operator">+</span>
+                    <span class="operator" id="operator">+</span>
                     <span class="number" id="num2">3</span>
                     <span class="equals">=</span>
                     <input type="number" class="answer-input" id="answerInput" min="0" max="20">
@@ -709,6 +817,7 @@
             // 游戏元素
             const num1Element = document.getElementById('num1');
             const num2Element = document.getElementById('num2');
+            const operatorElement = document.getElementById('operator');
             const answerInput = document.getElementById('answerInput');
             const checkBtn = document.getElementById('checkBtn');
             const newBtn = document.getElementById('newBtn');
@@ -725,6 +834,7 @@
             const timerElement = document.getElementById('timer');
             const gameOverScreen = document.getElementById('gameOver');
             const restartBtn = document.getElementById('restartBtn');
+            const modeBtns = document.querySelectorAll('.mode-btn');
             
             // 统计元素
             const correctCountElement = document.getElementById('correctCount');
@@ -746,6 +856,7 @@
             let totalCount = 0;
             let score = 0;
             let difficulty = 'easy';
+            let operationMode = 'addition'; // 默认为加法
             let starsEarned = 0;
             let timerInterval;
             let timeLeft = 15 * 60; // 15分钟（900秒）
@@ -785,6 +896,16 @@
                 });
             });
             
+            // 新增模式选择事件
+            modeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    modeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    operationMode = btn.dataset.mode;
+                    generateNewProblem();
+                });
+            });
+            
             // 初始化游戏
             function initGame() {
                 // 重置游戏状态
@@ -811,6 +932,12 @@
                 
                 // 隐藏游戏结束界面
                 gameOverScreen.style.display = 'none';
+                
+                // 启用输入和按钮
+                answerInput.disabled = false;
+                checkBtn.disabled = false;
+                hintBtn.disabled = false;
+                newBtn.disabled = false;
             }
             
             // 启动计时器
@@ -855,7 +982,6 @@
                 hintBtn.disabled = true;
                 newBtn.disabled = true;
 
-                // 新增胜利状态显示
                 if(isVictory) {
                     gameOverScreen.querySelector('h2').innerHTML = '恭喜！获得所有星星 🏆🎉';
                     gameOverScreen.style.background = 'rgba(255, 230, 109, 0.95)';
@@ -893,13 +1019,32 @@
                         maxNum = 10;
                 }
                 
-                num1 = Math.floor(Math.random() * (maxNum + 1));
-                num2 = Math.floor(Math.random() * (maxNum + 1));
-                correctAnswer = num1 + num2;
+                // 根据运算模式生成题目
+                let operator;
+                
+                // 随机决定使用加法还是减法（混合模式）
+                const useAddition = operationMode === 'addition' || 
+                                  (operationMode === 'mixed' && Math.random() > 0.5);
+                
+                if (useAddition) {
+                    // 加法题目
+                    operator = "+";
+                    num1 = Math.floor(Math.random() * (maxNum + 1));
+                    num2 = Math.floor(Math.random() * (maxNum + 1));
+                    correctAnswer = num1 + num2;
+                } else {
+                    // 减法题目 - 确保不会出现负数
+                    operator = "-";
+                    num1 = Math.floor(Math.random() * (maxNum + 1));
+                    // 确保被减数大于等于减数
+                    num2 = Math.floor(Math.random() * (num1 + 1));
+                    correctAnswer = num1 - num2;
+                }
                 
                 // 更新显示
                 num1Element.textContent = num1;
                 num2Element.textContent = num2;
+                operatorElement.textContent = operator;
                 answerInput.value = '';
                 answerInput.focus();
                 
@@ -935,7 +1080,8 @@
                     correctCount++;
                     score += 10;
                     
-                    feedbackText.innerHTML = `太棒了！<span class="correct">${num1} + ${num2} = ${correctAnswer}</span> 是正确的！`;
+                    const operator = operatorElement.textContent;
+                    feedbackText.innerHTML = `太棒了！<span class="correct">${num1} ${operator} ${num2} = ${correctAnswer}</span> 是正确的！`;
                     feedbackText.className = 'feedback-text';
                     character.textContent = getRandomHappyAnimal();
                     
@@ -977,7 +1123,7 @@
                 updateStats();
             }
             
-            // 显示提示（使用多种形状）
+            // 显示提示
             function showHint() {
                 // 确保关闭已有提示
                 if(hintBubble.style.display === 'block') {
@@ -985,41 +1131,54 @@
                 }
 
                 // 创建形状提示内容
-                // 随机选择一种形状
+                const operator = operatorElement.textContent;
                 const shape = shapes[Math.floor(Math.random() * shapes.length)];
-                
-                // 创建形状提示
                 let hintHtml = '';
                 
-                // 第一个数字的形状
-                for (let i = 0; i < num1; i++) {
-                    hintHtml += `<span class="shape ${shape.class}">${shape.symbol}</span>`;
-                }
-                
-                // 加号
-                hintHtml += `<span class="operator"> + </span>`;
-                
-                // 第二个数字的形状
-                for (let i = 0; i < num2; i++) {
-                    hintHtml += `<span class="shape ${shape.class}">${shape.symbol}</span>`;
-                }
-                
-                // 等号
-                hintHtml += `<span class="operator"> = </span>`;
-                
-                // 总和的形状
-                for (let i = 0; i < correctAnswer; i++) {
-                    hintHtml += `<span class="shape ${shape.class}">${shape.symbol}</span>`;
+                if (operator === '+') {
+                    // 加法提示
+                    for (let i = 0; i < num1; i++) {
+                        hintHtml += `<span class="shape ${shape.class}">${shape.symbol}</span>`;
+                    }
+                    
+                    hintHtml += `<span class="operator"> + </span>`;
+                    
+                    for (let i = 0; i < num2; i++) {
+                        hintHtml += `<span class="shape ${shape.class}">${shape.symbol}</span>`;
+                    }
+                    
+                    hintHtml += `<span class="operator"> = </span>`;
+                    
+                    for (let i = 0; i < correctAnswer; i++) {
+                        hintHtml += `<span class="shape ${shape.class}">${shape.symbol}</span>`;
+                    }
+                } else {
+                    // 减法提示
+                    for (let i = 0; i < num1; i++) {
+                        hintHtml += `<span class="shape ${shape.class}">${shape.symbol}</span>`;
+                    }
+                    
+                    hintHtml += `<span class="operator"> - </span>`;
+                    
+                    // 使用带删除线的形状表示被减去的部分
+                    for (let i = 0; i < num2; i++) {
+                        hintHtml += `<span class="shape ${shape.class} crossed">${shape.symbol}</span>`;
+                    }
+                    
+                    hintHtml += `<span class="operator"> = </span>`;
+                    
+                    // 显示剩余的形状
+                    for (let i = 0; i < correctAnswer; i++) {
+                        hintHtml += `<span class="shape ${shape.class}">${shape.symbol}</span>`;
+                    }
                 }
                 
                 shapeHint.innerHTML = hintHtml;
-                hintBubble.style.display = 'block';
                 
                 // 显示提示层并添加动画
                 hintBubble.classList.add('visible');
                 hintBubble.style.display = 'block';
                 
-                // 使用GSAP实现动画
                 gsap.to(hintBubble, {
                     duration: 0.3,
                     opacity: 1,
@@ -1056,7 +1215,7 @@
                             hintBubble.style.display = 'none';
                         }
                     });
-                }, {once: true}); // 使用once参数确保只触发一次
+                }, {once: true});
             }
             
             // 更新统计信息
