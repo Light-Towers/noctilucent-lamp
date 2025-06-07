@@ -470,8 +470,7 @@
             max-width: 500px; /* 增大宽度 */
             width: 90%;
             display: none;
-            animation: slideIn 0.3s ease-out;
-            opacity: 0;
+            opacity: 1; /* 移除动画后直接显示 */
         }
         
         .shape-hint {
@@ -893,6 +892,13 @@
             // 为提示框覆盖层添加点击事件，点击关闭提示
             hintOverlay.addEventListener('click', closeHint);
             
+            // 添加键盘事件监听器，按ESC键关闭提示框
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && hintBubble.style.display === 'block') {
+                    closeHint();
+                }
+            });
+            
             restartBtn.addEventListener('click', () => {
                 gameOverScreen.style.display = 'none';
                 initGame();
@@ -1187,25 +1193,12 @@
                 
                 shapeHint.innerHTML = hintHtml;
                 
-                // 显示提示层和覆盖层
+                // 直接显示提示层和覆盖层（无动画）
                 hintOverlay.style.display = 'block';
-                hintBubble.classList.add('visible');
+                hintOverlay.style.opacity = 1;
                 hintBubble.style.display = 'block';
-                
-                gsap.to([hintBubble, hintOverlay], {
-                    duration: 0.3,
-                    opacity: 1,
-                    ease: "power2.out"
-                });
-
-                // 形状入场动画
-                gsap.from('.shape', {
-                    duration: 0.5,
-                    scale: 0,
-                    opacity: 0,
-                    stagger: 0.1,
-                    ease: "back.out"
-                });
+                hintBubble.style.opacity = 1;
+            
 
                 // 自动隐藏逻辑（10秒后）
                 autoClose = setTimeout(closeHint, 10000);
@@ -1213,14 +1206,11 @@
             
             // 关闭提示
             function closeHint() {
-                gsap.to([hintBubble, hintOverlay], {
-                    duration: 0.3,
-                    opacity: 0,
-                    onComplete: () => {
-                        hintBubble.style.display = 'none';
-                        hintOverlay.style.display = 'none';
-                    }
-                });
+                // 直接隐藏提示框（无动画）
+                hintBubble.style.display = 'none';
+                hintBubble.style.opacity = 0;
+                hintOverlay.style.display = 'none';
+                hintOverlay.style.opacity = 0;
                 
                 if (autoClose) clearTimeout(autoClose);
             }
