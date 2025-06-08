@@ -376,8 +376,11 @@
         
         .crossed {
             position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
         .crossed:after {
             content: '';
             position: absolute;
@@ -388,6 +391,14 @@
             background: #ff6b6b;
             transform: translateY(-50%) rotate(-15deg);
             border-radius: 2px;
+            z-index: 1;
+        }
+
+        /* 手机端优化 */
+        @media (max-width: 768px) {
+            .crossed:after {
+                height: 3px;
+            }
         }
         
         @keyframes twinkle {
