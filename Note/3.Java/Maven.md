@@ -61,7 +61,52 @@
 | `mvn dependency:copy-dependencies` | 复制依赖到 `target/dependency` |
 | `mvn dependency:analyze` | 分析依赖问题（未声明/未使用的依赖） |
 
-### 五、插件命令
+### 五、插件体系详解
+
+#### 1. 核心构建插件
+| 插件 | 功能 | 常用配置 |
+|------|------|----------|
+| **maven-compiler-plugin** | 源码编译 | 设置JDK版本、编码 |
+| **maven-surefire-plugin** | 执行单元测试 | 包含/排除测试类 |
+| **maven-jar-plugin** | 生成JAR包 | 指定主类、MANIFEST配置 |
+| **maven-war-plugin** | 生成WAR包 | web.xml配置、排除资源 |
+| **maven-assembly-plugin** | 创建可分发包 | 自定义打包描述符 |
+
+配置示例：
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.11.0</version>
+      <configuration>
+        <source>17</source>
+        <target>17</target>
+        <encoding>UTF-8</encoding>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+```
+
+#### 2. 依赖管理插件
+| 插件 | 功能 |
+|------|------|
+| **maven-dependency-plugin** | 依赖操作（tree/copy/unpack） |
+| **maven-enforcer-plugin** | 环境约束检查（JDK/Maven版本） |
+| **versions-maven-plugin** | 依赖版本管理 |
+
+#### 3. 高级应用插件
+| 插件 | 功能 |
+|------|------|
+| **maven-shade-plugin** | 创建uber-jar（含依赖） |
+| **maven-failsafe-plugin** | 执行集成测试 |
+| **flatten-maven-plugin** | 动态版本发布支持 |
+| **jacoco-maven-plugin** | 代码覆盖率分析 |
+| **spotbugs-maven-plugin** | 代码缺陷检测 |
+
+#### 4. 插件命令参考
 
 | 命令 | 作用 |
 |------|------|
@@ -69,6 +114,8 @@
 | `mvn versions:set -DnewVersion=1.2.0` | 批量修改模块版本 |
 | `mvn spring-boot:run` | 运行 Spring Boot 项目（需插件） |
 | `mvn jacoco:report` | 生成测试覆盖率报告 |
+| `mvn dependency:tree` | 显示依赖树形结构 |
+| `mvn enforcer:enforce` | 执行环境约束检查 |
 
 ### 六、场景示例
 
