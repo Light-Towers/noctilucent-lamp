@@ -253,7 +253,8 @@ python3 -m datahub docker quickstart --stop
 python3 -m datahub docker nuke
 
 ## 备份
-python3 -m datahub docker quickstart --backup   # 默认存放路径  ~/.datahub/quickstart/backup.sql, # 指定备份文件 --backup-file <path to backup file>
+python3 -m datahub docker quickstart --backup   # 默认存放路径
+python3 -m datahub docker quickstart --backup --backup-file ./backup-v2.sql  # 指定备份文件
 
 ## 恢复
 datahub docker quickstart --restore  # default  # 指定从备份文件恢复  --restore-file /home/my_user/datahub_backups/quickstart_backup_2002_22_01.sql
