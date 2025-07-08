@@ -2,8 +2,9 @@
 ## 官方下载
 下载安装脚本，一键安装
 ```bash
+## 一键安装、升级（网络不稳定、多试几次）
 curl -fsSL https://ollama.com/install.sh | sh
-或者下载安装包，手动安装
+## 或者下载安装包，手动安装
 curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o ollama-linux-amd64.tgz
 sudo tar -C /usr -xzf ollama-linux-amd64.tgz
 ```
@@ -41,3 +42,32 @@ ollama 模型默认目录为 ~/.ollama/models
 export OLLAMA_MODELS=/home/aistudio/ollama-linux/models
 # 永久配置：将 export 命令添加到 .bashrc 或 .zshrc 中
 ```
+
+
+
+
+
+
+
+
+
+# ollama 配置
+
+```bash
+[Unit]
+Description=Ollama Service
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/ollama serve
+User=ollama
+Group=ollama
+Restart=always
+RestartSec=3
+Environment="PATH=/opt/miniconda3/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+Environment="OLLAMA_HOST=0.0.0.0"		# 新增 对外暴露（默认只有当前机器可以访问）
+
+[Install]
+WantedBy=default.target
+```
+
