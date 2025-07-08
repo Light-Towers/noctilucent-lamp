@@ -24,7 +24,7 @@
 ### 2.2 向量表示与嵌入
 在大模型中，文本内容会被转换为向量（即嵌入，Embeddings）形式。向量是多维空间中的点，通过数学方式表示文字的语义信息。
 
-![向量表示示意图](https://easyai.tech/wp-content/uploads/2022/08/94e70-2020-02-13-2weidu-1.png.webp)
+![向量表示示意图](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/94e70-2020-02-13-2weidu-1.webp)
 
 #### 2.2.1 向量表示的特点：
 - 语义相似的文本，在向量空间中距离较近
@@ -36,7 +36,7 @@
 
 RAG（Retrieval-Augmented Generation，检索增强生成）是一种结合信息检索技术与大语言模型（LLM）的AI框架，旨在通过引入外部知识库增强生成内容的准确性和时效性。
 
-![img](https://pic3.zhimg.com/v2-c18bbf79b4f59411735255db5a90fbf6_1440w.jpg)
+![img](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/v2-c18bbf79b4f59411735255db5a90fbf6_1440w.jpg)
 
 #### 2.3.1 核心定义
 - **技术融合**：RAG将传统信息检索系统与生成式大语言模型结合，通过检索外部知识库中的相关内容，为LLM提供补充信息，从而减少模型“幻觉”（生成错误内容）和知识局限性问题
@@ -105,13 +105,13 @@ Dify 是一个开源的大语言模型(LLM)应用开发平台，它提供了一�
 
 功能：配置模型、API 密钥等
 
-![image-20250307141415422](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307141415422.png)
+![image-20250307141415422](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307141415422.png)
 
 #### 4.1.2 工作室
 
 功能：查看和管理已创建的应用
 
- ![image-20250302123251818](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250302123251818.png)
+ ![image-20250302123251818](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250302123251818.png)
 
 聊天助手：对话型应用，采用一问一答模式与用户持续对话。支持切换为 Chatflow 编排。
 
@@ -126,14 +126,14 @@ Agent：自主对复杂的人类任务进行目标规划、任务拆解、工具
 
 * **知识库列表**
 
-![image-20250302140619395](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250302140619395.png)
+![image-20250302140619395](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250302140619395.png)
 
 * **创建知识库**
 
-  ![image-20250302141115914](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250302141115914.png)
+  ![image-20250302141115914](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250302141115914.png)
 
 * **文本分段与清洗处理**
-  ![image-20250302142002377](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250302142002377.png)
+  ![image-20250302142002377](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250302142002377.png)
 
     **1.分段设置**：一般使用默认分段配置，如果分段太细，可修改分段标识符、或增大分段最大长度（<=4000）。Q&A 分段：每一个分段生成 Q&A 匹配对，当用户提问时，系统会找出与之最相似的问题，然后返回对应的分段作为答案。(消耗额外的 token）
 
@@ -143,13 +143,13 @@ Agent：自主对复杂的人类任务进行目标规划、任务拆解、工具
 
 * **知识库召回测试**
 
-  ![image-20250307143713104](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307143713104.png)
+  ![image-20250307143713104](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307143713104.png)
 
 #### 4.1.4 工具：
 
 工具可以扩展 LLM 的能力，比如联网搜索、科学计算或绘制图片，赋予并增强了 LLM 连接外部世界的能力。Dify 提供了两种工具类型：**第一方工具** 和 **自定义工具**。
 
-![image-20250307110340708](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307110340708.png)
+![image-20250307110340708](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307110340708.png)
 
 ---
 
@@ -158,7 +158,7 @@ Agent：自主对复杂的人类任务进行目标规划、任务拆解、工具
 ### 5.1 工作流概念
 工作流通过将复杂的任务分解成较小的步骤（节点）降低系统复杂度，减少了对提示词技术和模型推理能力的依赖，提高了 LLM 应用面向复杂任务的性能，提升了系统的可解释性、稳定性和容错性。
 
-![image-20250302202506651](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250302202506651.png)
+![image-20250302202506651](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250302202506651.png)
 
 ### 5.2 工作流的核心
 
@@ -214,10 +214,10 @@ Agent：自主对复杂的人类任务进行目标规划、任务拆解、工具
 #### 5.2.3 模型选择
 
 基于业务功能，选择配置好的合适大小的模型。
-![image-20250307152148296](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307152148296.png)
+![image-20250307152148296](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307152148296.png)
 
 根据需要调整模型参数。
-<img src="C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307152317469.png" alt="image-20250307152317469" style="zoom: 67%;" />
+<img src="https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307152317469.png" alt="image-20250307152317469" style="zoom: 67%;" />
 
 
 **核心参数** 
@@ -259,9 +259,9 @@ Agent：自主对复杂的人类任务进行目标规划、任务拆解、工具
 - 节点输出：每个节点的输出可作为后续节点的输入
 - 上下文管理：维护对话历史和状态
 
-![节点的变量引用](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307115240895.png)
+![节点的变量引用](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307115240895.png)
 
-<img name="节点的输入变量和输出变量" src="C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307115501610.png" alt="image-20250307115501610" style="zoom: 67%;"  />
+<img name="节点的输入变量和输出变量" src="https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307115501610.png" alt="image-20250307115501610" style="zoom: 67%;"  />
 
 
 #### 5.3.2 工具调用集成
@@ -282,11 +282,11 @@ Dify支持在工作流中集成各种工具：
 
 **插件市场**
 
-![image-20250307181620354](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307181620354.png)
+![image-20250307181620354](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307181620354.png)
 
 **工作流中调用示例：**
 
-![image-20250307131353930](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307131353930.png)
+![image-20250307131353930](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307131353930.png)
 
 #### 5.3.3 知识库结合工作流
 
@@ -300,7 +300,7 @@ Dify支持在工作流中集成各种工具：
 
 * 结合检索结果和原始问题生成回答
 
-  ![image-20250307131810409](C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307131810409.png)
+  ![image-20250307131810409](https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307131810409.png)
 
 ---
 
@@ -323,7 +323,7 @@ Dify支持在工作流中集成各种工具：
 2. 开启【调试模式】逐步执行验证  
 3. 检查变量作用域和命名规范（建议采用`<模块前缀>_<描述>`格式）  
 4. 查看执行轨迹日志定位异常节点
-   <img src="C:\Users\osmondy\AppData\Roaming\Typora\typora-user-images\image-20250307143109446.png" alt="image-20250307143109446" style="zoom: 67%;" />
+   <img src="https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/dify/image-20250307143109446.png" alt="image-20250307143109446" style="zoom: 67%;" />
 
 ### 6.2 健壮性设计
 - **输入校验**：配置正则表达式过滤非法输入（如邮箱格式校验）
