@@ -22,7 +22,7 @@ flush privileges;
 ```
 
 #### 3. **修改配置文件**
-- 编辑 `config/application.yml`，选择默认数据源为 mysql：
+- 编辑 `config/application.yml`，选择数据源为 mysql：
 ```yaml
   spring:
     application:
@@ -40,7 +40,6 @@ flush privileges;
       password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver
 ```
-  **注意**：需将 `<mysql_ip>` 改为集群可访问的 IP（避免 YARN Application 模式连接失败）。
 
 #### 4. **加载依赖**
 - 将 Flink 的 `lib/` 目录下所有 JAR 包复制到 `dinky/extends/flink<version>/`。
@@ -48,9 +47,9 @@ flush privileges;
 - **Hadoop 支持**：添加 `flink-shaded-hadoop-3-uber-*.jar` 到 `extends/` 目录（YARN 模式必需）。
 - 由于 CDCSOURCE 是 Dinky 封装的新功能，Apache Flink 源码不包含，非 Application 模式提交需要在远程 Flink 集群所使用的依赖里添加一下依赖。将 Dinky 整库同步依赖包放置 $FLINK_HOME/lib下：
   ```bash
-  lib/dinky-client-base-${version}.jar
-  lib/dinky-common-${version}.jar
-  extends/flink${flink-version}/dinky/dinky-client-${version}.jar
+  lib/dinky-client-base-<dinky-version>.jar
+  lib/dinky-common-<dinky-version>.jar
+  extends/flink<version>/dinky/dinky-client-<dinky-version>.jar
   ```
 
 > 🔥注意事项
