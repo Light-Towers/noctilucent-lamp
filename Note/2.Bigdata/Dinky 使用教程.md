@@ -1,8 +1,13 @@
-### **一、安装部署**
-#### 1. **环境准备**
-- **依赖**：JDK 8+、MySQL 5.7+、Flink 1.17+
-- **下载地址**：[GitHub Release](https://github.com/DataLinkDC/dinky/releases)（选择 `dinky-release-{version}.tar.gz`）
 >本文档使用 Dinky 1.2.3 、Flink 1.20
+
+Dinky 是一个以 Apache Flink 为内核构建的开源实时计算平台，具备实时应用的作业开发、数据调试及运行监控能力，助力实时计算高效应用。
+
+### **一、安装部署**
+
+#### 1. **环境准备**
+- **依赖**：JDK 8+、MySQL 5.7+、Flink 1.14+
+- **下载地址**：[GitHub Release](https://github.com/DataLinkDC/dinky/releases)（选择 `dinky-release-{version}.tar.gz`）
+
 #### 2. **初始化数据库**
 Dinky 采用 mysql 作为后端的存储库，mysql 支持 5.7+。Dinky使用Flyway进行数据库版本管理，在第一次部署时，无需手动建表， Flyway 会自动完成。只需配置好数据库连接信息，其他配置文件默认即可。
 ```sql
@@ -65,24 +70,23 @@ sh auto.sh start 1.20  # 指定 Flink 版本
 ### **二、核心功能配置**
 #### 1. **集群管理**
 - **Flink 集群注册**：
-  - **Standalone/YARN**：在 `集群管理 > 集群实例` 添加 Flink REST 地址。
+  - **Standalone/YARN**：在 `注册中心 > 集群 > Flink实例/集群配置` 添加 Flink REST 地址。
 
 #### 2. **数据源配置**
-- 支持 MySQL、Doris、Kafka 等。示例（MySQL）：
-  ```sql
-  CREATE CATALOG my_mysql WITH (
-    'type'='jdbc',
-    'url'='jdbc:mysql://mysql_ip:3306/db',
-    'username'='root',
-    'password'='123456'
-  )。
-  ```
-
-#### 3. **全局变量**
-- 在 `全局变量` 中预设连接参数，SQL 中通过 `${变量名}` 引用。
-
-#### 4. **元数据中心**
-- 启用 `元数据管理`，自动同步库表结构，支持 SQL 自动补全。
+在 `注册中心 > 数据源` 管理数据源配置，目前支持的数据源类型有：
+- **OLTP**
+  - MySQL
+  - Oracle
+  - PostgreSQLSQLServer
+  - Phoenix
+- **OLAP**
+  - ClickHouse
+  - Doris
+  - StarRocks
+  - Presto
+  - Paimon
+- **DataWarehouse/DataLake**
+  - Hive
 
 ---
 
@@ -147,3 +151,8 @@ sh auto.sh start 1.20  # 指定 Flink 版本
 - **自动恢复机制**：从最新 Checkpoint 恢复任务。
 - **企业级功能**：多租户隔离、UDF 开发、血缘分析。
 
+
+
+### 引用
+
+[Dinky 和 Flink CDC 在实时整库同步的探索之路](https://mp.weixin.qq.com/s/K-yGG1lOlc3B1i8mHFS-_g?poc_token=HOrgbWijbxcv8-AiMSsRrelNecSiPaevHFQANJC4)
