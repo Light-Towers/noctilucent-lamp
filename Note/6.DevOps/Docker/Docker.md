@@ -214,3 +214,24 @@ docker version
 # 查看 docker compose 版本
 docker compose version
 ```
+
+## (可选)借助get-docker.sh
+借助 Docker 官方提供的自动化安装工具`get-docker.sh`，用于在 Linux 系统上自动选择合适的版本进行安装 Docker Engine 及相关组件。
+`install-docker.sh`
+```shell
+# install docker
+curl -fsSL get.docker.com -o get-docker.sh
+sh get-docker.sh
+
+if [ ! $(getent group docker) ];
+then
+    sudo groupadd docker;
+else
+    echo "docker user group already exists"
+fi
+
+sudo gpasswd -a $USER docker
+sudo service docker restart
+
+rm -rf get-docker.sh
+```
