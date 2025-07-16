@@ -1,14 +1,13 @@
 # 整库同步 Mysql to Doris
-## 前提
-1. Flink 集群：Flink 1.20
-   1. 开启 checkpoint
-   2. Flink CDC ：3.4
-2. 源 Mysql ：8.0 (需开启binlog-row模式)
-3. 目标 Doris ：3.0.6
+## 📌 前提条件
+1. **Flink 集群**：Flink 1.20 + Flink CDC 3.4
+   - 需开启 Checkpoint
+2. **源数据库**：MySQL 8.0
+   - 必须开启 binlog-row 模式
+3. **目标数据库**：Doris 3.0.6
 
-### 创建pipeline文件
-参照官网文档创建pipeline文件
-新增 mysql-to-doris.yaml 文件
+## 📁 Pipeline 配置文件
+> 文件名：`mysql-to-doris.yaml`，参照官网文档创建pipeline文件
 ```yaml 
 ################################################################################
 # Description: Sync MySQL all tables to Doris
@@ -19,15 +18,12 @@ source:
   port: 23306
   username: root
   password: 123456
-  tables: app_db.\.*
-  tables.exclude: app_db.k_database_type,app_db.k_log   # 忽略表
+  tables: app_db.\.*                                    # 同步整个数据库
+  tables.exclude: app_db.k_database_type,app_db.k_log   # 排除特定表
   server-id: 5400-5404
-  #server-id: 1
-  server-time-zone: UTC
-  #server-time-zone: UTC+8
-  #server-time-zone: Asia/Shanghai
-  scan.newly-added-table.enabled: true
-  # 添加以下参数 (由于Mysql 8 的 caching_sha2_password)
+  server-time-zone: UTC+8
+  scan.newly-added-table.enabled: true                  # 支持自动发现新增表
+  # MySQL 8.0 认证插件适配  # (由于Mysql 8 的 caching_sha2_password)
   debezium.database.connection.adapter: "jdbc"
   debezium.database.connection.adapter.jdbc.url: "jdbc:mysql://<host>:<port>/<db>?allowPublicKeyRetrieval=true"
 
@@ -37,24 +33,24 @@ sink:
   benodes: 192.168.100.39:28040
   username: root
   password: ""
-  table.create.properties.light_schema_change: true
-  table.create.properties.replication_num: 1
+  # 表创建参数
+  table.create.properties.light_schema_change: true   # 轻量级 Schema 变更
+  table.create.properties.replication_num: 1          # 副本数量
 
 pipeline:
   name: Sync MySQL Database to Doris
   parallelism: 1
 ```
-在实测Doris3.0版本中，可支持自动创建数据库。支持schema级演化，新增、修改、删除字段。
 
-新增、变更表名，需要先将任务触发保存点，再从保存点重启任务。同时，配置中需要设置`scan.newly-added-table.enabled: true`
+## ⚠️ 同步特性说明
+| 操作类型       | Doris 行为                                      | 处理方式                            |
+|----------------|-------------------------------------|-------------------------------------|
+| 新增表         | 自动同步                           | 配置 `scan.newly-added-table.enabled: true` |
+| 表名修改       | 视为新增表                         | 需手动处理旧表数据                  |
+| 字段变更       | 支持 Schema 演化                   | 自动处理新增/修改字段               |
+| 删除表         | 不触发目标端删除                   | 需手动清理目标端数据                |
 
-对于新增表：重启后更新
-
-修改表名：目标源中会作为新增表
-
-删除表：目标源不会删除表
-
-
+> 🔄 **动态表处理**：变更表结构时(新增表、表名变更)需先触发 Savepoint，再从保存点恢复任务以保证数据一致性。Doris 3.0 支持轻量级 Schema 变更，但仍建议避免频繁修改表结构
 
 ---
 
