@@ -3,7 +3,7 @@
 1. Flink 集群：Flink 1.20
    1. 开启 checkpoint
    2. Flink CDC ：3.4
-2. 源 Mysql ：8.4
+2. 源 Mysql ：8.0 (需开启binlog-row模式)
 3. 目标 Doris ：3.0.6
 
 ### 创建pipeline文件
@@ -27,6 +27,9 @@ source:
   #server-time-zone: UTC+8
   #server-time-zone: Asia/Shanghai
   scan.newly-added-table.enabled: true
+  # 添加以下参数 (由于Mysql 8 的 caching_sha2_password)
+  debezium.database.connection.adapter: "jdbc"
+  debezium.database.connection.adapter.jdbc.url: "jdbc:mysql://<host>:<port>/<db>?allowPublicKeyRetrieval=true"
 
 sink:
   type: doris
