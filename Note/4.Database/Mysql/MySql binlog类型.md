@@ -53,8 +53,9 @@
 #### **四、操作命令**
 ```sql
 -- 1. 检查
-SHOW VARIABLES LIKE '%log_bin%';    -- 查看 binlog 配置是否开启
-SHOW GLOBAL VARIABLES LIKE 'binlog_format'; -- 查看当前 binlog 格式
+SHOW VARIABLES LIKE '%log_bin%';             -- 查看 binlog 配置是否开启
+SHOW GLOBAL VARIABLES LIKE 'binlog_format';  -- 查看当前 binlog 格式
+SHOW MASTER STATUS;                          -- 查看 binlog 状态信息， [mysql 8.4+](https://dev.mysql.com/doc/refman/8.4/en/show-master-status.html) 变为 `SHOW BINARY LOG STATUS;`  
 
 -- 2. 动态修改格式（需 SUPER 权限，仅对新会话生效）
 SET GLOBAL binlog_format = 'ROW';  -- 可选 'STATEMENT'/'MIXED'
