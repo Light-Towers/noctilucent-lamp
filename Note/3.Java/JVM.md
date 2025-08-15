@@ -1,4 +1,4 @@
-## 面试题：
+## 面试题
 
 * juc 和 jvm以及 同步锁机制
 * 说下juc，说下aqs的大致流程
@@ -158,7 +158,7 @@ epoch：保存偏向时间戳
 
 
 
-## JVM参数：
+## JVM参数
 
 ```bash
 -Xmx2048m	#设置最大堆内存大小为2048MB。
@@ -177,8 +177,86 @@ epoch：保存偏向时间戳
 -XX:+DisableExplicitGC	#禁止在代码中显式调用System.gc()方法进行垃圾回收。
 ```
 
+## GC
 
+### GC的分类
 
+* **G1 (Garbage-First)**:
+  G1 是JDK 9 之后默认的垃圾回收器，它是一种面向低延迟和吞吐量平衡的垃圾回收器。它将堆内存划分为多个区域，并根据垃圾回收的效率进行优先处理。G1 通过并发标记和增量压缩来减少垃圾回收时的停顿时间。
+
+* **ZGC (Z Garbage Collector)**:
+  ZGC 是一个低延迟的垃圾回收器，目标是实现超低停顿时间（亚毫秒级）。它在JDK 11 中作为预览版引入，在JDK 15 中正式发布。JDK 21 中的ZGC 进一步优化了分代支持，使其在回收不同代的对象时更加高效(未来可能会成为默认选项)。
+
+* **Parallel GC**:
+  Parallel GC 是一种吞吐量优先的垃圾回收器，它使用多线程并行处理年轻代和老年代的垃圾回收。虽然可以提供较高的吞吐量，但可能会导致较长的停顿时间。
+
+* **Shenandoah**:
+  Shenandoah 也是一个低停顿时间的垃圾回收器，与ZGC 类似，但实现方式不同。在JDK 21 中，分代Shenandoah 被删除，不再是可用的选项。
+
+* **Serial GC**:
+  Serial GC 是一个单线程的垃圾回收器，适用于资源受限的环境，例如嵌入式系统。
+
+* **Epsilon GC**:
+  Epsilon GC 是一个不执行垃圾回收的垃圾回收器，主要用于性能测试和极短生命周期的任务。
+
+### ZGC 和 Shenandoah 区别
+
+  ZGC 和Shenandoah 都是面向低延迟的现代垃圾回收器，但它们在实现细节和适用场景上存在一些差异。
+
+  简单来说，ZGC 更加激进，追求极致的低延迟，而Shenandoah 则更注重稳定性和灵活性，在不同场景下都有较好的表现。主要区别:
+
+  - **并发回收:**
+    ZGC 和Shenandoah 都实现了并发标记和并发回收，这意味着在垃圾回收过程中，应用程序线程可以与GC 线程并发执行，从而减少停顿时间。
+
+    但是，ZGC 的并发回收更加激进，它使用染色指针技术，使得标记过程可以在指针上进行，而不需要额外的内存屏障，这可以进一步降低停顿时间。
+
+  - **分代收集:**
+    ZGC 目前不支持分代收集，而Shenandoah 仍然保留了分代收集的概念，这使得Shenandoah 在某些场景下，比如年轻代对象生命周期短的场景，可以有更好的表现。
+
+  - **Region 分区:**
+    ZGC 和Shenandoah 都采用了基于Region 的内存布局，但ZGC 的Region 分区具有动态性，可以动态创建和销毁，并且Region 的大小可以不同，而Shenandoah 的Region 大小是固定的。
+
+  - **染色指针:**
+    ZGC 使用染色指针技术，直接在指针上进行标记，而Shenandoah 使用的是转发指针，需要额外的内存屏障来维护对象的存活状态。
+
+  - **停顿时间:**
+    ZGC 追求极致的低延迟，目标是停顿时间控制在10ms 以内，而Shenandoah 的停顿时间也较低，但没有明确的上限，它更注重在不同堆大小下都保持一致的低延迟。
+
+  - **适用场景:**
+    ZGC 适用于超大内存和低延迟要求的场景，例如内存数据库、高性能服务器等。
+    Shenandoah 适用于各种内存大小和延迟要求的场景，包括混合负载和高吞吐量场景。
+    
+
+  表格总结:
+  | 特点        | ZGC              | Shenandoah                     |
+  | ----------- | ---------------- | ------------------------------ |
+  | 并发回收    | 是，使用染色指针 | 是，使用转发指针               |
+  | 分代收集    | 否               | 是                             |
+  | Region 分区 | 动态，大小可变   | 固定，大小固定                 |
+  | 染色指针    | 是               | 否                             |
+  | 停顿时间    | 目标10ms 以内    | 低延迟，无明确上限             |
+  | 适用场景    | 超大内存，低延迟 | 各种内存大小，低延迟，混合负载 |
+
+  更详细的解释:
+  - **[染色指针(Colored Pointers)](https://www.google.com/search?newwindow=1&sca_esv=d8b04fc949d05faa&cs=1&q=染色指针(Colored+Pointers)&sa=X&ved=2ahUKEwj2hP3T1YaPAxX1Q2cHHYNCD4wQxccNegQIPxAB&mstk=AUtExfBMXGPhFi5LvkLtIY6xnBV8RYSPxtdV8Dvu9KXCtvuYcPLeN2IktYXMDtvM_ZTSsqUBDajRjz_Aw_1vI3YRYuvEMgwJM_GfBkw3NfMSXoK8WP8OsDFphycKHt5ScyxbsIA8xSwy3JwBwsQ2ta0Ipg8YLesaDbcBrPCIoSW244KqULgWNXqLRZBRDNIfPJpXeklHCkBo2Pv_7fcuB5sG98qVLA&csui=3):**
+
+    ZGC 使用染色指针技术，在指针本身上存储对象的标记信息，例如对象是否可达、是否需要被重新映射等。这样可以避免使用额外的内存屏障来维护对象的存活状态，从而降低停顿时间。而Shenandoah 使用的是转发指针，当对象被移动到新的Region 时，会更新对象的转发指针，指向新的位置。
+
+    当应用程序访问对象时，需要通过转发指针来找到对象的新位置，这需要额外的内存屏障来保证并发安全。
+
+  - **[Region 分区(Regions)](https://www.google.com/search?newwindow=1&sca_esv=d8b04fc949d05faa&cs=1&q=Region+分区(Regions)&sa=X&ved=2ahUKEwj2hP3T1YaPAxX1Q2cHHYNCD4wQxccNegQIRBAB&mstk=AUtExfBMXGPhFi5LvkLtIY6xnBV8RYSPxtdV8Dvu9KXCtvuYcPLeN2IktYXMDtvM_ZTSsqUBDajRjz_Aw_1vI3YRYuvEMgwJM_GfBkw3NfMSXoK8WP8OsDFphycKHt5ScyxbsIA8xSwy3JwBwsQ2ta0Ipg8YLesaDbcBrPCIoSW244KqULgWNXqLRZBRDNIfPJpXeklHCkBo2Pv_7fcuB5sG98qVLA&csui=3):**
+
+    ZGC 和Shenandoah 都将堆内存划分为大小不同的Region，用于存放不同大小的对象。ZGC 的Region 分区具有动态性，可以根据需要动态创建和销毁，并且Region 的大小也可以不同，这使得ZGC 可以更灵活地管理内存。
+
+    而Shenandoah 的Region 分区大小是固定的，一旦JVM 启动，Region 的大小就确定了，不可更改。
+
+  - **[并发回收(Concurrent Execution)](https://www.google.com/search?newwindow=1&sca_esv=d8b04fc949d05faa&cs=1&q=并发回收(Concurrent+Execution)&sa=X&ved=2ahUKEwj2hP3T1YaPAxX1Q2cHHYNCD4wQxccNegQIQBAB&mstk=AUtExfBMXGPhFi5LvkLtIY6xnBV8RYSPxtdV8Dvu9KXCtvuYcPLeN2IktYXMDtvM_ZTSsqUBDajRjz_Aw_1vI3YRYuvEMgwJM_GfBkw3NfMSXoK8WP8OsDFphycKHt5ScyxbsIA8xSwy3JwBwsQ2ta0Ipg8YLesaDbcBrPCIoSW244KqULgWNXqLRZBRDNIfPJpXeklHCkBo2Pv_7fcuB5sG98qVLA&csui=3):**
+
+    ZGC 和Shenandoah 都实现了并发标记和并发回收，这意味着垃圾回收器可以在应用程序线程执行的同时进行垃圾回收，从而减少了应用程序的停顿时间。
+
+    但是，ZGC 的并发回收更加激进，它使用染色指针技术，使得标记过程可以在指针上进行，而不需要额外的内存屏障，这可以进一步降低停顿时间。
+
+---
 ## Refrence
 
 [1]: https://cloud.tencent.com/developer/article/1588179 "Java中的对象都是在堆上分配的吗？"
