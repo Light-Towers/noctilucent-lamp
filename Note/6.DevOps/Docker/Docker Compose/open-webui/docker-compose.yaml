@@ -1,0 +1,16 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: always
+    network_mode: host  # 使用host网络, 访问OLLAMA
+    # ports:
+    #   - 8080:8080
+    volumes:
+      - open-webui:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URL=http://127.0.0.1:11434
+
+volumes:
+  open-webui:
+    external: true  # 声明使用外部已存在的卷
