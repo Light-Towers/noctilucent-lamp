@@ -14,7 +14,7 @@ sudo tar -C /usr -xzf ollama-linux-amd64.tgz
 ## 使用命令行前，请确保已经安装modelscope 安装ModelScope。
 pip install modelscope
 ## 下载ollama至ollama-linux目录，指定版本 v0.6.2
-modelscope download --model=modelscope/ollama-linux --local_dir ./ollama-linux --revision v0.6.2
+modelscope download --model=modelscope/ollama-linux --local_dir ./ollama-linux --revision <latest|v0.6.2>
 ```
 ollama-linux目录结构如下：
 ```bash
@@ -43,15 +43,62 @@ export OLLAMA_MODELS=/home/aistudio/ollama-linux/models
 # 永久配置：将 export 命令添加到 .bashrc 或 .zshrc 中
 ```
 
+# Ollama 命令使用
 
+## 模型管理命令
 
+```bash
+# 拉取模型
+ollama pull <model_name>
 
+# 运行模型（如果未下载会自动下载）
+ollama run <model_name>
 
+# 列出已下载的模型
+ollama list
 
+# 查看模型信息
+ollama show <model_name>
 
+# 删除模型
+ollama rm <model_name>
 
+# 启动 Ollama 服务
+ollama serve
+```
+
+## 模型交互
+
+```bash
+# 基本运行模型
+ollama run llama3
+
+# 运行模型并指定参数
+ollama run llama3 --parameter num_predict=128
+
+# 运行模型并传入提示
+ollama run llama3 "你好，介绍一下人工智能"
+
+# 多轮对话模式（在模型提示符下输入）
+>>> 你好，介绍一下人工智能
+>>> 能详细说说机器学习吗？
+>>> 谢谢你的解答
+>>> /bye  # 退出对话
+```
+
+## 模型创建和自定义
+
+```bash
+# 创建自定义模型
+ollama create <new_model_name> -f <Modelfile_path>
+
+# 推送模型到注册中心
+ollama push <model_name>
+```
 
 # ollama 配置
+
+`vim /etc/systemd/system/ollama.service`
 
 ```bash
 [Unit]
@@ -65,9 +112,12 @@ Group=ollama
 Restart=always
 RestartSec=3
 Environment="PATH=/opt/miniconda3/bin:/opt/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
-Environment="OLLAMA_HOST=0.0.0.0"		# 新增 对外暴露（默认只有当前机器可以访问）
+Environment="OLLAMA_HOST=0.0.0.0"		# 对外暴露服务（默认只能本地访问）
 
 [Install]
 WantedBy=default.target
 ```
 
+systemctl daemon-reload
+
+systemctl restart ollama
