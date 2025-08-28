@@ -282,3 +282,6 @@ show databases;
 - **通常我们推荐10到100台机器，以充分发挥Doris的性能（其中3台（HA）部署FE，其余部署BE）。**
 - **Doris的性能与节点数量及其配置呈正相关。最少四台机器（一台FE，三台BE；一台BE和一台Observer FE混合部署，提供元数据备份）和相对较低的配置，Doris仍然可以流畅运行。**
 - **在FE和BE混合部署中，您可能需要注意资源竞争，并确保元数据目录和数据目录属于不同的磁盘。**
+
+
+[Doris MCP + Dify](https://mp.weixin.qq.com/s/O8bTYJYeBs2-UayyGrIl_w)
