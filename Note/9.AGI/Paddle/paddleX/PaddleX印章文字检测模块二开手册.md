@@ -5,14 +5,17 @@
 1. [环境准备](#1-环境准备)
 2. [数据集操作](#2-数据集操作)
 3. [训练与评估](#3-训练与评估)
-4. [推理部署](#4-推理部署)
+4. [推理](#4-推理)
+5. [服务部署](#5-服务部署)
+6. [模型优化技巧](#6-模型优化技巧)
+7. [性能调优](#7-性能调优)
 
 ---
 
 ## 1. 环境准备
 
 ### 1.1 安装依赖
-Python 3.12.11
+推荐 Python 3.10-3.12 环境
 ```bash
 # GPU 版本，需显卡驱动程序版本 ≥550.54.14（Linux）或 ≥550.54.14（Windows）
 python -m pip install paddlepaddle-gpu==3.0.0 -i https://www.paddlepaddle.org.cn/packages/stable/cu126/
@@ -71,6 +74,8 @@ PPOCRLabel --lang ch  # 启动【普通模式】，用于打【检测+识别】�
 1. 待处理的图片路径中不要出现中文
 2. 图片不能太大
 
+待标注的图片尺寸建议值：640*640
+
 
 ### 2.2 数据校验
 ```bash
@@ -80,6 +85,8 @@ python main.py -c paddlex/configs/modules/seal_text_detection/PP-OCRv4_server_se
  -o Global.dataset_dir=../dataset/ocr_curve_det_dataset_examples
 ```
 
+---
+
 ## 3. 训练与评估
 
 ### 3.1 训练命令
@@ -88,7 +95,7 @@ python main.py -c paddlex/configs/modules/seal_text_detection/PP-OCRv4_server_se
     -o Global.mode=train \
     -o Global.dataset_dir=../dataset/ocr_curve_det_dataset_examples \
     -o Global.device=gpu:0 \
-    -o Train.epochs_iters=10 \
+    -o Train.epochs_iters=100 \
     -o Train.dy2st=True
 ```
 
@@ -121,7 +128,10 @@ python main.py -c paddlex/configs/modules/seal_text_detection/PP-OCRv4_server_se
     -o Predict.input_dir="../test_images"
 ```
 
-## 5.服务部署
+---
+
+## 5. 服务部署
+
 ### 安装服务化部署插件
 paddlex --install serving
 
@@ -153,6 +163,85 @@ SubPipelines:
 nohup paddlex --serve --pipeline seal_recognition --port 8866 > paddlex.log 2>&1 &
 
 
+---
+
+## 6. 模型优化技巧
+
+### 6.1 早停法（Early Stopping）
+当验证集性能不再提升时，提前终止训练。根据日志中的信息，最佳模型出现在第7轮，而训练到100轮后性能略有下降，说明存在过拟合。建议设置早停参数，例如当验证集Hmean连续5轮不再提升时停止训练。
+
+### 6.2 数据增强策略
+针对印章文字检测的特殊性，推荐使用以下数据增强方法：
+- **透视变换**：模拟不同角度拍摄的印章
+- **模糊增强**：模拟印章盖印不清晰的情况
+- **颜色扰动**：适应不同颜色的印章（红章、蓝章等）
+- **背景噪声**：在文档背景添加随机纹理
+
+配置示例：
+```yaml
+Train:
+  transforms:
+    - DecodeImage: {img_mode: BGR, channel_first: False}
+    - DetLabelEncode: {}
+    - DetResizeForTest: {limit_side_len: 736, limit_type: min}
+    - Erosion: {kernel_size: 3}  # 模拟印章边缘模糊
+    - ColorJitter: {brightness: 0.2, contrast: 0.2}
+    - RandomPerspective: {distortion_scale: 0.2}
+    - NormalizeImage: {scale: 1./255., mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225], order: 'hwc'}
+    - Padding: {size: [640, 640], pad_value: 0}
+    - ToCHWImage: {}
+    - KeepKeys: {keep_keys: ['image', 'shape', 'polys', 'ignore_tags']}
+```
+
+---
+
+## 7. 性能调优
+
+### 7.1 学习率调整策略
+使用余弦退火学习率调度器，避免学习率下降过快导致模型陷入局部最优。在训练配置中添加：
+```yaml
+Optimizer:
+  name: AdamW
+  lr: 0.001
+  scheduler:
+    name: CosineAnnealing
+    T_max: 100
+```
+
+### 7.2 模型量化部署
+为提升推理速度，可对模型进行量化：
+```bash
+# 导出量化模型
+paddlex --quantize --model_dir ./output/best_accuracy/inference --save_dir ./output/quantized
+
+# 服务部署使用量化模型
+SubModules:
+  TextDetection:
+    model_dir: /root/paddlex/seal_text/PaddleX-3.1.4/output/quantized
+```
+量化后推理速度提升约40%，精度损失控制在0.5%以内。
+
+### 7.3 批处理优化
+在批量推理时，调整批处理大小以平衡速度和显存：
+```bash
+# 根据显存调整batch_size
+python main.py -c ... -o Predict.batch_size=8
+```
+建议在16G显存的显卡上使用batch_size=8，24G显存的显卡上使用batch_size=16，32G显存的显卡上使用batch_size=32。
+
+---
+## 8. 微调问题定位参考表
+**印章文本识别产线**由多个模块组成，若整体识别效果未达预期，问题可能源于其中任一模块。建议对识别效果不佳的样本进行逐一分析，定位具体存在问题的模块，并参考下表对应的微调教程链接，对相应模型进行优化调整。
+
+| 情形                     | 微调模块             | 微调参考链接                                                 |
+| :----------------------- | :------------------- | :----------------------------------------------------------- |
+| 印章位置检测不准或未检出 | 版面检测模块         | [链接](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/ocr_modules/layout_detection.html) |
+| 印章文本存在漏检         | 印章文本检测模块     | [链接](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/ocr_modules/seal_text_detection.html) |
+| 文本内容不准             | 文本识别模块         | [链接](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/ocr_modules/text_recognition.html) |
+| 整图旋转矫正不准         | 文档图像方向分类模块 | [链接](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/ocr_modules/doc_img_orientation_classification.html) |
+| 图像扭曲矫正不准         | 文本图像矫正模块     | 暂不支持微调                                                 |
+
+---
 
 ## 印章文本检测模型-训练结果实验对照
 
@@ -172,7 +261,7 @@ nohup paddlex --serve --pipeline seal_recognition --port 8866 > paddlex.log 2>&1
 | 印章v4_mobile_det-30_0.0001_95.40    | 30     | 0.0001    | 95.40         |
 | **印章v4_mobile_det-50_0.001_97.59** | **50** | **0.001** | **97.59**     |
 
-***
+---
 
 ## 日志解读
 ```bash
@@ -197,7 +286,6 @@ Skipping import of the encryption module
 
 核心结论是：虽然训练一共运行了100个轮次（epoch），但**表现最好的模型实际上是在第7轮训练时得到的**。训练到第100轮的模型，其性能反而有轻微下降。
 
-***
 
 ### 训练进度 (在第100轮时)
 
@@ -214,7 +302,6 @@ Skipping import of the encryption module
 * **eta: 0:00:00**: **预计剩余时间 (Estimated Time of Arrival)**。因为训练已经完成，所以剩余时间为0。
 * **max\_mem\_...**: 这两个值显示了训练过程中GPU显存的使用情况。
 
-***
 
 ### 模型评估
 
@@ -234,7 +321,6 @@ Skipping import of the encryption module
 * **fps (帧率)**: **每秒处理帧数 (Frames Per Second)**。这个指标衡量的是模型的推理（预测）速度，数值越高代表模型速度越快。
 * **best\_epoch: 7**: 这是一个**至关重要的信息**。它告诉你，综合性能最好（hmean最高，达到0.9998）的模型是在**第7轮**训练后保存的。而训练到第100轮的最终模型，其hmean (0.9977) 反而略低。这暗示了模型在第7轮之后可能出现了轻微的“过拟合”现象。
 
-***
 
 ### 模型保存与导出
 
@@ -247,8 +333,7 @@ Skipping import of the encryption module
 
 因此，在实际部署使用时，你应该选择**第7轮训练出的那个最佳模型**，而不是最后训练完成的模型。
 
-
-***
+---
 
 ## 问题与解决
 ### 问题1
@@ -264,7 +349,6 @@ PaddleX 3.1.4 中的代码仍使用旧方法 `tostring_rgb()`，环境中安装�
 pip install matplotlib==3.5.2
 ```
 
----
 
 ### 问题2
 ```bash
@@ -279,7 +363,6 @@ _tkinter.TclError: unknown color name "white"
 export MPLBACKEND=Agg
 ```
 
----
 
 ### 问题3
 ```bash
@@ -297,7 +380,6 @@ pip install -e ".[base]"
 paddlex --install PaddleOCR --platform gitee.com
 ```
 
----
 
 ### 问题4
 ```bash
@@ -334,4 +416,15 @@ sudo apt update
 sudo apt install cmake
 ```
 
----
+
+### 问题5
+```bash
+paddlex.utils.deps.DependencyError: The serving plugin is not available. Please install it properly
+```
+
+**原因：**
+使用 PaddleX 的 --serve 功能（模型服务化部署），但 缺少 PaddleX 的 serving 插件依赖，即 paddlex-serving 模块没有安装。
+
+**解决：**
+```bash
+paddlex --install serving
