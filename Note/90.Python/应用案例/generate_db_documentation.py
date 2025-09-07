@@ -1,4 +1,31 @@
-```python
+# -*- coding: utf-8 -*-
+"""
+将MySQL数据库表结构生成Word文档工具
+
+该脚本用于连接MySQL数据库，读取指定数据库中的表结构信息，
+并将这些信息导出到Word文档中，生成表结构说明文档。
+
+功能特性：
+1. 连接MySQL数据库并获取表结构信息
+2. 生成包含表清单和各表详细字段信息的Word文档
+3. 支持多个数据库的批量处理
+4. 生成的文档包含表名、字段名、数据类型、约束和字段说明等信息
+5. 文档格式美观，标题和表格清晰
+
+使用方法：
+1. 配置数据库连接信息
+2. 设置需要导出的数据库名称列表
+3. 运行脚本自动生成Word文档
+
+依赖包：
+- pymysql: 用于连接MySQL数据库
+- python-docx: 用于生成Word文档
+
+注意事项：
+- 需要安装pymysql和python-docx包
+- 需要正确配置数据库连接参数
+"""
+
 # 导包
 # pip  install pymysql python-docx
 import pymysql
@@ -13,14 +40,23 @@ from docx.oxml.ns import qn, nsdecls
 document = Document()       # 新建文档
 # document = Document('test.docx')      # 读取现有文档，建立文档对象
 
+# 建立数据库连接
 conn = pymysql.connect(host="192.168.100.21",
                            port=33306,
                            user="root",
-                           password="root",
+                           password="mingyang100100",
+                        #    db="db_mingyang_home_court",
                            charset="utf8")
 cursor = conn.cursor()
 
 def tb_list(db_name):
+    '''
+    查询指定数据库中的所有数据表
+    参数:
+        db_name: 数据库名称
+    返回:
+        包含表名和表注释的元组列表
+    '''
     sql='''
         SELECT
             TABLE_NAME,
@@ -39,6 +75,14 @@ def tb_list(db_name):
 
 
 def load_data_from_mysql(db_name, table_name):
+    '''
+    从MySQL数据库中加载指定表的字段信息
+    参数:
+        db_name: 数据库名称
+        table_name: 表名
+    返回:
+        包含字段信息的元组列表（字段名、逻辑名、数据类型、约束、说明）
+    '''
     sql='''
     SELECT 
         t.COLUMN_NAME 字段名,
@@ -90,6 +134,13 @@ def load_data_from_mysql(db_name, table_name):
  
 
 def set_heading(content1, level, content2):
+    '''
+    设置文档标题样式
+    参数:
+        content1: 标题前缀内容
+        level: 标题级别（1-9）
+        content2: 标题后缀内容
+    '''
     # 第二种设置标题的方式，此方式还可以设置文本的字体、颜色、大小等属性
     run = document.add_heading(content1, level).add_run(content2)
     # 设置西文字体
@@ -204,7 +255,5 @@ for i in range(len(db_name_list)):
                 table.cell(i+1, j).text = table_data_list[i][j]
  
  
-# 4
+# 保存文档
 document.save("test.docx")
-```
-
