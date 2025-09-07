@@ -19,13 +19,13 @@ https://github.com/elasticsearch-dump/elasticsearch-dump
 
 elasticsearch-dump使用node.js开发，可使用npm包管理工具直接安装：
 
-```text
+```bash
 npm install elasticdump -g
 ```
 
 2. 主要参数说明
 
-```text
+```bash
 --input: 源地址，可为ES集群URL、文件或stdin,可指定索引，格式为：{protocol}://{host}:{port}/{index}
 --input-index: 源ES集群中的索引
 --output: 目标地址，可为ES集群地址URL、文件或stdout，可指定索引，格式为：{protocol}://{host}:{port}/{index}
@@ -38,7 +38,7 @@ npm install elasticdump -g
 
  以下操作通过elasticdump命令将集群172.16.0.39中的companydatabase索引迁移至集群172.16.0.20。注意第一条命令先将索引的settings先迁移，如果直接迁移mapping或者data将失去原有集群中索引的配置信息如分片数量和副本数量等，当然也可以直接在目标集群中将索引创建完毕后再同步mapping与data
 
-```text
+```bash
 elasticdump --input=http://172.16.0.39:9200/companydatabase --output=http://172.16.0.20:9200/companydatabase --type=settings
 elasticdump --input=http://172.16.0.39:9200/companydatabase --output=http://172.16.0.20:9200/companydatabase --type=mapping
 elasticdump --input=http://172.16.0.39:9200/companydatabase --output=http://172.16.0.20:9200/companydatabase --type=data
@@ -48,7 +48,7 @@ elasticdump --input=http://172.16.0.39:9200/companydatabase --output=http://172.
 
    以下操作通过elasticdump命令将将集群172.16.0.39中的所有索引迁移至集群172.16.0.20。 注意此操作并不能迁移索引的配置如分片数量和副本数量，必须对每个索引单独进行配置的迁移，或者直接在目标集群中将索引创建完毕后再迁移数据
 
-```text
+```bash
 elasticdump --input=http://172.16.0.39:9200 --output=http://172.16.0.20:9200
 ```
 
@@ -65,7 +65,7 @@ snapshot api是[Elasticsearch](https://cloud.tencent.com/product/es?from_column=
 
 创建快照前必须先创建repository仓库，一个repository仓库可以包含多份快照文件，repository主要有一下几种类型
 
-```text
+```bash
 fs: 共享文件系统，将快照文件存放于文件系统中
 url: 指定文件系统的URL路径，支持协议：http,https,ftp,file,jar
 hdfs/s3/oss/cos: 快照存放于分布式文件系统中，以插件形式支持
@@ -73,13 +73,14 @@ hdfs/s3/oss/cos: 快照存放于分布式文件系统中，以插件形式支持
 
 在Elasticsearch配置文件elasticsearch.yml设置仓库路径：
 
-```text
+```bash
 path.repo: ["/usr/local/services/test"]
 ```
 
 之后调用snapshot api创建repository：
 
-```text
+```bash
+# 创建仓库
 curl -XPUT http://172.16.0.39:9200/_snapshot/my_backup -H 'Content-Type: application/json' -d '{
     "type": "fs",
     "settings": {
@@ -87,11 +88,14 @@ curl -XPUT http://172.16.0.39:9200/_snapshot/my_backup -H 'Content-Type: applica
         "compress": true
     }
 }'
+
+# 查看仓库
+curl -XGET http://127.0.0.1:9200/_cat/repositories?v
 ```
 
 如果需要从其它云厂商的ES集群迁移至腾讯云ES集群，或者腾讯云内部的ES集群迁移，可以使用对应云厂商他提供的仓库类型，如AWS的S3, 阿里云的OSS，腾讯云的COS等
 
-```text
+```bash
 curl -XPUT http://172.16.0.39:9200/_snapshot/my_s3_repository
     {
         "type": "s3",
@@ -101,13 +105,18 @@ curl -XPUT http://172.16.0.39:9200/_snapshot/my_s3_repository
     }
 }
 ```
+> es安装hdfs插件。`bin/elasticsearch-plugin install repository-hdfs`
 
-2. 源ES集群中创建snapshot
+1. 源ES集群中创建snapshot
 
 调用snapshot api在创建好的仓库中创建快照
 
-```text
+```bash
+# 创建快照
 curl -XPUT http://172.16.0.39:9200/_snapshot/my_backup/snapshot_1?wait_for_completion=true
+
+# 查看所有的快照
+curl -XGET http://127.0.0.1:9200/_snapshot/my_backup/_all?pretty
 ```
 
 创建快照可以指定索引，也可以指定快照中包含哪些内容，具体的api接口参数可以查阅官方文档
@@ -122,13 +131,13 @@ curl -XPUT http://172.16.0.39:9200/_snapshot/my_backup/snapshot_1?wait_for_compl
 
 5. 从快照恢复
 
-```text
+```bash
 curl -XPOST http://172.16.0.20:9200/_snapshot/my_backup/snapshot_1/_restore
 ```
 
 6. 查看快照恢复状态
 
-```text
+```bash
 curl http://172.16.0.20:9200/_snapshot/_status
 ```
 
@@ -144,7 +153,7 @@ reindex是Elasticsearch提供的一个api接口，可以把数据从源ES集群�
 
 以下操作表示从源ES集群中查询名为test1的索引，查询条件为title字段为elasticsearch，将结果写入当前集群的test2索引
 
-```text
+```bash
 POST _reindex
 {
       "source": {
@@ -168,7 +177,7 @@ POST _reindex
 
 logstash支持从一个ES集群中读取数据然后写入到另一个ES集群，因此可以使用logstash进行数据迁移，具体的配置文件如下：
 
-```text
+```bash
 input {
     elasticsearch {
         hosts => ["http://172.16.0.39:9200"]

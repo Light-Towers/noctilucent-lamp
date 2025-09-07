@@ -70,6 +70,7 @@ services:
   #   restart: always
 
   # 监控mongo所需的mongo_exporter (Grafana Dashboard: 20867)
+  ## mongo需开启 monitor 监控
   mongo_exporter:
     image: percona/mongodb_exporter:0.43.1-amd64
     container_name: mongo_exporter

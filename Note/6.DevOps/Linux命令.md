@@ -206,3 +206,33 @@ systemctl enable docker.service
 ## 查看已启用的服务  ## --type=service 显示服务类型
 systemctl list-unit-files  --type=service | grep docker
 ```
+
+# curl
+
+## 常用参数：
+- `-X`：指定请求方法（GET、POST等）
+- `-H`：添加请求头
+- `-d`：发送数据（POST请求）
+- `-F`：用于上传文件，会自动设置Content-Type为multipart/form-data。
+- `-o`：将输出保存到指定的文件。
+- `-I`：查看响应头
+- `-u`：基本认证的用户名和密码。
+- `-k`：允许 curl 执行 "不安全" 的 SSL 连接。跳过对服务器证书的验证，即忽略证书是否由受信任的 CA 签发、证书是否过期等问题。
+
+## 使用示例：
+```bash
+# 发送GET请求
+curl -X GET http://example.com
+# 发送POST请求并添加头
+curl -X POST -H "Content-Type: application/json" -d '{"key1":"value1"}' http://example.com/api
+# 上传文件
+curl -F "file=@/path/to/file" http://example.com/upload
+# 下载文件
+curl -o output.txt http://example.com/file.txt
+# 查看响应头
+curl -I http://example.com
+# 基本认证
+curl -u username:password http://example.com
+# 访问使用自签名证书的网站
+curl -k https://example.com
+```

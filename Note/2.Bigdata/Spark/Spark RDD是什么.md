@@ -45,7 +45,7 @@ Spark 里的计算都是通过操作 RDD 完成的，学习 RDD 的第一个问�
 
 第一类方式是从内存里构造 RDD，需要使用 makeRDD 方法，代码如下所示。
 
-```text
+```bash
 val rdd01 = sc.makeRDD(List(l,2,3,4,5,6))
 ```
 
@@ -53,7 +53,7 @@ val rdd01 = sc.makeRDD(List(l,2,3,4,5,6))
 
 第二类方式是通过文件系统构造 RDD，代码如下所示。
 
-```text
+```bash
 val rdd:RDD[String] == sc.textFile("file:///D:/sparkdata.txt",1)
 ```
 
@@ -91,7 +91,7 @@ combOp 操作是把各分区聚合的结果再聚合。aggregate() 函数会返�
 
 下面举一个利用 aggreated() 函数求平均数的例子。
 
-```text
+```bash
 val rdd = List (1,2,3,4)
 val input = sc.parallelize(rdd)
 val result = input.aggregate((0,0))(

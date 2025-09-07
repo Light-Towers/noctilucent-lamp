@@ -133,3 +133,16 @@ db.app_enterprise_info.createIndex({
 db.app_enterprise_info.dropIndex({ pid: 1 })
 ```
 
+## 开启监控
+```javascript
+use admin
+db.createUser({ 
+    user: "monitor",
+    pwd: "monitor",
+    roles: [
+        { role: "read", db: "admin" },
+        { role: "clusterMonitor", db: "admin" },
+        { role: "readAnyDatabase", db: "admin"}
+    ]
+})
+```
