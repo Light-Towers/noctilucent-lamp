@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js 太阳系模拟</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+        }
+        
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        #title {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            letter-spacing: 3px;
+            z-index: 10;
+        }
+        
+        #info-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 400px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(100, 180, 255, 0.3);
+            z-index: 10;
+            transform: translateY(110%);
+            transition: transform 0.5s ease;
+        }
+        
+        #info-panel.visible {
+            transform: translateY(0);
+        }
+        
+        #info-panel h2 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        #info-panel p {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .control-btn {
+            background: rgba(0, 50, 100, 0.7);
+            color: white;
+            border: 1px solid rgba(100, 180, 255, 0.5);
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .control-btn:hover {
+            background: rgba(30, 100, 180, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        #instructions {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            background: rgba(0, 20, 40, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+            max-width: 300px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            z-index: 10;
+        }
+        
+        .planet-label {
+            position: absolute;
+            background: rgba(0, 30, 60, 0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+            border: 1px solid rgba(100, 180, 255, 0.5);
+            z-index: 5;
+        }
+        
+        @media (max-width: 768px) {
+            #title {
+                font-size: 1.8rem;
+            }
+            
+            #info-panel {
+                max-width: 300px;
+                padding: 15px;
+            }
+            
+            #instructions {
+                max-width: 200px;
+                top: 70px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="title">太阳系模拟</div>
+        
+        <div id="instructions">
+            <p>• 鼠标悬停在星球上查看详细信息</p>
+            <p>• 鼠标拖拽可旋转视角</p>
+            <p>• 滚轮可缩放视图</p>
+        </div>
+        
+        <div id="canvas-container"></div>
+        
+        <div id="info-panel">
+            <h2 id="planet-name">地球</h2>
+            <p id="planet-type">类型: 类地行星</p>
+            <p id="planet-distance">距太阳: 1.496亿公里</p>
+            <p id="planet-diameter">直径: 12,742公里</p>
+            <p id="planet-period">公转周期: 365.25天</p>
+            <p id="planet-description">地球是太阳系中唯一已知存在生命的行星。</p>
+        </div>
+        
+        <div id="controls">
+            <button class="control-btn" id="pause-btn">暂停</button>
+            <button class="control-btn" id="reset-btn">重置视图</button>
+        </div>
+    </div>
+
+    <script>
+        // 场景设置
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 3000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        
+        // 添加轨道控制器
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        
+        // 相机位置
+        camera.position.set(0, 100, 200);
+        controls.update();
+        
+        // 添加光源
+        const sunLight = new THREE.PointLight(0xffffff, 2);
+        scene.add(sunLight);
+        
+        const ambientLight = new THREE.AmbientLight(0x333333);
+        scene.add(ambientLight);
+        
+        // 创建星空背景
+        function createStars() {
+            const starsGeometry = new THREE.BufferGeometry();
+            const starsMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 1.5,
+                sizeAttenuation: true
+            });
+            
+            const starsVertices = [];
+            for (let i = 0; i < 10000; i++) {
+                const x = THREE.MathUtils.randFloatSpread(2000);
+                const y = THREE.MathUtils.randFloatSpread(2000);
+                const z = THREE.MathUtils.randFloatSpread(2000);
+                starsVertices.push(x, y, z);
+            }
+            
+            starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+            const starField = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(starField);
+        }
+        
+        createStars();
+        
+        // 行星数据
+        const planets = [
+            { 
+                name: "太阳", 
+                radius: 15, 
+                distance: 0, 
+                rotationSpeed: 0.002, 
+                color: 0xffaa33, 
+                emissive: 0xffaa33,
+                type: "恒星",
+                info: "太阳是太阳系的中心天体，占太阳系总质量的99.86%。"
+            },
+            { 
+                name: "水星", 
+                radius: 3.2, 
+                distance: 35, 
+                rotationSpeed: 0.004, 
+                orbitSpeed: 0.01, 
+                color: 0xa9a9a9, 
+                type: "类地行星",
+                distanceFromSun: "5790万公里",
+                diameter: "4,879公里",
+                orbitalPeriod: "88天",
+                info: "水星是太阳系中最小的行星，也是离太阳最近的行星。"
+            },
+            { 
+                name: "金星", 
+                radius: 6, 
+                distance: 50, 
+                rotationSpeed: 0.002, 
+                orbitSpeed: 0.007, 
+                color: 0xffc864, 
+                type: "类地行星",
+                distanceFromSun: "1.082亿公里",
+                diameter: "12,104公里",
+                orbitalPeriod: "225天",
+                info: "金星是太阳系中最热的行星，表面温度足以熔化铅。"
+            },
+            { 
+                name: "地球", 
+                radius: 6.3, 
+                distance: 70, 
+                rotationSpeed: 0.01, 
+                orbitSpeed: 0.005, 
+                color: 0x6b93d6, 
+                type: "类地行星",
+                distanceFromSun: "1.496亿公里",
+                diameter: "12,742公里",
+                orbitalPeriod: "365.25天",
+                info: "地球是太阳系中唯一已知存在生命的行星。"
+            },
+            { 
+                name: "火星", 
+                radius: 3.4, 
+                distance: 90, 
+                rotationSpeed: 0.008, 
+                orbitSpeed: 0.004, 
+                color: 0xff7b51, 
+                type: "类地行星",
+                distanceFromSun: "2.279亿公里",
+                diameter: "6,779公里",
+                orbitalPeriod: "687天",
+                info: "火星被称为'红色星球'，因为其表面富含氧化铁。"
+            },
+            { 
+                name: "木星", 
+                radius: 12, 
+                distance: 120, 
+                rotationSpeed: 0.02, 
+                orbitSpeed: 0.002, 
+                color: 0xe1b583, 
+                type: "气态巨行星",
+                distanceFromSun: "7.785亿公里",
+                diameter: "139,820公里",
+                orbitalPeriod: "11.9年",
+                info: "木星是太阳系中最大的行星，拥有强大的磁场。"
+            },
+            { 
+                name: "土星", 
+                radius: 10, 
+                distance: 150, 
+                rotationSpeed: 0.018, 
+                orbitSpeed: 0.0015, 
+                color: 0xf1c48d, 
+                type: "气态巨行星",
+                distanceFromSun: "14.37亿公里",
+                diameter: "116,460公里",
+                orbitalPeriod: "29.5年",
+                info: "土星以其壮观的环系而闻名，环系主要由冰粒组成。"
+            },
+            { 
+                name: "天王星", 
+                radius: 7, 
+                distance: 180, 
+                rotationSpeed: 0.015, 
+                orbitSpeed: 0.001, 
+                color: 0x9fe2e2, 
+                type: "冰巨行星",
+                distanceFromSun: "28.71亿公里",
+                diameter: "50,724公里",
+                orbitalPeriod: "84年",
+                info: "天王星是太阳系中唯一'躺着'旋转的行星，自转轴几乎平行于公转轨道面。"
+            },
+            { 
+                name: "海王星", 
+                radius: 6.8, 
+                distance: 210, 
+                rotationSpeed: 0.016, 
+                orbitSpeed: 0.0008, 
+                color: 0x5b9bd5, 
+                type: "冰巨行星",
+                distanceFromSun: "44.97亿公里",
+                diameter: "49,244公里",
+                orbitalPeriod: "165年",
+                info: "海王星是太阳系中通过数学预测而非直接观测发现的行星。"
+            }
+        ];
+        
+        // 创建行星
+        const planetObjects = [];
+        const planetMeshes = [];
+        
+        planets.forEach((planet, index) => {
+            // 创建行星几何体和材质
+            const geometry = new THREE.SphereGeometry(planet.radius, 32, 32);
+            let material;
+            
+            if (planet.name === "太阳") {
+                material = new THREE.MeshBasicMaterial({
+                    color: planet.color,
+                    emissive: planet.emissive
+                });
+            } else {
+                material = new THREE.MeshPhongMaterial({
+                    color: planet.color,
+                    shininess: 30
+                });
+            }
+            
+            const mesh = new THREE.Mesh(geometry, material);
+            
+            // 为行星添加轨道
+            if (planet.distance > 0) {
+                const orbitGeometry = new THREE.RingGeometry(planet.distance - 0.5, planet.distance + 0.5, 128);
+                const orbitMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.2
+                });
+                const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
+                orbit.rotation.x = Math.PI / 2;
+                scene.add(orbit);
+            }
+            
+            // 添加行星到场景
+            scene.add(mesh);
+            planetMeshes.push(mesh);
+            
+            // 保存行星对象
+            const planetObj = {
+                mesh: mesh,
+                data: planet,
+                angle: Math.random() * Math.PI * 2
+            };
+            
+            planetObjects.push(planetObj);
+            
+            // 为土星添加光环
+            if (planet.name === "土星") {
+                const ringGeometry = new THREE.RingGeometry(planet.radius + 2, planet.radius + 8, 64);
+                const ringMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xf8e08e,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                ring.rotation.x = Math.PI / 3;
+                mesh.add(ring);
+            }
+        });
+        
+        // 创建行星标签
+        const labels = [];
+        planetObjects.forEach((planetObj, index) => {
+            const label = document.createElement('div');
+            label.className = 'planet-label';
+            label.textContent = planetObj.data.name;
+            label.style.display = 'block';
+            document.getElementById('container').appendChild(label);
+            labels.push({
+                element: label,
+                planet: planetObj
+            });
+        });
+        
+        // 光线投射和鼠标交互
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let hoveredPlanet = null;
+        
+        // 鼠标移动事件
+        window.addEventListener('mousemove', (event) => {
+            // 计算鼠标在归一化设备坐标中的位置（-1到+1）
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+        });
+        
+        // 窗口大小调整
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // 控制按钮
+        let animationPaused = false;
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            animationPaused = !animationPaused;
+            document.getElementById('pause-btn').textContent = animationPaused ? '继续' : '暂停';
+        });
+        
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            camera.position.set(0, 100, 200);
+            controls.reset();
+        });
+        
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (!animationPaused) {
+                // 更新行星位置和旋转
+                planetObjects.forEach((planetObj) => {
+                    const planet = planetObj.data;
+                    
+                    // 自转
+                    planetObj.mesh.rotation.y += planet.rotationSpeed || 0;
+                    
+                    // 公转
+                    if (planet.distance > 0) {
+                        planetObj.angle += planet.orbitSpeed || 0;
+                        planetObj.mesh.position.x = Math.sin(planetObj.angle) * planet.distance;
+                        planetObj.mesh.position.z = Math.cos(planetObj.angle) * planet.distance;
+                    }
+                });
+            }
+            
+            // 更新光线投射
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(planetMeshes);
+            
+            // 处理行星悬停
+            if (intersects.length > 0) {
+                const planetMesh = intersects[0].object;
+                const planetObj = planetObjects.find(obj => obj.mesh === planetMesh);
+                
+                if (planetObj && planetObj !== hoveredPlanet) {
+                    // 移除之前的悬停状态
+                    if (hoveredPlanet) {
+                        hoveredPlanet.mesh.scale.set(1, 1, 1);
+                    }
+                    
+                    // 设置新的悬停状态
+                    hoveredPlanet = planetObj;
+                    planetMesh.scale.set(1.2, 1.2, 1.2);
+                    
+                    // 显示行星信息
+                    const planet = planetObj.data;
+                    document.getElementById('planet-name').textContent = planet.name;
+                    document.getElementById('planet-type').textContent = `类型: ${planet.type}`;
+                    
+                    if (planet.distanceFromSun) {
+                        document.getElementById('planet-distance').textContent = `距太阳: ${planet.distanceFromSun}`;
+                        document.getElementById('planet-diameter').textContent = `直径: ${planet.diameter}`;
+                        document.getElementById('planet-period').textContent = `公转周期: ${planet.orbitalPeriod}`;
+                        document.getElementById('planet-description').textContent = planet.info;
+                        
+                        // 显示信息面板
+                        document.getElementById('info-panel').classList.add('visible');
+                    }
+                }
+            } else if (hoveredPlanet) {
+                // 鼠标移出行星
+                hoveredPlanet.mesh.scale.set(1, 1, 1);
+                hoveredPlanet = null;
+                
+                // 隐藏信息面板
+                document.getElementById('info-panel').classList.remove('visible');
+            }
+            
+            // 更新标签位置
+            labels.forEach(label => {
+                const planet = label.planet;
+                const position = new THREE.Vector3();
+                planet.mesh.getWorldPosition(position);
+                position.project(camera);
+                
+                const x = (position.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (-position.y * 0.5 + 0.5) * window.innerHeight;
+                
+                label.element.style.left = `${x}px`;
+                label.element.style.top = `${y}px`;
+                
+                // 根据距离调整标签透明度
+                const distance = camera.position.distanceTo(planet.mesh.position);
+                const opacity = Math.min(1, Math.max(0, 1 - (distance - 150) / 300));
+                label.element.style.opacity = planet === hoveredPlanet ? 1 : opacity;
+                
+                // 当行星被悬停时，只显示当前行星的标签
+                label.element.style.display = (hoveredPlanet && planet !== hoveredPlanet) ? 'none' : 'block';
+            });
+            
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+    </script>
+</body>
+</html>
