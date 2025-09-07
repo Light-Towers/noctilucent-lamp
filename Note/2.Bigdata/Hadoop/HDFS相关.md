@@ -185,3 +185,34 @@ QJM 相较于其他HDFS HA 方案(如NFS) 的优势:
   
 
 # DataNode
+
+
+
+#
+```bash
+hdfs dfsadmin -report         # 显示集群状态
+# 查看是否有节点被排除
+hdfs dfsadmin -listExcludedNodes
+# 进入安全模式
+hdfs dfsadmin -safemode forceExit  # 退出安全模式
+# 刷新节点
+hdfs hdfs dfsadmin -refreshNodes
+
+# 查看存储策略
+hdfs storagepolicies -listPolicies
+
+hdfs fsck / -files -blocks -locations     # 检查块报告一致性
+
+hdfs fsck / -list-corruptfileblocks       # 查找孤儿块
+# 删除孤儿块（谨慎操作！）
+## hdfs fsck / -delete
+
+hdfs debug -recoverLease -path <文件路径>  # 恢复文件租约（若卡住）
+hdfs fsck / -list-corruptfileblocks      # 列出所有损坏块
+
+# 检查文件
+hdfs fsck /user/hive/warehouse/dw/app_exhibition_actor/dt=2025-04-22/part-00189-9b2039f4-c757-45b1-be64-85afa14390fb.c000 -files -blocks -locations
+
+# 获取配置：查看排除的节点
+hdfs getconf -confKey dfs.hosts.exclude
+```

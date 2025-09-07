@@ -42,7 +42,7 @@
 
 1.创建一个索引策略
 
-```text
+```bash
 PUT _ilm/policy/my_policy
 {
   "policy": {
@@ -93,7 +93,7 @@ PUT _ilm/policy/my_policy
 
 2.创建一个索引模版，指定使用的索引策略
 
-```text
+```bash
 PUT _template/my_template
 {
   "index_patterns": ["myindex-*"],  //模版匹配的索引名以"index-"开头
@@ -108,7 +108,7 @@ PUT _template/my_template
 
 3.创建一个符合上述索引模版的索引
 
-```text
+```bash
 PUT index-000001
 {
   "aliases": {
@@ -135,7 +135,7 @@ PUT index-000001
 
 
 
-```text
+```bash
 PUT _cluster/settings
 {
   "transient": {
@@ -156,7 +156,7 @@ PUT _cluster/settings
 
 
 
-```text
+```bash
  output {
       elasticsearch {
 //发生rollover时的写入索引的别名
@@ -183,7 +183,7 @@ PUT _cluster/settings
 
 
 
-```text
+```bash
 GET /myindex/_ilm/explain
 ```
 
@@ -191,7 +191,7 @@ GET /myindex/_ilm/explain
 
 
 
-```text
+```bash
 POST /myindex/_ilm/retry
 ```
 
@@ -203,7 +203,7 @@ POST /myindex/_ilm/retry
 
 
 
-```text
+```bash
 PUT _ilm/policy/my_policy
 {
   "policy": {
@@ -238,7 +238,7 @@ PUT _ilm/policy/my_policy
 
 
 
-```text
+```bash
 PUT myindex/_settings
 {
   "lifecycle.name": "my_other_policy"
