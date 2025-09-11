@@ -33,7 +33,7 @@
    ```
    生产者 → [交换机] → [绑定规则] → 队列 → 消费者
    ```
-
+   
 2. **关键机制**  
    - **确认机制**：消费者需发送ack确认消息处理完成
    - **持久化**：通过`durable=True`参数实现消息持久化
@@ -108,14 +108,11 @@
    ```bash
    # 安装依赖
    apt-get update && apt-get install -y build-essential autoconf libncurses5-dev
-   # 下载源码
-  # 下载指定版本源码
-  wget https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.0/rabbitmq-server-3.13.0.tar.xz
-  # 解压编译
+   # 下载指定版本源码
+   wget https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.0/rabbitmq-server-3.13.0.tar.xz
    # 解压编译
    tar -xf rabbitmq-server-3.13.0.tar.xz
-   cd rabbitmq-server-3.13.0
-   make
+   cd rabbitmq-server-3.13.0 && make
    # 启动服务
    ./scripts/rabbitmq-server
    ```
