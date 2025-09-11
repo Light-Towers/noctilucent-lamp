@@ -109,7 +109,9 @@
    # 安装依赖
    apt-get update && apt-get install -y build-essential autoconf libncurses5-dev
    # 下载源码
-   wget https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.0/rabbitmq-server-3.13.0.tar.xz
+  # 下载指定版本源码
+  wget https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.0/rabbitmq-server-3.13.0.tar.xz
+  # 解压编译
    # 解压编译
    tar -xf rabbitmq-server-3.13.0.tar.xz
    cd rabbitmq-server-3.13.0
@@ -150,3 +152,154 @@
      ```bash
      rabbitmqctl join_cluster rabbit@node1
      ```
+
+## 五、Spring Boot 集成
+### 1. 依赖配置
+在`pom.xml`中添加Spring Boot Starter AMQP依赖：
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+</dependency>
+```
+
+### 2. 配置文件
+在`application.yml`中配置RabbitMQ连接信息：
+```yaml
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbit
+    password: 123456
+    virtual-host: /
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        prefetch: 1
+        acknowledge-mode: manual
+```
+
+### 3. 消息生产者
+```java
+@Component
+public class MessageProducer {
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    public void sendMessage(String exchange, String routingKey, Object message) {
+        rabbitTemplate.convertAndSend(exchange, routingKey, message, correlationData -> {
+            // 设置消息持久化
+            correlationData.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+            return correlationData;
+        });
+    }
+}
+```
+
+### 4. 消息消费者
+```java
+@Component
+@RabbitListener(queues = "queue.name")
+public class MessageConsumer {
+    @RabbitHandler
+    public void processMessage(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
+        try {
+            // 处理消息
+            System.out.println("Received message: " + message);
+            // 手动确认
+            channel.basicAck(deliveryTag, false);
+        } catch (Exception e) {
+            // 拒绝消息，不重新入队
+            channel.basicReject(deliveryTag, false);
+        }
+    }
+}
+```
+
+**参数详解：**
+- **消息体参数**：可直接接收转换后的消息内容
+  - 支持类型：String、byte[]、自定义对象等
+  - 示例：`public void processMessage(String message)`
+
+- **Message对象**：获取原始消息内容和属性
+  - 示例：`public void processMessage(Message message)`
+
+- **Channel参数**：用于手动确认、拒绝等操作
+  - 示例：`public void processMessage(String message, Channel channel)`
+  - **关键作用**：提供与RabbitMQ服务器的通信通道，用于执行确认、拒绝等操作
+
+- **deliveryTag参数**：消息投递唯一标识
+  - 由RabbitMQ在消息投递时生成，每个Channel内单调递增
+  - 作用：标识特定消息投递，用于确认(ack)、拒绝(nack)、重入队等操作
+  - 特性：
+    - Channel级别唯一：不同Channel的deliveryTag可能重复
+    - 递增特性：同一Channel内新消息的deliveryTag > 旧消息
+    - 临时性：Channel关闭后计数器重置
+  - 使用示例：
+    ```java
+    // 确认消息处理完成
+    channel.basicAck(deliveryTag, false);
+    
+    // 拒绝消息且不重新入队
+    channel.basicReject(deliveryTag, false);
+    
+    // 拒绝消息并重新入队
+    channel.basicNack(deliveryTag, false, true);
+    ```
+  - **重要提示**：必须与接收到消息的同一Channel配合使用，跨Channel操作会导致异常
+
+- **@Header注解**：获取消息头中的特定属性
+  - RabbitMQ支持消息头（Headers Exchange类型）
+  - 示例：`@Header("custom-header") String customValue`
+  - 常用系统头：
+    - `AmqpHeaders.DELIVERY_TAG`：消息投递标签
+    - `AmqpHeaders.RECEIVED_ROUTING_KEY`：接收的路由键
+    - `AmqpHeaders.CONTENT_TYPE`：消息内容类型
+
+- **@Headers注解**：获取所有消息头
+  - 示例：`public void processMessage(String message, @Headers Map<String, Object> headers)`
+
+**消息头使用示例：**
+```java
+// 生产者添加消息头
+MessageProperties props = new MessageProperties();
+props.setHeader("priority", "high");
+props.setHeader("source", "web");
+Message message = new Message(payload.getBytes(), props);
+rabbitTemplate.send(exchange, routingKey, message);
+
+// 消费者获取消息头
+@RabbitHandler
+public void processMessage(String message, 
+                          @Header("priority") String priority,
+                          @Header("source") String source) {
+    System.out.println("Priority: " + priority);
+    System.out.println("Source: " + source);
+}
+```
+
+**注解说明：**
+- **@RabbitListener**：可以标注在类或方法上
+  - 标注在类上：表示该类为消息监听器，需配合@RabbitHandler使用
+  - 标注在方法上：直接指定该方法为消息处理方法
+  - 类级别使用场景：当需要一个监听器处理多种类型消息时（通过方法重载实现）
+  
+- **@RabbitHandler**：必须与类级别的@RabbitListener配合使用
+  - 标识具体处理消息的方法
+  - 支持方法重载，可根据消息类型自动选择处理方法
+  - 示例：
+    ```java
+    @RabbitHandler
+    public void handleString(String message) { /* 处理字符串消息 */ }
+    
+    @RabbitHandler
+    public void handleOrder(Order order) { /* 处理订单对象 */ }
+    ```
+
+### 5. 重要配置说明
+- **消息确认机制**：开启`publisher-confirm-type`和`publisher-returns`确保消息可靠投递（RabbitMQ 3.13.0验证）
+- **消费者QoS**：通过`prefetch`控制未确认消息数量（Spring Boot 3.2.5兼容配置）
+- **手动ACK**：确保消息处理成功后再确认，防止消息丢失（需配合Channel正确使用）
+- **死信队列**：通过`@RabbitListener`的`arguments`配置死信交换机（3.13.0版本特性）
