@@ -29,4 +29,12 @@ C:\Users\osmondy\Downloads>chcp 936
 | Shift-JIS |  932   |
 
 
-
+---
+# 其它
+## powershell 修改文件时间
+```bash
+# 设置文件的修改时间为指定时间
+$filePath = "6ccd062397d9b1c4c0f30d5e69496981.jpg"
+$newTime = "2025-09-16 15:08:06"
+(Get-Item $filePath).LastWriteTime = $newTime
+```
