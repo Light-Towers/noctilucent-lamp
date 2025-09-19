@@ -70,7 +70,7 @@ npm install --save-dev cross-env
 
 示例 package.json 脚本：
 
-```javascripton
+```javascript
 "scripts": {
 	"start": "cross-env NODE_ENV=production node server.js",
 	"dev": "cross-env NODE_ENV=development nodemon server.js"
@@ -94,7 +94,7 @@ require('dotenv').config();
 
 .env 文件示例（不要提交到 git）
 
-```
+```bash
 PORT=3000
 DB_HOST=localhost
 API_KEY=xxxxx   # 机密不建议写入仓库
@@ -249,5 +249,4 @@ npm ci
 - dotenv: https://www.npmjs.com/package/dotenv
 - npm 文档（cache、ci、install）: https://docs.npmjs.com
 - npm 权限修复: https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
-
 
