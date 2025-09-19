@@ -9,6 +9,10 @@
 5. [服务部署](#5-服务部署)
 6. [模型优化技巧](#6-模型优化技巧)
 7. [性能调优](#7-性能调优)
+8. [微调问题定位参考表](#8-微调问题定位参考表)
+9. [模型实验结果对照表](#9-模型实验结果对照表)
+10. [训练日志解读](#10-训练日志解读)
+11. [问题与解决](#11-问题与解决)
 
 ---
 
@@ -243,9 +247,10 @@ python main.py -c ... -o Predict.batch_size=8
 
 ---
 
-## 印章文本检测模型-训练结果实验对照
+## 9. 模型实验结果对照表
 
-### PP-OCRv4_server_det
+### 印章文本检测模型
+#### PP-OCRv4_server_det
 
 | 实验ID/(PP-OCRv4_server_det)          | 轮次    | 学习率    | 检测 Hmean(%) |
 | ------------------------------------- | ------- | --------- | ------------- |
@@ -254,16 +259,48 @@ python main.py -c ... -o Predict.batch_size=8
 | 印章v4_server_det-30_0.00001_81.32    | 30      | 0.00001   | 81.32         |
 | **印章v4_server_det-100_0.001_98.19** | **100** | **0.001** | **98.19**     |
 
-### PP-OCRv4_mobile_det
+#### PP-OCRv4_mobile_det
 | 实验ID/(PP-OCRv4_mobile_det)         | 轮次   | 学习率    | 检测 Hmean(%) |
 | ------------------------------------ | ------ | --------- | ------------- |
 | 印章v4_mobile_det-30_0.001_97.51     | 30     | 0.001     | 97.51         |
 | 印章v4_mobile_det-30_0.0001_95.40    | 30     | 0.0001    | 95.40         |
 | **印章v4_mobile_det-50_0.001_97.59** | **50** | **0.001** | **97.59**     |
 
+### 文本目标检测模型
+#### RT-DETR-H
+| 实验ID                        | 学习率    | mAP@0.5   |
+| ----------------------------- | --------- | --------- |
+| RT-DETR-H_30-0.00001-85.01    | 0.00001   | 85.01     |
+| RT-DETR-H_30-0.0001-92.11     | 0.0001    | 92.11     |
+| RT-DETR-H_30-0.0005-92.07     | 0.0005    | 92.07     |
+| **RT-DETR-H_50-0.0001-92.94** | **0.001** | **92.94** |
+
+### PicoDet-L_layout
+| 实验ID                             | 学习率   | mAP@0.5   |
+| ---------------------------------- | -------- | --------- |
+| PicoDet-L_layout_50-0.0001-33.47   | 0.00001  | 33.47     |
+| PicoDet-L_layout_50-0.08-76.75     | 0.08     | 76.75     |
+| **PicoDet-L_layout_60-0.08-77.43** | **0.08** | **77.43** |
+
+### 遥感影像实例分割
+#### 学习率实验结果
+| 实验ID                       | 训练轮次 | 训练卡数 | 学习率     | mAP@0.5   |
+| ---------------------------- | -------- | -------- | ---------- | --------- |
+| 遥感图像_80-0.0005-34.40     | 80       | 4        | 0.0005     | 34.40     |
+| **遥感图像_80-0.0001-53.13** | **80**   | **4**    | **0.0001** | **53.13** |
+| 遥感图像_80-0.00005-44.65    | 80       | 4        | 0.00005    | 44.65     |
+
+#### 轮次实验结果
+| 实验ID                        | 训练轮次 | 训练卡数 | 学习率     | mAP@0.5   |
+| ----------------------------- | -------- | -------- | ---------- | --------- |
+| 遥感图像_30-0.0001-17.69      | 30       | 4        | 0.0001     | 17.69     |
+| 遥感图像_50-0.0001-33.73      | 50       | 4        | 0.0001     | 33.73     |
+| 遥感图像_80-0.0001-53.13      | 80       | 4        | 0.0001     | 53.13     |
+| **遥感图像_100-0.0001-57.30** | **100**  | **4**    | **0.0001** | **57.30** |
+
 ---
 
-## 日志解读
+## 10. 训练日志解读
 ```bash
 [2025/08/30 18:00:18] ppocr INFO: epoch: [100/100], global_step: 100000, lr: 0.000001, loss: 0.091679, loss_shrink_maps: 0.035711, loss_threshold_maps: 0.041902, loss_binary_maps: 0.007171, loss_cbn: 0.007171, avg_reader_cost: 0.00148 s, avg_batch_cost: 0.71354 s, avg_samples: 8.0, ips: 11.21165 samples/s, eta: 0:00:00, max_mem_reserved: 14606 MB, max_mem_allocated: 12963 MB
 eval model:: 100%|██████████| 2000/2000 [01:54<00:00, 17.45it/s]
@@ -312,14 +349,16 @@ Skipping import of the encryption module
 
 这部分对比了**当前模型**（第100轮的模型）和整个训练过程中**最佳模型**的性能指标。
 
-* **precision (精确率)**: 在所有模型预测为“有文字”的区域中，有多大比例是真的文字？高精确率意味着“报喜不报忧”，很少误报。
+#### 关键性能指标
+
+*   **precision (精确率)**: 在所有模型预测为“有文字”的区域中，有多大比例是真的文字？高精确率意味着“报喜不报忧”，很少误报。
     $$\text{精确率} = \frac{\text{真正例}}{\text{真正例} + \text{假正例}}$$
-* **recall (召回率)**: 在所有图片里实际存在的文字区域中，模型成功找出了多少？高召回率意味着“宁可错杀，也不放过”，很少漏报。
+*   **recall (召回率)**: 在所有图片里实际存在的文字区域中，模型成功找出了多少？高召回率意味着“宁可错杀，也不放过”，很少漏报。
     $$\text{召回率} = \frac{\text{真正例}}{\text{真正例} + \text{假反例}}$$
-* **hmean (F1-Score)**: 精确率和召回率的**调和平均数**。这通常是评估模型综合性能最重要的指标，因为它同时兼顾了精确率和召回率。hmean值高，代表模型既准又全。
+*   **hmean (F1-Score)**: 精确率和召回率的**调和平均数**。这通常是评估模型综合性能最重要的指标，因为它同时兼顾了精确率和召回率。hmean值高，代表模型既准又全。
     $$\text{H-mean} = 2 \times \frac{\text{精确率} \times \text{召回率}}{\text{精确率} + \text{召回率}}$$
-* **fps (帧率)**: **每秒处理帧数 (Frames Per Second)**。这个指标衡量的是模型的推理（预测）速度，数值越高代表模型速度越快。
-* **best\_epoch: 7**: 这是一个**至关重要的信息**。它告诉你，综合性能最好（hmean最高，达到0.9998）的模型是在**第7轮**训练后保存的。而训练到第100轮的最终模型，其hmean (0.9977) 反而略低。这暗示了模型在第7轮之后可能出现了轻微的“过拟合”现象。
+*   **fps (帧率)**: **每秒处理帧数 (Frames Per Second)**。这个指标衡量的是模型的推理（预测）速度，数值越高代表模型速度越快。
+*   **best\_epoch: 7**: 这是一个**至关重要的信息**。它告诉你，综合性能最好（hmean最高，达到0.9998）的模型是在**第7轮**训练后保存的。而训练到第100轮的最终模型，其hmean (0.9977) 反而略低。这暗示了模型在第7轮之后可能出现了轻微的“过拟合”现象。
 
 
 ### 模型保存与导出
@@ -335,44 +374,48 @@ Skipping import of the encryption module
 
 ---
 
-## 问题与解决
-### 问题1
-```bash
+## 11. 问题与解决
+### 问题1：`matplotlib` 依赖错误
+``bash
 RuntimeError: `deep_analyse` is not ready for use, because the following dependencies are not available: matplotlib
 ```
 
 **原因：**
-PaddleX 3.1.4 中的代码仍使用旧方法 `tostring_rgb()`，环境中安装的较新版本 Matplotlib 已被弃用，需使用`tostring_argb()`并手动转换RGB格式
+PaddleX 3.1.4 中的代码仍使用旧方法 `tostring_rgb()`，而环境中安装的较新版本 Matplotlib 已弃用此方法，推荐使用`tostring_argb()`并手动转换RGB格式。
 
 **解决：**
+固定 `matplotlib` 版本到 `3.5.2`。
 ```bash
 pip install matplotlib==3.5.2
 ```
 
 
-### 问题2
+### 问题2：Tkinter 颜色错误
 ```bash
 _tkinter.TclError: unknown color name "white"
 ```
 
 **原因：**
-程序在尝试使用 Tkinter 图形库时遇到了问题，而所运行环境Ubuntu未安装图形界面，那么强制使用非 GUI 后端
+程序在尝试使用 Tkinter 图形库时遇到了问题。如果运行环境（如无图形界面的Ubuntu服务器）不支持GUI，则需要强制使用非GUI后端。
 
 **解决：**
+设置 `MPLBACKEND` 环境变量。
 ```bash
 export MPLBACKEND=Agg
 ```
 
 
-### 问题3
+### 问题3：模型名称未注册
 ```bash
 paddlex.utils.errors.others.UnsupportedParamError: 'PP-OCRv4_server_seal_det' is not a registered model name.
 ```
 
 **原因：**
-未正确安装PaddleOCR插件或未完成源码级安装，PaddleX的二次开发需安装 PaddleOCR 插件，参考：[PaddleX本地安装教程](https://paddlepaddle.github.io/PaddleX/latest/installation/installation.html#2-linuxpaddex)
+未正确安装PaddleOCR插件或未完成源码级安装。PaddleX的二次开发需要安装 PaddleOCR 插件。
+参考：[PaddleX本地安装教程](https://paddlepaddle.github.io/PaddleX/latest/installation/installation.html#2-linuxpaddex)
 
 **解决：**
+进入PaddleX源码目录，执行安装。
 ```bash
 cd PaddleX
 pip install -e ".[base]"
@@ -381,50 +424,34 @@ paddlex --install PaddleOCR --platform gitee.com
 ```
 
 
-### 问题4
+### 问题4：CMake 依赖缺失
 ```bash
 error: subprocess-exited-with-error
-
-× python setup.py egg_info did not run successfully.
-│ exit code: 1
-╰─> [10 lines of output]
-    /tmp/pip-install-n81qxllb/onnxoptimizer_240b7b6ae4454402befb603da3be24ed/setup.py:35: DeprecationWarning: Use shutil.which instead of find_executable
-    CMAKE = find_executable('cmake')
-    fatal: not a git repository (or any of the parent directories): .git
-    Traceback (most recent call last):
-    File "<string>", line 2, in <module>
-    File "<pip-setuptools-caller>", line 35, in <module>
-    File "/tmp/pip-install-n81qxllb/onnxoptimizer_240b7b6ae4454402befb603da3be24ed/setup.py", line 76, in <module>
-        assert CMAKE, 'Could not find "cmake" executable!'
-               ^^^^^
-    AssertionError: Could not find "cmake" executable!
-    [end of output]
-
-note: This error originates from a subprocess, and is likely not a problem with pip.
-error: metadata-generation-failed
-
-× Encountered error while generating package metadata.
-╰─> See above for output.
+...
+AssertionError: Could not find "cmake" executable!
 ```
 
 **原因：**
-onnxoptimizer依赖的CMake未正确安装
+`onnxoptimizer` 依赖的CMake未正确安装。
 
 **解决：**
+使用包管理器安装 `cmake`。
 ```bash
 sudo apt update
 sudo apt install cmake
 ```
 
 
-### 问题5
+### 问题5：Serving 插件不可用
 ```bash
 paddlex.utils.deps.DependencyError: The serving plugin is not available. Please install it properly
 ```
 
 **原因：**
-使用 PaddleX 的 --serve 功能（模型服务化部署），但 缺少 PaddleX 的 serving 插件依赖，即 paddlex-serving 模块没有安装。
+使用 PaddleX 的 `--serve` 功能（模型服务化部署）时，缺少 `paddlex-serving` 模块。
 
 **解决：**
+安装 `serving` 插件。
 ```bash
 paddlex --install serving
+```
