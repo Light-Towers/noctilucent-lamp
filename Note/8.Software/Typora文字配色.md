@@ -1,4 +1,4 @@
-在Typora中，除了红色（`red`或`#FF0000`），还可以通过多种方式使用其他颜色，包括HTML颜色名、十六进制代码、RGB值，以及LaTeX扩展颜色名。以下是具体分类及常用颜色示例：
+在Typora中，除了红色（`red`或`#FF0000`），还可以通过多种方式使用其他颜色，包含HTML颜色名、十六进制代码、RGB数值，以及LaTeX扩展颜色名。以下是具体分类及常用颜色示例：
 
 ---
 
@@ -38,17 +38,17 @@ Typora支持所有HTML和CSS规范中的颜色名称，包括：
 - 砖红色 `BrickRed`
 - 野草莓色 `WildStrawberry`
 - 蓝紫色 `BlueViolet`
-- 松绿色 `PineGreen`
+- 松绿 `PineGreen`
 
 ---
 
-### 四、颜色表示方式对比
+### 四、颜色表示形式对比
 | **类型**       | **示例**                                | **适用场景**                     |
 |----------------|----------------------------------------|--------------------------------|
 | 颜色名称       | `green`, `yellow`, `purple`            | 快速输入，兼容性高               |
 | Hex代码        | `#00FF00`（绿色）, `#FFA500`（橙色）    | 精确配色，支持所有颜色            |
 | RGB函数        | `rgb(0, 255, 0)`（绿色）               | 需手动输入，适合开发者            |
-| LaTeX颜色名    | `\textcolor{cyan}{文本}`（青色）        | 学术文档，需启用公式扩展语法      |
+| LaTeX颜色名    | `\\textcolor{cyan}{文本}`（青色）     | 学术文档，需启用公式扩展          |
 
 ---
 
@@ -56,13 +56,13 @@ Typora支持所有HTML和CSS规范中的颜色名称，包括：
 1. **Adobe Color**：生成配色方案并导出Hex代码。
 2. **Color Hunt**：提供现成的高颜值配色组合。
 3. **中国色**：适合古风或东方风格配色。
-4. **ColorSpace**：输入一种颜色生成整套渐变方案。
+4. **ColorSpace**：输入一个颜色生成整套渐变方案。
 
 ---
 
 ### 六、注意事项
 1. **兼容性**：HTML标签（如`<font color="teal">`）在非Markdown编辑器中可能失效。
 2. **主题影响**：自定义CSS时需注意不同主题对颜色的覆盖。
-3. **快捷键**：通过AutoHotkey可绑定快捷键快速应用常用色（如`Ctrl+Alt+G`设为绿色）。
+3. **快捷键**：通过AutoHotkey可绑定快捷键快速应用常用颜色（如`Ctrl+Alt+G`设为绿色）。
 
-完整颜色表可参考：[HTML颜色代码表](https://htmlcolorcodes.com/zh/)  或 [W3C标准颜色名](https://www.w3schools.com/colors/colors_names.asp) 。
+完整颜色表可参考：[HTML颜色代码表](https://htmlcolorcodes.com/zh/) 或 [W3C标准颜色名](https://www.w3schools.com/colors/colors_names.asp)。
