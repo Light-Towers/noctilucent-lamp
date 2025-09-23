@@ -1,238 +1,358 @@
-# [原理解析：linux下rm删除与恢复](https://www.sklinux.com/posts/devops/rm%E6%96%87%E4%BB%B6%E5%88%A0%E9%99%A4%E4%B8%8E%E6%81%A2%E5%A4%8D/)
+# Linux 常用命令手册
 
+## 文件与目录操作
 
+### rm - 文件删除与恢复原理
 
-# [iostart](https://www.cnblogs.com/brianzhu/p/8550251.html)
+**原理解析**：Linux下的rm命令实际上只是删除了文件的目录项，数据仍然保留在磁盘上，直到被新数据覆盖。恢复需要使用专业工具如extundelete、testdisk等。
 
-Linux系统中的 iostat命令可以对系统的磁盘IO和CPU使用情况进行监控。iostat属于sysstat软件包，可以用yum -y install sysstat 直接安装。
+**注意事项**：
+- 使用rm前务必确认文件重要性
+- 重要文件建议先备份再删除
+- 生产环境慎用rm -rf命令
 
-格式：
-
-```
-iostat[参数][时间][次数]
-```
-
-命令格式：
-
-```
-通过iostat命令可以查看CPU、网卡、tty设备、磁盘、CD-ROM 等等设备的活动情况, 负载信息等，在这里只说明cpu和磁盘io的使用说明
-```
-
-参数：
-
-```
--c 显示CPU使用情况
-
--d 显示磁盘使用情况
-
--k 以 KB 为单位显示
-
--m 以 M 为单位显示
-
--N 显示磁盘阵列(LVM) 信息
-
--n 显示NFS 使用情况
-
--p[磁盘] 显示磁盘和分区的情况
-
--t 显示终端和CPU的信息
-
--x 显示详细信息
-
--V 显示版本信息
-```
-
-实例：
+### find - 文件查找
 
 ```bash
-[root@BrianZhu test]# iostat -k 或者 -m 1 10  # 查看磁盘i/o每一秒刷新1次 刷新10次
-Linux 3.10.0-693.11.1.el7.x86_64 (BrianZhu)     03/12/2018     _x86_64_    (1 CPU)
+# 基本语法
+find [路径] [选项] [操作]
 
-avg-cpu:  %user   %nice %system %iowait  %steal   %idle
-           0.10    0.02    0.08    0.02    0.00   99.79
+# 常用选项
+-name       按文件名查找
+-type       按文件类型查找 (f-文件, d-目录)
+-size       按文件大小查找
+-mtime      按修改时间查找
+-maxdepth   最大搜索深度
+-exec       对找到的文件执行命令
 
-Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
-vda               0.36         1.20         4.47     334723    1249412
-dm-0              0.01         0.10         0.18      27264      50672
-dm-1              0.00         0.05         0.01      13024       3137
+# 实用示例
+# 查找指定目录下的文件
+find /data3/ -maxdepth 1 -name "sdx_date_up_*_enterprise.zip"
+
+# 精确路径匹配查找
+find /data3/ -maxdepth 3 -wholename "*/company_base/split.json.gz" -type f
+
+# 查找目录并执行命令
+find /data0/file2hive/drawer -type d -name "exhibitor" -exec sh -c 'for file in "$0"/*; do echo "File: $file"; done' {} \;
 ```
 
- 参数解读：
+### 压缩与解压
 
-```
-%user：用户进程消耗cpu的比例
-
-%nice：用户进程优先级调整消耗的cpu比例
-
-%sys：系统内核消耗的cpu比例
-
-%iowait：等待磁盘io所消耗的cpu比例
-
-%idle：闲置cpu的比例（不包括等待磁盘io的s）
-
- 
-
-tps：该设备每秒的传输次数。“一次传输”意思是“一次I/O请求”。多个逻辑请求被合并为“一次I/O请求”。“一次传输”请求的大小是未知的。
-
-kB_read/s：每秒从设备（drive expressed）读取的数据量
-
-kB_wrtn/s：每秒向设备（drive expressed）写入的数据量
-
-kB_read：读取的总数据量
-
-kB_wrtn：写入的总数量数据量
-
-这些单位都为Kilobytes。
-```
-
-
-
-# screen
-
-### 安装：
-
-```bash
-# centos
-yum -y install screen
-# unbuntu
-apt-get -y install screen
-```
-
-### 参数：
-
-```bash
--A 　将所有的视窗都调整为目前终端机的大小。
--d     <作业名称> 　将指定的screen作业离线。
--h     <行数> 　指定视窗的缓冲区行数。
--m 　即使目前已在作业中的screen作业，仍强制建立新的screen作业。
--r      <作业名称> 　恢复离线的screen作业。
--R 　先试图恢复离线的作业。若找不到离线的作业，即建立新的screen作业。
--s 　指定建立新视窗时，所要执行的shell。
--S    <作业名称> 　指定screen作业的名称。
--v 　显示版本信息。
--x 　恢复之前离线的screen作业。
--ls或--list 　显示目前所有的screen作业。
--wipe 　检查目前所有的screen作业，并删除已经无法使用的screen作业。
-```
-
-**在每个screen session 下，命令都以 ctrl+a、ctrl-a，常用的几个操作如下：**
-
-```
-ctrl-a x   # 锁住当前的shell window，需用用户密码解锁
-ctrl-a d   # detach，暂时离开当前session，将当前 screen session 转到后台执行，并会返回没进 screen 时的状态，此时在 screen session 里，每个shell client内运行的 process (无论是前台/后台)都在继续执行，即使 logout 也不影响
-ctrl-a z   # 把当前session放到后台执行，用 shell 的 fg 命令则可回去。
-```
-
-### 中止 screen 会话
-
-有几种方法来中止 screen 会话。你可以按下 Ctrl+d ，或者在命令行中使用 exit 命令。
-
-
-
-
-
-# journalctl
-
-```bash
-# 指定开始时间
-journalctl -u kibana.service --since "08:00:00"
-# 实时
-journalctl -u kibana.service -f
-```
-
-
-# 压缩
 ```bash
 # tar压缩文件夹
 tar -zcvf /tmp/test.tar.gz /tmp/test
+
 # tar解压至指定目录
 tar -zxvf /data3/bigdata/202410/software_registration.tar.gz -C /tmp
 
 # unzip解压文件至指定目录
 unzip xiaowang_stock.zip -d /tmp
 
-# gunzip解压至指定目录文件
+# gunzip解压至指定文件
 gunzip -c /data3/20231115/company_abnormal/split.json.gz > /tmp/20231115_company_abnormal.json
-
 ```
 
-# find
+## 系统监控与性能分析
+
+### iostat - 磁盘I/O监控
+
+**安装**：
 ```bash
-# -maxdepth 最大搜索深度
-# -type 查找类型
-# 指定目录，模糊匹配查找文件
-find /data3/ -maxdepth 1 -name "sdx_date_up_*_enterprise.zip"
-# 指定目录，精确匹配查找文件
-find /data3/ -maxdepth 3 -wholename "*/company_base/split.json.gz" -type f
-# 查找目录下所有文件夹，并执行命令：打印文件名绝对路径
-find /data0/file2hive/drawer -type d -name "exhibitor" -exec sh -c 'for file in "$0"/*; do echo "File: $file"; done' {} \;
+yum -y install sysstat  # CentOS/RHEL
+apt-get -y install sysstat  # Ubuntu/Debian
 ```
 
-# awk
-awk 是一种强大的文本处理工具，适用于在 Linux/Unix 系统中进行数据提取和报告生成。
-它可以读取文件或标准输入（stdin），并根据指定的模式对每一行进行处理。
+**命令格式**：
+```bash
+iostat [参数] [时间间隔] [次数]
+```
+
+**常用参数**：
+```bash
+-c  显示CPU使用情况
+-d  显示磁盘使用情况  
+-k  以KB为单位显示
+-m  以MB为单位显示
+-N  显示磁盘阵列(LVM)信息
+-p  显示磁盘和分区情况
+-x  显示详细信息
+```
+
+**示例输出解读**：
+```bash
+# 每1秒刷新，刷新10次
+iostat -k 1 10
+
+# 输出示例：
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           0.10    0.02    0.08    0.02    0.00   99.79
+
+Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+vda               0.36         1.20         4.47     334723    1249412
+```
+
+**参数含义**：
+- `%user`：用户进程消耗CPU比例
+- `%nice`：用户进程优先级调整消耗CPU比例  
+- `%system`：系统内核消耗CPU比例
+- `%iowait`：等待磁盘I/O所消耗CPU比例
+- `%idle`：闲置CPU比例
+- `tps`：设备每秒传输次数（一次I/O请求）
+- `kB_read/s`：每秒读取数据量
+- `kB_wrtn/s`：每秒写入数据量
+
+### journalctl - 系统日志查看
+
+```bash
+# 查看指定服务的日志
+journalctl -u kibana.service
+
+# 指定开始时间查看
+journalctl -u kibana.service --since "08:00:00"
+
+# 实时跟踪日志
+journalctl -u kibana.service -f
+
+# 查看最近100条日志
+journalctl -u kibana.service -n 100
+
+# 按优先级过滤
+journalctl -p err  # 只显示错误日志
+```
+
+## 进程与会话管理
+
+### screen - 终端多会话管理
+
+**安装**：
+```bash
+yum -y install screen    # CentOS/RHEL
+apt-get -y install screen  # Ubuntu/Debian
+```
+
+**常用命令**：
+```bash
+# 创建新会话
+screen -S session_name
+
+# 列出所有会话
+screen -ls
+
+# 恢复会话
+screen -r session_name
+
+# 强制创建新会话
+screen -R
+```
+
+**会话内快捷键**：
+```bash
+Ctrl+a d      # 分离当前会话（后台运行）
+Ctrl+a x      # 锁定会话（需要密码解锁）
+Ctrl+a z      # 挂起会话（可用fg命令恢复）
+Ctrl+d        # 终止当前会话
+```
+
+**实用场景**：
+- 长时间运行任务防止中断
+- 多个任务并行管理
+- 远程会话保持
+
+### systemctl - 系统服务管理
+
+```bash
+# 查看服务状态
+systemctl status service_name
+
+# 启动/停止/重启服务
+systemctl start service_name
+systemctl stop service_name  
+systemctl restart service_name
+
+# 设置开机自启
+systemctl enable service_name
+
+# 禁用开机自启
+systemctl disable service_name
+
+# 查看是否开机自启
+systemctl is-enabled service_name
+
+# 查看所有已启用的服务
+systemctl list-unit-files --type=service | grep service_name
+
+# 重新加载服务配置
+systemctl daemon-reload
+```
+
+## 文本处理
+
+### awk - 强大的文本处理工具
+
+**基本语法**：
 ```bash
 awk 'pattern { action }' filename
 ```
-* pattern：可选，用于选择特定的行。如果省略，则默认对所有行执行操作。
-* action：对匹配的行执行的操作，默认是打印整行。
-## 常用选项
-* -F fs：指定字段分隔符 fs，默认为空格或制表符。
-* -v var=value：定义用户变量。
-* --field-separator fs：与 -F 相同，指定字段分隔符。
 
-示例
+**常用选项**：
 ```bash
-#打印文件中的所有行
+-F fs   指定字段分隔符（默认空格或制表符）
+-v var=value  定义用户变量
+```
+
+**实用示例**：
+```bash
+# 打印所有行
 awk '{ print }' filename
-#打印第二列
+
+# 打印第二列
 awk '{ print $2 }' filename
-#使用自定义分隔符
-awk -F: '{ print $1 }' filename  # 使用冒号作为分隔符
-#根据条件筛选
-awk '$1 == "apple" { print $0 }' filename  # 打印第一列等于 "apple" 的行
-#计算总和
-awk '{ sum += $1 } END { print sum }' filename  # 计算第一列的总和
+
+# 使用自定义分隔符
+awk -F: '{ print $1 }' filename  # 冒号分隔
+
+# 条件筛选
+awk '$1 == "apple" { print $0 }' filename  # 第一列等于"apple"
+
+# 计算总和
+awk '{ sum += $1 } END { print sum }' filename  # 第一列总和
+
+# 统计行数
+awk 'END { print NR }' filename
+
+# 字段操作
+awk '{ print $1, $3 }' filename  # 打印第1和第3列
+awk '{ print $NF }' filename     # 打印最后一列
 ```
 
+## 网络工具
 
-# systemctl
-设置开机自启
+### curl - 命令行HTTP客户端
+
+**常用参数**：
 ```bash
-## 查看是否开机自启
-systemctl is-enabled docker
-## 设置开机自启
-systemctl enable docker.service
-## 查看已启用的服务  ## --type=service 显示服务类型
-systemctl list-unit-files  --type=service | grep docker
+-X          指定请求方法（GET、POST等）
+-H          添加请求头
+-d          发送数据（POST请求）
+-F          上传文件（multipart/form-data）
+-o          将输出保存到文件
+-I          查看响应头
+-u          基本认证（用户名:密码）
+-k          跳过SSL证书验证
+-v          显示详细请求过程
 ```
 
-# curl
-
-## 常用参数：
-- `-X`：指定请求方法（GET、POST等）
-- `-H`：添加请求头
-- `-d`：发送数据（POST请求）
-- `-F`：用于上传文件，会自动设置Content-Type为multipart/form-data。
-- `-o`：将输出保存到指定的文件。
-- `-I`：查看响应头
-- `-u`：基本认证的用户名和密码。
-- `-k`：允许 curl 执行 "不安全" 的 SSL 连接。跳过对服务器证书的验证，即忽略证书是否由受信任的 CA 签发、证书是否过期等问题。
-
-## 使用示例：
+**使用示例**：
 ```bash
-# 发送GET请求
+# GET请求
 curl -X GET http://example.com
-# 发送POST请求并添加头
-curl -X POST -H "Content-Type: application/json" -d '{"key1":"value1"}' http://example.com/api
+
+# POST请求（JSON数据）
+curl -X POST -H "Content-Type: application/json" -d '{"key":"value"}' http://example.com/api
+
 # 上传文件
 curl -F "file=@/path/to/file" http://example.com/upload
+
 # 下载文件
 curl -o output.txt http://example.com/file.txt
+
 # 查看响应头
 curl -I http://example.com
+
 # 基本认证
 curl -u username:password http://example.com
-# 访问使用自签名证书的网站
+
+# 跳过SSL验证
 curl -k https://example.com
+
+# 显示详细过程
+curl -v http://example.com
 ```
+
+## OpenSSL 证书管理
+
+### 常用操作
+
+```bash
+# 查看版本
+openssl version -a
+
+# 生成RSA私钥
+openssl genrsa -out server.key 2048
+openssl genpkey -algorithm RSA -out server.key -pkeyopt rsa_keygen_bits:2048
+
+# 生成带密码的私钥
+openssl genrsa -aes256 -out server_enc.key 2048
+
+# 生成CSR（证书签名请求）
+openssl req -new -key server.key -out server.csr -subj "/C=CN/ST=Beijing/L=Beijing/O=ExampleCorp/CN=example.com"
+
+# 生成自签名证书
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -subj "/C=CN/ST=Beijing/L=Beijing/O=ExampleCorp/CN=example.com"
+
+# 查看证书内容
+openssl x509 -in server.crt -noout -text
+
+# 查看CSR内容  
+openssl req -in server.csr -noout -text
+
+# 格式转换（PEM ↔ DER）
+openssl x509 -in server.crt -outform der -out server.der
+openssl x509 -in server.der -inform der -out server.pem
+
+# 验证证书
+openssl verify -CAfile ca_bundle.crt server.crt
+
+# 测试TLS连接
+openssl s_client -connect example.com:443 -servername example.com -showcerts
+```
+
+### 带SAN的CSR生成
+
+创建配置文件 `san.cnf`：
+```ini
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+
+[req_distinguished_name]
+
+[v3_req]
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = example.com
+DNS.2 = www.example.com
+IP.1 = 192.0.2.1
+```
+
+生成CSR：
+```bash
+openssl req -new -key server.key -out server.csr -config san.cnf
+```
+
+## 实用技巧与最佳实践
+
+### 安全注意事项
+1. **慎用rm -rf**：特别是在生产环境中
+2. **权限管理**：合理设置文件权限，避免777权限
+3. **备份习惯**：重要操作前先备份
+4. **日志监控**：定期检查系统日志
+
+### 性能优化建议
+1. 使用iostat定期监控磁盘I/O
+2. 合理使用screen管理长时间任务
+3. 利用awk处理大量文本数据
+4. 使用curl进行API测试和调试
+
+### 故障排查
+1. 使用journalctl查看系统日志
+2. 使用systemctl管理服务状态
+3. OpenSSL工具链用于证书问题排查
+4. find命令用于文件定位和排查
+
+## 扩展阅读
+- [Linux命令手册](https://man7.org/linux/man-pages/)
+- [Linux性能优化](https://www.brendangregg.com/linuxperf.html)
+- [OpenSSL官方文档](https://www.openssl.org/docs/)
+- [Linux命令速查](https://www.commandlinefu.com/)
