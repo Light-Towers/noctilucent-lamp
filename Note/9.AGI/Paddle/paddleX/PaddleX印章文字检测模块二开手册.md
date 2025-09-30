@@ -19,7 +19,7 @@
 ## 1. 环境准备
 
 ### 1.1 安装依赖
-推荐 Python 3.10-3.12 环境
+推荐 Python 3.10 环境，过高版本会出现一些包不兼容问题。
 ```bash
 # GPU 版本，需显卡驱动程序版本 ≥550.54.14（Linux）或 ≥550.54.14（Windows）
 python -m pip install paddlepaddle-gpu==3.0.0 -i https://www.paddlepaddle.org.cn/packages/stable/cu126/
@@ -160,6 +160,14 @@ SubPipelines:
         thresh: 0.2
         box_thresh: 0.6
         unclip_ratio: 0.5
+      TextRecognition:
+        module_name: text_recognition
+          #model_name: PP-OCRv4_server_rec
+        model_name: PP-OCRv5_server_rec
+        model_dir: null
+        batch_size: 1
+        score_thresh: 0
+
 ......
 ```
 
