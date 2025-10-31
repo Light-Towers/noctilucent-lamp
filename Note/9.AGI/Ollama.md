@@ -181,3 +181,25 @@ export Environment="OLLAMA_MODELS=/home/aistudio/ollama-linux/models"
 sudo systemctl daemon-reload
 sudo systemctl restart ollama
 ```
+
+### 查看日志（实时）
+
+使用 systemd 管理服务时，查看 Ollama 服务日志常用命令：
+
+```bash
+# 实时跟随日志输出（需要 sudo 或 root 权限）
+sudo journalctl -u ollama.service -f
+
+# 查看最近 200 行日志
+sudo journalctl -u ollama.service -n 200
+
+# 指定时间范围，例如查看自今天 08:00 以来的日志
+sudo journalctl -u ollama.service --since "08:00"
+
+# 按优先级过滤（err、warning、info 等）
+sudo journalctl -u ollama.service -p err
+```
+
+说明：
+- 使用 `-f` 实时跟随输出适合调试启动或模型加载问题。
+- 若服务运行在非 systemd 环境（比如容器或直接用 nohup 启动），请查看相应的日志文件（例如 `./ollama-linux/logs/ollama.log`）。
