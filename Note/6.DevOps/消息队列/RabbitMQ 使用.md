@@ -77,7 +77,7 @@
    services:
      rabbitmq:
        restart: always
-       image: rabbitmq:management
+       image: rabbitmq:4.1-management
        container_name: rabbitmq
        hostname: rabbit
        ports:
@@ -100,8 +100,18 @@
    # 查看可用插件
    rabbitmq-plugins list
    
-   # 启用管理插件
+   # 启用管理插件 (rabbitmq默认web管理页面需启动 rabbitmq_management 插件)
    rabbitmq-plugins enable rabbitmq_management
+   # 第三方插件
+   # 查看插件目录
+   rabbitmq-plugins directories -s
+   # 下载插件
+   wget https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v4.1.0/rabbitmq_delayed_message_exchange-4.1.0.ez
+   # 设置权限
+   chown rabbitmq:rabbitmq /opt/rabbitmq/plugins/rabbitmq_delayed_message_exchange-4.0.0.ez
+   chmod 644 /opt/rabbitmq/plugins/rabbitmq_delayed_message_exchange-4.0.0.ez
+   # 安装插件
+   rabbitmq-plugins enable rabbitmq_delayed_message_exchange
    ```
 
 3. **源码编译安装**  
@@ -149,6 +159,33 @@
      ```bash
      rabbitmqctl join_cluster rabbit@node1
      ```
+
+### 6. 虚拟主机与权限管理
+- **添加虚拟主机**  
+  ```bash
+  rabbitmqctl add_vhost hotel_test
+  ```
+
+- **设置用户权限**  
+  ```bash
+  rabbitmqctl set_permissions -p hotel_test root ".*" ".*" ".*"
+  ```
+
+### 7. 队列监控
+- **查看默认 vhost "/" 中所有队列的消息数**  
+  ```bash
+  rabbitmqctl list_queues name messages
+  ```
+
+- **查看指定 vhost（如 /hotel_dev）的队列消息数**  
+  ```bash
+  rabbitmqctl list_queues -p hotel_dev name messages
+  ```
+
+- **同时查看未确认消息（unacked）和总数**  
+  ```bash
+  rabbitmqctl list_queues -p hotel_dev name messages messages_ready messages_unacknowledged
+  ```
 
 ## 五、Spring Boot 集成
 ### 1. 依赖配置
