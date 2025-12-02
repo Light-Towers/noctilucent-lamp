@@ -1,0 +1,30 @@
+services:
+  # # Postgres
+  # postgres:
+  #   image: postgres:17
+  #   container_name: postgres
+  #   restart: always
+  #   environment:
+  #     TZ: Asia/Shanghai
+  #     POSTGRES_USER: root
+  #     POSTGRES_PASSWORD: 123456
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /data0/postgres/data:/var/lib/postgresql/data:rw
+
+  # Postgres with pgvector
+  pgvector:
+    image: pgvector/pgvector:pg17
+    container_name: pgvector
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /data0/postgres/data:/var/lib/postgresql/data:rw
