@@ -17,7 +17,7 @@ tar -zxvf mongodb-shell-linux-x86_64-rhel70-3.6.23.tgz
 #使用方式
 mongo DATABASE_NAME --eval "var collection = 'COLL_NAME', query = {'caredAbout':true}" variety.js
 #或者
-./mongo --host "mongodb://root:mingyang100@192.168.100.23:27017/enterprise?replicaSet=rs0&connectTimeoutMS=10000&authSource=admin" --eval "var collection = 'ITJuZiInfo'" /root/mongo-test/variety-master/variety.js
+./mongo --host "mongodb://root:123456@192.168.100.23:27017/enterprise?replicaSet=rs0&connectTimeoutMS=10000&authSource=admin" --eval "var collection = 'ITJuZiInfo'" /root/mongo-test/variety-master/variety.js
 ```
 
 显示结果如下

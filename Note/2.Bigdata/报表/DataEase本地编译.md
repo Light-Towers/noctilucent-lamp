@@ -67,7 +67,7 @@ spring:
 datasource:
   url: jdbc:mysql://192.168.100.21:33306/dataeaseV2demo?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
   username: root
-  password: mingyang100100
+  password: 123456
 
 #修改application-standalone.yml
 spring:

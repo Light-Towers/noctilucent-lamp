@@ -44,7 +44,7 @@ document = Document()       # 新建文档
 conn = pymysql.connect(host="192.168.100.21",
                            port=33306,
                            user="root",
-                           password="mingyang100100",
+                           password="123456",
                         #    db="db_mingyang_home_court",
                            charset="utf8")
 cursor = conn.cursor()

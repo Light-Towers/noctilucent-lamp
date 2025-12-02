@@ -72,7 +72,7 @@ sudo systemctl stop elasticsearch.service   # 停止
 STORAGE_TYPE=elasticsearch \
 ES_HOSTS=192.168.100.79:9200 \
 ES_USERNAME=elastic \
-ES_PASSWORD=mingyang100 \
+ES_PASSWORD=123456 \
 nohup java -jar zipkin-server-2.23.2-exec.jar >/data/myedu/zipkin/logs/zipkin-server.log 2>&1 &
 ```
 
@@ -87,7 +87,7 @@ nohup java -jar zipkin-server-2.23.2-exec.jar >/data/myedu/zipkin/logs/zipkin-se
 STORAGE_TYPE=elasticsearch \
 ES_HOSTS=192.168.100.79:9200 \
 ES_USERNAME=elastic \
-ES_PASSWORD=mingyang100 \
+ES_PASSWORD=123456 \
 nohup java -jar zipkin-dependencies-2.6.3.jar >/data/myedu/zipkin/logs/zipkin-dependencies.log 2>&1 &
 ```
 
@@ -99,7 +99,7 @@ nohup java -jar zipkin-dependencies-2.6.3.jar >/data/myedu/zipkin/logs/zipkin-de
 Zipkin-dependencies 下载（可选）
 https://gitee.com/mirrors/zipkin-dependencies#quick-start
 启动命令:
-STORAGE_TYPE=elasticsearch ES_HOSTS=192.168.100.79:9200 ES_USERNAME=elastic ES_PASSWORD=mingyang100 nohup java -jar zipkin-dependencies-2.6.3.jar >/data/myedu/zipkin/logs/zipkin-dependencies.log 2>&1 &
+STORAGE_TYPE=elasticsearch ES_HOSTS=192.168.100.79:9200 ES_USERNAME=elastic ES_PASSWORD=123456 nohup java -jar zipkin-dependencies-2.6.3.jar >/data/myedu/zipkin/logs/zipkin-dependencies.log 2>&1 &
 
 可以使用阿里云maven仓库下载jar 比较快
 https://developer.aliyun.com/mvn/search
@@ -150,12 +150,12 @@ function delete_indices() {
 
     if [ $t1 -le $t2 ]; then
         echo "$1时间早于$comp_date，进行索引删除"
-        curl -XDELETE "http://elastic:mingyang100@192.168.100.79:9200/zipkin-*-$1"
+        curl -XDELETE "http://elastic:123456@192.168.100.79:9200/zipkin-*-$1"
     fi
 }
 
 # 获取所有zipkin索引并删除
-curl -XGET "http://elastic:mingyang100@192.168.100.79:9200/_cat/indices" \
+curl -XGET "http://elastic:123456@192.168.100.79:9200/_cat/indices" \
   | egrep "zipkin*" \
   | sort \
   | uniq \
