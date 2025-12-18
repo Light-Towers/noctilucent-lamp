@@ -372,7 +372,6 @@ curl --location-trusted -u user:password \
     -H "columns: user_id, user_name, age" \
     -T data.csv \
     http://<fe_ip>:8030/api/test_db/test_table/_stream_load
-
 ```
 
 **关键特性：**
@@ -407,8 +406,7 @@ PROPERTIES
 (
     "timeout"="1200",
     "max_filter_ratio"="0.1"
-)
-
+);
 ```
 
 **查看进度：**
@@ -440,7 +438,6 @@ FROM KAFKA (
     "kafka_topic" = "user_behavior_topic",
     "property.group.id" = "doris_consumer_group"
 );
-
 ```
 
 **运维命令：**
@@ -505,7 +502,6 @@ log_bin=mysql-bin
 binlog_format=ROW
 binlog_row_image=FULL
 expire_logs_days=7
-
 ```
 
 
@@ -514,7 +510,6 @@ expire_logs_days=7
 1. 开启逻辑复制（Logical Decoding）：
 ```sql
 ALTER SYSTEM SET wal_level = 'logical';
-
 ```
 
 
@@ -548,7 +543,6 @@ ALTER SYSTEM SET wal_level = 'logical';
     --sink-conf jdbc-url=jdbc:mysql://doris_fe_nodes:9030 \
     --sink-conf sink.label-prefix=label \
     --table-conf replication_num=1
-
 ```
 
 **关键技术细节：**
@@ -605,7 +599,6 @@ CREATE CATALOG sqlserver_catalog PROPERTIES (
     'driver_url' = 'mssql-jdbc-11.2.3.jre17.jar',
     'driver_class' = 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
 );
-
 ```
 
 #### (2) HMS / Lakehouse Catalog 配置要点
@@ -627,7 +620,6 @@ CREATE CATALOG hive_catalog PROPERTIES (
     "dfs.ha.namenodes.nameservice1" = "master01,master03",
     "dfs.client.failover.proxy.provider.nameservice1" = "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider"
 );
-
 ```
 
 ---
@@ -646,7 +638,6 @@ SELECT * FROM table_name LIMIT 10;
 
 -- 方式 2：三段式全路径直接查询
 SELECT * FROM mysql_catalog.db_name.table_name LIMIT 10;
-
 ```
 
 #### (2) 跨数据源跨 Catalog JOIN (核心场景)
@@ -663,7 +654,6 @@ FROM hive_catalog.dw.fact_orders h
 JOIN mysql_catalog.crm.dim_users m ON h.user_id = m.id
 WHERE h.dt = '2023-10-01'
 GROUP BY h.user_id, m.user_name;
-
 ```
 
 ---
@@ -679,7 +669,6 @@ CREATE MATERIALIZED VIEW mv_federated_summary
 BUILD DEFERRED REFRESH ASYNC EVERY(1 HOUR)
 AS 
 SELECT h.id, m.name FROM hive_catalog.db.table1 h JOIN mysql_catalog.db.table2 m ON h.id = m.id;
-
 ```
 
 #### (2) 配合 Job Scheduler 定时入湖
@@ -811,7 +800,7 @@ export DORIS_NEW_HOME=/opt/doris/apache-doris-3.1.3-bin-x64
 
 在开始滚动升级前，需关闭集群的自动均衡策略，以避免升级过程中不必要的数据迁移。
 
-通过 MySQL 客户端连接 FE Master 节点执行：
+通过 MySQL 客户端连接 FE 节点执行：
 
 ```sql
 admin set frontend config("disable_balance" = "true");
@@ -907,7 +896,7 @@ admin set frontend config("disable_tablet_scheduler" = "true");
 
 当所有 BE 和 FE 节点都升级完成，并且状态均为 `Alive` 后，打开集群副本修复和均衡功能。
 
-通过 MySQL 客户端连接 FE Master 节点执行：
+通过 MySQL 客户端连接 FE 节点执行：
 
 ```sql
 admin set frontend config("disable_balance" = "false");
