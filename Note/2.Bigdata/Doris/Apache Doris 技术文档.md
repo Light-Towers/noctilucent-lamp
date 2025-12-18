@@ -1,5 +1,3 @@
-Doris官网文档：[https://doris.apache.org/zh-CN/docs/4.x/gettingStarted/what-is-apache-doris](https://doris.apache.org/zh-CN/docs/4.x/gettingStarted/what-is-apache-doris)
-
 # Apache Doris 技术文档
 
 ## 一、Doris 简介
@@ -111,26 +109,105 @@ networks:
 
 ### 2. 生产集群部署（存算一体）
 
-**环境准备**：  
-1. **硬件要求**：
-   - FE：建议 8 核 16GB 以上。元数据存储需要 1-2 GB 磁盘空间（建议 20GB 以上）。
-   - BE：建议 16 核 64GB 以上。存储空间按用户数据量 × 3（副本）计算，并额外预留 40% 用于压缩和中间数据。
-2. **系统要求**：
-   - 支持 CentOS 7.1 及以上、Ubuntu 16.04 及以上。
-   - 时钟同步（所有节点偏差 ≤ 5 秒）。
-   - 关闭交换分区（swap）。
-3. **网络要求**：
-   - 确保以下端口可用：
-     - FE: 8030（HTTP）、9030（MySQL）、9010（内部通信）
-     - BE: 8040（HTTP）、9060（内部通信）、9050（心跳）
+基于生产高性能部署方案，请参考官网：**[部署前准备](https://doris.apache.org/zh-CN/docs/4.x/install/preparation/env-checking)** 
 
-**部署步骤**：  
+#### 2.1 操作系统配置（生产环境必须）
+
+在生产环境中部署 Doris 前，需对操作系统进行以下关键配置，以保障系统稳定性和性能：
+
+1. **关闭透明大页（Transparent Huge Pages, THP）**  
+   透明大页在某些场景下可能导致内存分配延迟和性能抖动，建议关闭或设置为 `madvise` 模式。
+
+   编辑 `/etc/rc.d/rc.local` 文件，添加以下内容并赋予执行权限：
+
+   ```bash
+   cat >> /etc/rc.d/rc.local << EOF
+   # 关闭系统透明大页
+   echo madvise > /sys/kernel/mm/transparent_hugepage/enabled
+   echo madvise > /sys/kernel/mm/transparent_hugepage/defrag
+   EOF
+   chmod +x /etc/rc.d/rc.local
+   ```
+
+   重启系统或手动执行上述 `echo` 命令使配置生效。
+
+2. **优化 TCP 连接参数**  
+   避免连接溢出导致性能下降，建议调整 TCP 参数：
+
+   编辑 `/etc/sysctl.conf`，添加：
+
+   ```bash
+   cat >> /etc/sysctl.conf << EOF
+   # 设置系统自动重置新连接
+   net.ipv4.tcp_abort_on_overflow=1
+   EOF
+   ```
+
+   执行 `sysctl -p` 使配置立即生效。
+
+3. **关闭交换分区（swap）**  
+   建议关闭交换分区以避免因内存换出导致的性能抖动：
+
+   ```bash
+   swapoff -a
+   sed -i '/ swap / s/^/#/' /etc/fstab  # 永久禁用
+   ```
+
+4. **时钟同步**  
+   所有节点时钟偏差应控制在 5 秒以内，建议使用 NTP 或 Chrony 同步。
+
+   ```bash
+   systemctl enable chronyd
+   systemctl start chronyd
+   ```
+
+5. **文件描述符与进程数限制**  
+   建议调整系统文件描述符和进程数限制：
+
+   编辑 `/etc/security/limits.conf`：
+
+   ```bash
+   * soft nofile 65535
+   * hard nofile 65535
+   * soft nproc 65535
+   * hard nproc 65535
+   ```
+
+#### 2.2 硬件要求
+
+- **FE**：建议 8 核 16GB 以上。元数据存储需要 1-2 GB 磁盘空间（建议 20GB 以上）。
+- **BE**：建议 16 核 64GB 以上。存储空间按用户数据量 × 3（副本）计算，并额外预留 40% 用于压缩和中间数据。
+
+#### 2.3 系统要求
+
+- 支持 CentOS 7.1 及以上、Ubuntu 16.04 及以上。
+- 关闭交换分区（swap）。
+- 时钟同步（所有节点偏差 ≤ 5 秒）。
+
+#### 2.4 端口规划
+
+Doris 的各个实例通过网络进行通信，其正常运行需要网络环境提供以下端口。
+
+| 实例名称 | 端口名称               | 默认端口 | 通信方向                 | 说明                                                  |
+| -------- | ---------------------- | -------- | ------------------------ | ----------------------------------------------------- |
+| BE       | be_port                | 9060     | FE -> BE                 | BE 上 Thrift Server 的端口，用于接收来自 FE 的请求    |
+| BE       | webserver_port         | 8040     | BE <-> BE                | BE 上的 HTTP Server 端口                              |
+| BE       | heartbeat_service_port | 9050     | FE -> BE                 | BE 上的心跳服务端口（Thrift），用于接收来自 FE 的心跳 |
+| BE       | brpc_port              | 8060     | FE <-> BE，BE <-> BE     | BE 上的 BRPC 端口，用于 BE 之间的通信                 |
+| FE       | http_port              | 8030     | FE <-> FE，Client <-> FE | FE 上的 HTTP Server 端口                              |
+| FE       | rpc_port               | 9020     | BE -> FE，FE <-> FE      | FE 上的 Thrift Server 端口，每个 FE 的配置需保持一致  |
+| FE       | query_port             | 9030     | Client <-> FE            | FE 上的 MySQL Server 端口                             |
+| FE       | edit_log_port          | 9010     | FE <-> FE                | FE 上的 bdbje 通信端口                                |
+
+#### 2.5 部署步骤
+
 1. **下载并解压**：
+   
    ```bash
    tar zxvf apache-doris-3.1.3-bin-x64.tar.gz
    cd apache-doris-3.1.3-bin-x64
    ```
-
+   
 2. **配置并启动 FE**：
    - 使用软链方式创建元数据目录：
      ```bash
@@ -508,13 +585,25 @@ JDBC 类 Catalog 必须通过 `driver_url` 指定驱动。
 **创建示例：**
 
 ```sql
+-- MySQL
 CREATE CATALOG mysql_catalog PROPERTIES (
     'type' = 'jdbc',
     'user' = 'username',
     'password' = 'pwd',
     'jdbc_url' = 'jdbc:mysql://host:3306',
-    'driver_url' = 'mysql-connector-j-8.3.0.jar',
+    'driver_url' = 'mysql-connector-j-8.4.0.jar',
     'driver_class' = 'com.mysql.cj.jdbc.Driver'
+);
+
+-- SQL Server
+CREATE CATALOG sqlserver_catalog PROPERTIES (
+    'type' = 'jdbc',
+    'user' = 'sa',
+    'password' = 'pwd',
+    'jdbc_url' = 'jdbc:sqlserver://host:1433;databaseName=test;encrypt=false',
+    -- 官方推荐驱动 >= 11.2.x
+    'driver_url' = 'mssql-jdbc-11.2.3.jre17.jar',
+    'driver_class' = 'com.microsoft.sqlserver.jdbc.SQLServerDriver'
 );
 
 ```
@@ -552,8 +641,8 @@ CREATE CATALOG hive_catalog PROPERTIES (
 ```sql
 -- 方式 1：切换 Catalog
 SWITCH hive_catalog;
-USE tpch;
-SELECT * FROM lineitem LIMIT 10;
+USE db_name;
+SELECT * FROM table_name LIMIT 10;
 
 -- 方式 2：三段式全路径直接查询
 SELECT * FROM mysql_catalog.db_name.table_name LIMIT 10;
