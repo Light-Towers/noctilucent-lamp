@@ -534,18 +534,18 @@ ALTER SYSTEM SET wal_level = 'logical';
     -c org.apache.doris.flink.tools.cdc.CdcTools \
     /opt/flink/current/lib/flink-doris-connector-1.20-25.1.0.jar \
     mysql-sync-database \
-    --database hz_venue_data_governance \
+    --database test_doris \
     --table-prefix pay_ \
-    --mysql-conf hostname=192.168.100.21 \
-    --mysql-conf port=33306 \
+    --mysql-conf hostname=mysql_host \
+    --mysql-conf port=3306 \
     --mysql-conf username=root \
-    --mysql-conf password=mingyang100100 \
-    --mysql-conf database-name=db_mingyang_pay2.0 \
+    --mysql-conf password=123456 \
+    --mysql-conf database-name=test_pay \
     --including-tables ".*" \
-    --sink-conf fenodes=192.168.100.41:8039 \
+    --sink-conf fenodes=doris_fe_nodes \
     --sink-conf username=root \
     --sink-conf password="123456" \
-    --sink-conf jdbc-url=jdbc:mysql://192.168.100.41:9039 \
+    --sink-conf jdbc-url=jdbc:mysql://doris_fe_nodes:9030 \
     --sink-conf sink.label-prefix=label \
     --table-conf replication_num=1
 
