@@ -313,21 +313,24 @@ Broker Load 用于从远端存储系统（如 HDFS、S3、BOS 等）通过 Broke
 **使用示例：**
 
 ```sql
-LOAD LABEL test_db.label_20231001 (
-    DATA INFILE("s3://bucket/data/20231001/*")
-    INTO TABLE example_tbl
-    COLUMNS TERMINATED BY ","
+-- 从 HDFS 导入数据，前提先创建表
+LOAD LABEL hive_physicalization.dw_dws_person
+(
+    DATA INFILE("hdfs://master01:8020/user/hive/warehouse/dw/person/dt=2025-05-22/*")
+    INTO TABLE dw_dws_person
+    COLUMNS TERMINATED BY "\t"
+    FORMAT AS "orc"
     (user_id, date, city, age, sex)
 )
-WITH S3 (
-    "AWS_ENDPOINT" = "s3.us-east-1.amazonaws.com",
-    "AWS_ACCESS_KEY" = "your_ak",
-    "AWS_SECRET_KEY" = "your_sk",
-    "AWS_REGION" = "us-east-1"
+with HDFS (
+    "fs.defaultFS"="hdfs://master01:8020",
+    "hadoop.username"="hdfs"
 )
-PROPERTIES (
-    "timeout" = "3600"
-);
+PROPERTIES
+(
+    "timeout"="1200",
+    "max_filter_ratio"="0.1"
+)
 
 ```
 
@@ -374,19 +377,24 @@ FROM KAFKA (
 类似于标准 SQL 的 `INSERT INTO`，Doris 支持从一张表查询数据并写入另一张表，常用于**数据清洗**、**宽表构建**或**从外表（MySQL/Hive/Iceberg）同步数据**。
 
 ```sql
--- 从 ODS 层表清洗数据写入 DWD 层表
+-- 1. 从 ODS 层表清洗数据写入 DWD 层表
 INSERT INTO dwd_user_log
 SELECT user_id, date, city 
 FROM ods_raw_log 
 WHERE date = '2023-10-01';
 
--- 配合 TVF (Table Value Function) 直接读取 HDFS 文件写入
+-- 2. 配合 TVF (Table Value Function) 直接读取 HDFS 文件写入
 INSERT INTO test_table 
 SELECT * FROM HDFS(
     "uri" = "hdfs://namenode:9000/user/data/file.parquet",
     "format" = "parquet"
 );
 
+-- 3. 通过 ctas(create table as select) 导入
+CREATE TABLE `internal`.`hz_venue_data_governance`.`vb_belong_record`
+PROPERTIES('replication_num' = '1')
+AS
+SELECT * FROM `mysql_catalog`.`db_mingyang_venue_booking2.0`.`vb_belong_record`;
 ```
 
 ### 6. Flink Doris Connector (整库同步与 CDC)
