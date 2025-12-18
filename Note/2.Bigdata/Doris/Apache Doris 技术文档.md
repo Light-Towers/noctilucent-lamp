@@ -660,14 +660,16 @@ JOIN mysql_catalog.source_db.mysql_table m ON h.id = m.id;
 
 ## 九、集群升级指南
 
-本章介绍从旧版本（以 2.1.11 为例）升级到新版本（以 3.1.3 为例）的标准流程。Doris 升级采用**滚动升级**的方式，通常遵循 **先升级 BE，再升级 FE** 的顺序。
+本章介绍从旧版本（以 3.0.8 为例）升级到新版本（以 3.1.3 为例）的标准流程。
+Doris [集群升级](https://doris.apache.org/zh-CN/docs/4.x/admin-manual/cluster-management/upgrade)采用**滚动升级**的方式，通常遵循 **先升级 BE，再升级 FE** 的顺序。
+不建议`主版本跨二位版本`升级，需按照 2.1 -> 3.0 -> 3.1 -> 3.2 -> 3.3 的执行路径升级
 
 ### 1. 环境变量准备
 
 在开始之前，建议在操作终端设置好环境变量，以便后续命令复用（请根据实际目录修改路径）：
 
 ```bash
-export DORIS_OLD_HOME=/opt/doris/apache-doris-2.1.11-bin-x64
+export DORIS_OLD_HOME=/opt/doris/apache-doris-3.0.8-bin-x64
 export DORIS_NEW_HOME=/opt/doris/apache-doris-3.1.3-bin-x64
 ```
 
