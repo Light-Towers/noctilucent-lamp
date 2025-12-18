@@ -4,7 +4,12 @@
    - 需开启 Checkpoint
 2. **源数据库**：MySQL 8.0
    - 必须开启 binlog-row 模式
-3. **目标数据库**：Doris 3.0.6
+   - 检查 MySQL 配置
+    ```sql
+    SHOW VARIABLES LIKE 'binlog_format';  -- 必须是 ROW
+    SHOW VARIABLES LIKE 'binlog_row_image';  -- 建议为 FULL
+    ```
+1. **目标数据库**：Doris 3.0.6
 
 ## 📁 Pipeline 配置文件
 > 文件名：`mysql-to-doris.yaml`，参照官网文档创建pipeline文件
