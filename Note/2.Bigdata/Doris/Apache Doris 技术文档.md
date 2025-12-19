@@ -344,6 +344,17 @@ curl --location-trusted -u root: -T test.csv -H "column_separator:," \
   DISTRIBUTED BY HASH(timestamp) BUCKETS 10;
   ```
 
+### 4. 系统变量配置
+
+Doris 支持通过系统变量来配置特定功能，例如启用 Unicode 字符支持：
+
+```sql
+-- 允许在对象名字里使用 Unicode 字符（多语言字符）
+SET GLOBAL enable_unicode_name_support = true;
+```
+
+该配置允许在数据库、表、列等对象的命名中使用 Unicode 字符，包括中文及其他语言字符。
+
 ## 六、数据导入机制
 
 Apache Doris 提供了多种[数据导入](https://doris.apache.org/zh-CN/docs/4.x/data-operate/import/load-manual)方式，以适应不同的数据源（本地文件、HDFS/S3、Kafka、MySQL 等）和同步需求（离线批量、实时流式）。
@@ -512,10 +523,8 @@ expire_logs_days=7
 ALTER SYSTEM SET wal_level = 'logical';
 ```
 
-
 *配置完成后需重启服务。*
 2. **类型限制**：目前支持 `boolean/int/decimal/json/array` 等类型，**不支持** `point/geography/vector` 等类型。
-
 
 
 #### (4) 运行整库同步命令（以 MySQL 为例）
