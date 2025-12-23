@@ -356,3 +356,19 @@ openssl req -new -key server.key -out server.csr -config san.cnf
 - [Linux性能优化](https://www.brendangregg.com/linuxperf.html)
 - [OpenSSL官方文档](https://www.openssl.org/docs/)
 - [Linux命令速查](https://www.commandlinefu.com/)
+
+
+
+
+
+
+
+
+
+
+## TODO
+nmcli con show
+nmtui
+systemctl restart network
+
+watch -n 1 -d nvidia-smi #每隔1秒刷新一次
