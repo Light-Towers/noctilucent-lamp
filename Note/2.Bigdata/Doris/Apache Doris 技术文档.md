@@ -562,8 +562,167 @@ ALTER SYSTEM SET wal_level = 'logical';
 
 ---
 
+## 七、系统监控与任务管理
 
-## 七、数据联邦查询 (Multi-Catalog)
+Apache Doris 提供了多维度的监控体系，包括**实时任务查看**（SQL 级别）、**指标监控**（Prometheus + Grafana）以及**审计日志**（Audit Log）。
+
+### 1. 实时任务与作业管理
+
+通过 SQL 接口，运维人员可以实时查看集群中正在运行的查询、导入或表结构变更任务。
+
+#### 1.1 查询监控 (Query Monitor)
+
+* **查看当前正在执行的 SQL**：
+```sql
+SELECT * FROM information_schema.active_queries;
+
+```
+
+
+*返回字段包含：QueryId, StartTime, TimeMs (耗时), Sql (部分截断), Database, User 等。*
+* **查看 BE 节点资源负载**：
+```sql
+SELECT * FROM information_schema.backend_active_tasks;
+
+```
+
+
+*可查看具体某个 BE 节点上正在消耗 CPU/内存的任务详情。*
+
+#### 1.2 导入任务监控 (Load Monitor)
+
+* **批量导入 (Broker/Spark Load)**：
+```sql
+-- 查看正在进行中的导入
+SHOW LOAD WHERE STATE = "LOADING";
+-- 查看指定 Label 的导入结果
+SHOW LOAD WHERE LABEL = "label_20231001";
+
+```
+
+
+* **例行导入 (Routine Load)**：
+```sql
+-- 查看作业整体状态 (Running/Paused) 及消费进度
+SHOW ROUTINE LOAD;
+-- 查看当前正在执行的子任务详情 (排查卡顿用)
+SHOW ROUTINE LOAD TASK WHERE JobName = "your_job_name";
+
+```
+
+
+
+#### 1.3 表结构变更监控 (Schema Change)
+
+查看 `ALTER TABLE`（如加减列）或 `ROLLUP` 创建进度：
+
+```sql
+SHOW ALTER TABLE COLUMN;  -- 查看列变更
+SHOW ALTER TABLE ROLLUP;  -- 查看 Rollup 进度
+
+```
+
+### 2. Prometheus + Grafana 监控平台
+
+Doris 的 FE 和 BE 进程均内置了 HTTP Server，直接以 Prometheus 标准格式暴露监控指标（Metrics），无需安装额外的 Exporter。
+
+#### 2.1 监控架构
+
+* **监控数据源**：
+* **FE 指标**：`http://<fe_ip>:8030/metrics` (默认 http_port)
+* **BE 指标**：`http://<be_ip>:8040/metrics` (默认 webserver_port)
+
+
+* **数据流向**：Doris (Metrics) -> Prometheus (Pull) -> Grafana (Dashboard)
+
+#### 2.2 Prometheus 配置 (`prometheus.yml`)
+
+在 Prometheus 配置文件中添加 Doris 的抓取任务（Job）：
+
+```yaml
+scrape_configs:
+  # 抓取 FE 指标
+  - job_name: 'doris_fe'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['fe_host1:8030', 'fe_host2:8030', 'fe_host3:8030']
+        labels:
+          group: 'fe'
+
+  # 抓取 BE 指标
+  - job_name: 'doris_be'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['be_host1:8040', 'be_host2:8040', 'be_host3:8040']
+        labels:
+          group: 'be'
+
+```
+
+*配置完成后重启 Prometheus 服务。*
+
+#### 2.3 Grafana 面板配置
+
+Apache Doris 官方提供了适配的 Grafana Dashboard 模板，涵盖了集群概览、查询性能、导入吞吐、Compaction 状态等关键指标。
+
+1. **下载模板**：访问 [Doris 监控和报警](https://doris.apache.org/zh-CN/docs/4.x/admin-manual/maint-monitor/monitor-alert) 下载 JSON 文件。
+2. **导入 Grafana**：
+* Log in Grafana -> Dashboards -> New -> Import。
+* 上传 JSON 文件或粘贴 JSON 内容。
+* 选择对应的 Prometheus 数据源。
+
+
+
+**关键监控指标推荐：**
+
+* **Query Rate (QPS)**：集群每秒查询数。
+* **Query 99th Latency**：查询延迟的 P99 分位值。
+* **Import Rows/s**：实时数据导入速率。
+* **Compaction Score**：如果该分数持续过高（>100），说明数据版本积压，可能会影响查询性能。
+* **BE Memory**：重点关注 Memtable 内存使用情况，防止 OOM。
+
+### 3. 查询审计与慢查询分析 (Audit Loader)
+
+Doris 默认将审计日志（包含所有 SQL 的执行详情、耗时、扫描行数等）输出到 `fe/log/fe.audit.log` 文件中。为了便于分析，推荐使用 **Audit Loader** 插件将这些日志实时入库到 Doris 内部表中。
+
+#### 3.1 方案优势
+
+将日志入库后，可以通过 SQL 直接进行多维分析，例如：
+
+* 找出过去 1 小时最慢的 10 个查询。
+* 统计访问最频繁的表。
+* 分析某个用户的查询模式。
+
+#### 3.2 部署简述
+
+1. **创建审计表**：在 Doris 中创建用于存储日志的表（`doris_audit_db__` 库）。
+2. **配置插件**：下载并配置 `audit_loader` 插件（通常集成在 FE 中）。
+3. **开启功能**：在 `fe.conf` 中配置 `enable_audit_plugin = true`。
+
+#### 3.3 慢查询分析示例
+
+一旦日志入库，即可使用如下 SQL 分析慢查询：
+
+```sql
+-- 查询最近 1 小时耗时超过 5 秒的 SQL
+SELECT 
+    query_id, 
+    user, 
+    time AS exec_time_ms, 
+    scan_rows, 
+    scan_bytes, 
+    stmt 
+FROM doris_audit_db__.doris_audit_log_tbl 
+WHERE time > 5000 
+  AND timestamp > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+ORDER BY time DESC 
+LIMIT 10;
+
+```
+
+---
+
+## 八、数据联邦查询 (Multi-Catalog)
 
 Apache Doris 的 Multi-Catalog 功能是实现**湖仓一体（Lakehouse）**的核心。它允许 Doris 直接挂载外部数据源的元数据，无需搬运数据即可实现对异构数据源（Hive, MySQL, Iceberg 等）的跨库联邦分析。
 
@@ -704,7 +863,7 @@ JOIN mysql_catalog.source_db.mysql_table m ON h.id = m.id;
 ---
 
 
-## 八、生产部署注意事项
+## 九、生产部署注意事项
 
 1. **节点规划**：
    - FE：至少 1 个 Follower（生产建议 3 Follower + 1~3 Observer 保障 HA）。
@@ -734,7 +893,7 @@ JOIN mysql_catalog.source_db.mysql_table m ON h.id = m.id;
      
      Doris 会返回类似错误信息："If you want to drop this backend, please use DROPP instead of DROP"。
    
-   - **如果真的确认要强制删除**（不推荐，仅用于紧急情况）：
+   - **❌ 如果真的确认要强制删除**（不推荐，仅用于紧急情况）：
      ```sql
      ALTER SYSTEM DROPP BACKEND "127.0.0.1:9050";
      ```
@@ -753,7 +912,7 @@ JOIN mysql_catalog.source_db.mysql_table m ON h.id = m.id;
 
 
 
-## 九、集群升级指南
+## 十、集群升级指南
 
 本章介绍从旧版本（以 3.0.8 为例）升级到新版本（以 3.1.3 为例）的标准流程。
 Doris [集群升级](https://doris.apache.org/zh-CN/docs/4.x/admin-manual/cluster-management/upgrade)采用**滚动升级**的方式，通常遵循 **先升级 BE，再升级 FE** 的顺序。
