@@ -919,3 +919,209 @@ admin set frontend config("disable_tablet_scheduler" = "false");
 
 
 [Doris MCP + Dify](https://mp.weixin.qq.com/s/O8bTYJYeBs2-UayyGrIl_w)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+# TODO
+
+
+下面只针对**和当前文档有明显出入或在文档中没有依据**的点做说明；其余大部分内容（基础介绍、架构、端口规划、BE 下线用 DECOMMISSION 等）和官方文档是一致或基本一致的。
+
+---
+
+### 1. 索引部分：Z-order 索引
+
+你文中提到：
+
+> **Z-order 索引**：专为高效处理多维数据范围查询而设计……
+
+在当前提供的官方文档里，只明确提到了如下几类索引：  
+
+- 复合排序键（Sorted Compound Key Index）  
+- Min/Max 索引  
+- BloomFilter 索引  
+- 倒排索引[[存储引擎](https://doris.apache.org/docs/4.x/gettingStarted/what-is-apache-doris/#storage-engine)]  
+
+文档中**没有出现 Z-order 索引**的说明，因此这部分目前无法被官方文档佐证，建议去掉或标注为“特性以具体版本文档为准”。
+
+---
+
+### 2. FE 配置示例中的部分参数
+
+在 FE 配置示例中，你写了：
+
+```properties
+JAVA_HOME = /opt/java/jdk-17
+PRIORITY_NETWORKS = 192.168.100.0/24
+enable_proxy_protocol = true
+lower_case_table_names = 1
+```
+
+官方文档里相关配置为（注意大小写）：  
+
+- `priority_networks`：用于多网卡环境选择 IP[[FE 配置](https://doris.apache.org/docs/4.x/admin-manual/config/fe-config/#service)]  
+- `lower_case_table_names`：确实存在[[部署 FE 步骤](https://doris.apache.org/docs/4.x/install/deploy-manually/integrated-storage-compute-deploy-manually/#step-1-deploy-fe-master-node)]  
+
+文档中：
+
+- **没有出现 `enable_proxy_protocol` 配置项**；  
+- 配置项示例均使用小写 `priority_networks`，未说明可以使用大写 `PRIORITY_NETWORKS`。  
+
+因此，`enable_proxy_protocol` 以及大写的 `PRIORITY_NETWORKS` 写法在现有文档中**没有佐证**，建议按官方文档中的参数名与大小写使用。
+
+---
+
+### 3. 升级章节中使用 `--metadata_failure_recovery` 启动 FE
+
+你在升级流程中写到，用 `--metadata_failure_recovery` 方式启动新 FE，来做元数据兼容性验证。
+
+但官方文档明确说明：**“metadata recovery mode” 的使用文档不再对外提供，如确有需要需联系社区开发者**，并特别强调误用会导致不可逆数据损坏[[Metadata recovery mode](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/metadata-operation/#advanced-operations)]。
+
+> 文档里没有给出你所写的“用恢复模式做元数据兼容性测试”的流程，也不建议普通用户自行操作这一模式。
+
+这块建议删除或改为：参考官方“集群升级”文档，不要自行使用 metadata recovery mode。
+
+---
+
+### 4. 升级策略：版本跨度与具体步骤
+
+你写到：
+
+> 不建议 `主版本跨二位版本` 升级，需按照 2.1 -> 3.0 -> 3.1 -> 3.2 -> 3.3 的执行路径升级
+
+以及后面详细的 **BE/FE 滚动升级步骤**（替换 bin/lib、备份目录、环境变量名等）。
+
+当前提供的知识源里：
+
+- 只在 2.0 / 3.0 的 release notes 里做了版本特性和鼓励升级的介绍，没有给出类似“2.1→3.0→3.1→3.2→3.3 必须逐级升级”的硬性路线[[2.0 release](https://doris.apache.org/docs/4.x/releasenotes/v2.0/release-2.0.0/#embarking-on-the-200-journey); [3.0 release](https://doris.apache.org/docs/4.x/releasenotes/v3.0/release-3.0.0/#try-apache-doris-30-now)]。  
+- 本次检索结果中**没有出现升级操作的官方流程细节**（如逐台替换 bin/lib 的步骤）。
+
+因此：
+
+- “必须按 2.1→3.0→3.1→3.2→3.3 的路径升级”在现有文档中**没有佐证**；  
+- 整个“用旧目录 + 新 bin/lib 滚动替换”的操作手册也**超出了当前文档能确认的范围**。
+
+升级章节整体建议标注为“经验做法 / 内部实践”，并在对外文档中指向官方“升级文档”而不是自行定义一份流程。
+
+---
+
+### 5. Flink Doris Connector / 整库 CDC 同步细节
+
+你在第六章里给出了非常详细的 Flink CDC + Doris Connector 的：
+
+- 具体 jar 包版本（如 `flink-doris-connector-1.20-25.1.0.jar`、`flink-sql-connector-mysql-cdc-3.4.0.jar` 等）；  
+- 具体 Java 类名 `org.apache.doris.flink.tools.cdc.CdcTools`；  
+- 命令行参数（`mysql-sync-database`、各类 `--xxx-conf`）。
+
+但当前提供的 Doris 官方文档只到**“Flink Doris Connector 支持，将 Flink 结果写入 Doris”**这一层，且本轮知识源中**没有包含 Flink Connector 的详细参数和示例**，也没有出现 `CdcTools` 这类类名[[导入内部与性能](https://doris.apache.org/docs/4.x/data-operate/import/load-internals/)]。
+
+因此：
+
+- 这些 **jar 版本号、类名、命令行参数** 在当前知识源中**均查不到官方说明**，无法确认其正确性；  
+- 建议这一整段标注为“结合 Flink 官方 CDC 文档和 Doris Flink Connector 文档的实践示例”，不要当成“官方标准写法”。
+
+---
+
+### 6. 异步物化视图语法的小问题
+
+你在 Multi-Catalog 进阶应用中写了：
+
+```sql
+CREATE MATERIALIZED VIEW mv_federated_summary
+BUILD DEFERRED REFRESH ASYNC EVERY(1 HOUR)
+AS ...
+```
+
+根据官方 `CREATE MATERIALIZED VIEW` 语法：
+
+- 刷新相关部分是：`REFRESH <refresh_method> [<refresh_trigger>]`；  
+- 周期调度写法示例为：  
+  ```sql
+  CREATE MATERIALIZED VIEW mv_6
+  REFRESH COMPLETE ON SCHEDULE EVERY 10 hour
+  AS ...
+  ```  
+  或  
+  ```sql
+  CREATE MATERIALIZED VIEW mv_7
+  REFRESH AUTO ON SCHEDULE EVERY 10 hour
+  PARTITION BY (l_shipdate)
+  AS ...
+  ```[[CREATE ASYNC MV](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/table-and-view/async-materialized-view/CREATE-ASYNC-MATERIALIZED-VIEW/); [Refresh 配置](https://doris.apache.org/docs/4.x/query-acceleration/materialized-view/async-materialized-view/functions-and-demands/#refresh-configuration)]
+
+语法中**没有 `REFRESH ASYNC EVERY` 这种写法**。  
+比较接近你语义的官方写法应是类似：
+
+```sql
+CREATE MATERIALIZED VIEW mv_federated_summary
+BUILD DEFERRED
+REFRESH AUTO ON SCHEDULE EVERY 1 HOUR
+AS ...
+```
+
+建议修正该处语法示例。
+
+---
+
+### 7. Docker Compose 单机体验配置
+
+你给出的 Docker Compose 片段（fe/be 镜像 `apache/doris:fe-4.0.1` / `be-4.0.1`、网络 IP 等）：
+
+- 当前知识源里只有：  
+  - AWS/容器化部署、Kubernetes Operator、以及 2.1 版本提供的“单机 Docker 快速体验镜像”（暴露 8000/8030/8040/9030 端口）等说明[[2.1 Docker 快速体验](https://doris.apache.org/docs/4.x/releasenotes/v2.1/release-2.1.0/#others)]；  
+- **没有**具体到你这份 Compose 的 YAML 配置和环境变量组合。
+
+因此，这段 Docker Compose 示例**在现有文档中找不到直接依据**，无法确认“版本号、变量名、健康检查依赖”等细节是否完全正确。建议在文档中显式标注为“示例 Compose，具体以官方镜像文档为准”。
+
+---
+
+### 8. OS / 资源配置上的差异（不是“错误”，但和官方建议不完全一样）
+
+这些不是严格意义上的“错误”，只是和官方推荐值略有偏差：
+
+1. **limits.conf**：
+
+   - 官方建议：`nofile` 软/硬都为 **1,000,000**[[OS 检查](https://doris.apache.org/docs/4.x/install/preparation/os-checking/#increase-systems-open-file-descriptors-limit)]；  
+   - 你文中用的是 `65535`，功能上没问题，但**低于官方推荐值**。
+
+2. **FE / BE 推荐资源**：
+
+   - 官方生产推荐：FE 16C / 64G，BE 16C / 64G[[服务器配置建议](https://doris.apache.org/docs/4.x/install/preparation/env-checking/#server-configuration-recommendations)]；  
+   - 你文中写 FE 建议 8C/16G（作为门槛），BE 16C/64G。可以理解为“最低建议配置”，但和“官方推荐”不完全一致，建议在文档中明确区分“最低配置 vs 推荐配置”。
+
+这两点可视情况说明为“按业务规模可适当下调，但官方推荐更高”。
+
+---
+
+### 9. 其他无法从当前文档验证的点
+
+以下内容在本轮知识源中**没有出现，无法给出确认**（但也未必错误，只是超出本次可查范围）：
+
+- FE Web 接口 `curl http://127.0.0.1:8030/api/bootstrap` 的具体用途和输出格式；  
+- `ALTER SYSTEM ADD FOLLOWER/OBSERVER` 的完整用法（我们只在“集群规划”文档中看到 FE 角色说明，未见到完整 SQL 语句示例）；  
+- Flink CDC 中 PostgreSQL 的所有类型支持/不支持列表（文档中未涉及）。  
+
+建议这部分在发布时，加一句“以当前版本官方文档为准”。
+
+---
+
+**总结**：  
+- 你的整体文档在「Doris 简介、存算架构、端口规划、Multi-Catalog 基本概念、使用 DECOMMISSION 下线 BE、异步物化视图/Job Scheduler 的用途」等方面，与官方文档是基本一致的。  
+- 需要重点修正或标注来源的主要包括：**Z-order 索引、`enable_proxy_protocol` 配置、异步物化视图语法示例（`REFRESH ASYNC EVERY`）、使用 metadata recovery 模式做升级兼容性验证、严格的升级路径与 Flink CDC 细节、以及 Docker Compose 与部分资源配置值**。
