@@ -72,34 +72,44 @@ Doris 提供了丰富的索引结构，以加速数据检索，减少数据扫�
 使用 Docker Compose 快速启动单节点集群：
 
 ```yaml
-version: '3'
 services:
   fe:
-    image: apache/doris:fe-4.0.1
+    image: apache/doris:fe-4.0.2
+    hostname: fe1       # 显式设置主机名
     ports:
-      - "28030:8030"
-      - "29030:9030"
+      - "28030:8030"   # FE HTTP
+      - "29030:9030"   # FE MySQL
     environment:
-      - FE_SERVERS=fe1:172.20.0.10:9010
+      - FE_SERVERS=fe1:172.20.0.10:9010  # 直接使用固定IP
       - FE_ID=1
     networks:
       doris-net:
-        ipv4_address: 172.20.0.10
+        ipv4_address: 172.20.0.10  # 固定IP
+    healthcheck:  # 添加健康检查确保BE在FE就绪后启动
+      test: ["CMD", "curl", "-sf", "http://localhost:8030/api/bootstrap"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+    volumes:
+      - /opt/docker_compose/doris/data/fe/doris-meta:/opt/apache-doris/fe/doris-meta  # FE元数据目录
 
   be:
-    image: apache/doris:be-4.0.1
+    image: apache/doris:be-4.0.2
+    hostname: be       # 显式设置主机名
     ports:
-      - "28040:8040"
-      - "29050:9050"
+      - "28040:8040"   # BE HTTP
+      - "29050:9050"   # BE 服务端口
     environment:
-      - FE_SERVERS=fe1:172.20.0.10:9010
-      - BE_ADDR=172.20.0.11:9050
-    networks:
-      doris-net:
-        ipv4_address: 172.20.0.11
+      - FE_SERVERS=fe1:172.20.0.10:9010  # 使用FE的固定IP
+      - BE_ADDR=172.20.0.11:9050  # 使用BE的固定IP
     depends_on:
       fe:
-        condition: service_healthy
+        condition: service_healthy  # 等待FE健康后再启动
+    networks:
+      doris-net:
+        ipv4_address: 172.20.0.11  # 固定IP
+    volumes:
+      - /opt/docker_compose/doris/data/be/storage:/opt/apache-doris/be/storage  # BE数据存储目录
 
 networks:
   doris-net:
