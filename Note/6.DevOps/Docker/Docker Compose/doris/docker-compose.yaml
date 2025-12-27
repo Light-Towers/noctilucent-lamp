@@ -1,13 +1,6 @@
-networks:
-  doris-net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24  # 指定子网
-
 services:
   fe:
-    image: apache/doris:fe-4.0.1
+    image: apache/doris:fe-4.0.2
     hostname: fe1       # 显式设置主机名
     ports:
       - "28030:8030"   # FE HTTP
@@ -24,10 +17,10 @@ services:
       timeout: 10s
       retries: 20
     volumes:
-      - /opt/docker_compose/doris/data/doris-meta:/opt/doris/fe/doris-meta  # FE元数据目录
+      - /opt/docker_compose/doris/data/fe/doris-meta:/opt/apache-doris/fe/doris-meta  # FE元数据目录
 
   be:
-    image: apache/doris:be-4.0.1
+    image: apache/doris:be-4.0.2
     hostname: be       # 显式设置主机名
     ports:
       - "28040:8040"   # BE HTTP
@@ -42,14 +35,11 @@ services:
       doris-net:
         ipv4_address: 172.20.0.11  # 固定IP
     volumes:
-      - /opt/docker_compose/doris/data/storage:/opt/doris/be/storage  # BE数据存储目录
+      - /opt/docker_compose/doris/data/be/storage:/opt/apache-doris/be/storage  # BE数据存储目录
 
-
-
-  # fe、be 在一起的
-  # doris:
-  #   image: yagagagaga/doris-standalone
-  #   ports:
-  #     - "28030:8030"
-  #     - "28040:8040"
-  #     - "29030:9030"
+networks:
+  doris-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24   # 指定子网
