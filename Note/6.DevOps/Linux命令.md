@@ -680,6 +680,9 @@ watch -d df -h
 
 # 监控当前目录下的文件生成情况
 watch -n 5 ls -l
+
+# 杀掉所有显存占用进程
+sudo fuser -v /dev/nvidia* -k
 ```
 
 ### 3.3 用户与组管理
