@@ -34,13 +34,13 @@ if __name__ == '__main__':
 ```bash
 # 安装 ngrok 的 python 客户端
 pip install pyngrok
-pyngrok		# 下载安装ngrok
+pyngrok		# 下载安装ngrok，此过程受网速限制，建议下载对应系统二进制执行包
 
 ngrok config add-authtoken <token>	# 配置token
 ngrok http 5000 --host-header="localhost"	# 映射端口
 ```
 
-得到的公网域名地址：https://90c7-180-76-140-37.ngrok-free.app
+例如得到的公网域名地址：https://90c7-180-76-140-37.ngrok-free.app
 
 ## 二、问题探索过程与核心发现
 
