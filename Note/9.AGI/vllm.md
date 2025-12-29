@@ -196,7 +196,9 @@ vllm serve /path/to/model \
 
 ### 5.2 启动向量模型服务 (Embedding/Pooling)
 针对 Jina-v4 等向量模型，必须指定 `pooling` 运行器。
+
 ```bash
+# Jina-Embeddings-v4 (T4 GPU 已验证配置)
 vllm serve jinaai/jina-embeddings-v4-vllm-retrieval \
   --served-model-name jina-v4 \
   --runner pooling \
@@ -204,8 +206,34 @@ vllm serve jinaai/jina-embeddings-v4-vllm-retrieval \
   --dtype half \
   --max-model-len 8192 \
   --enforce-eager \
+  --trust-remote-code \
+  --gpu-memory-utilization 0.85
+
+# 同样适用于 text-matching 版本
+vllm serve jinaai/jina-embeddings-v4-vllm-text-matching \
+  --served-model-name jina-text-match \
+  --runner pooling \
+  --convert embed \
+  --dtype half \
+  --max-model-len 8192 \
+  --enforce-eager \
   --trust-remote-code
 ```
+
+### 5.3 Embedding/Reranking 模型参数详解
+| CLI 参数 | 说明 | 默认值 |
+| :--- | :--- | :--- |
+| `--runner` | 模型运行模式 | `default` (生成式) / `pooling` (向量模型) |
+| `--convert` | 输出格式转换 | `auto` / `embed` (向量) / `reward` (rerank 打分) |
+| `--trust-remote-code` | 允许模型自定义代码 | `False` (Jina/Chinese 模型必开) |
+| `--enforce-eager` | 强制 Eager 模式 | `False` (T4 等旧卡建议开启) |
+| `--disable-custom-all-reduce` | 禁用自定义 AllReduce | `False` (多卡通信优化) |
+
+**重要提示**：
+- **`--runner pooling`**：Jina、BGE、E5 等向量模型必须指定此模式。
+- **`--convert embed`**：使 API 输出符合 OpenAI `/v1/embeddings` 标准。
+- **`--convert reward`**：将输出转换为打分（适用于 Rerank 任务，如 `/v1/score`）。
+- **`--enforce-eager`**：关闭 CUDA Graph，可减少显存波动，适合 T4、V100 等旧 GPU。
 
 ---
 
@@ -222,7 +250,7 @@ curl http://localhost:8000/v1/chat/completions \
   }'
 ```
 
-### 6.2 OpenAI SDK 调用
+### 6.2 基于 OpenAI SDK 调用
 ```python
 from openai import OpenAI
 client = OpenAI(api_key="EMPTY", base_url="http://localhost:8000/v1")
@@ -236,27 +264,121 @@ print(response.choices[0].message.content)
 
 ---
 
-## 7. 核心参数详解
+## 7. 核心参数详解 (Python `LLM()` / CLI `vllm serve`)
 
-| 参数 | 说明 | 建议/备注 |
+### 7.1 并行与性能参数
+| Python 参数 | CLI 参数 | 说明 | 建议/备注 |
+| :--- | :--- | :--- | :--- |
+| `tensor_parallel_size` | `-tp` | **张量并行**数 (GPU 数量) | 将模型权重切分到多块 GPU 上，增加显存并加速推理。通常设为卡数。 |
+| `pipeline_parallel_size` | `-pp` | **流水线并行**数 | 将模型层切分到不同 GPU 组。常用于超大规模模型（如 405B）跨节点部署。 |
+| `gpu_memory_utilization` | `--gpu-memory-utilization` | 显存利用率 | 默认 0.9。留出空间给激活值。OOM 或多卡负载不均时调至 0.7-0.8。 |
+| `max_model_len` | `--max-model-len` | 最大上下文长度 | 显存压力大时适当减小该值，会直接影响 KV Cache 占用。 |
+| `enforce_eager` | `--enforce-eager` | 强制使用 Eager 模式 | 禁用 CUDA Graph。在 T4/旧架构或变长输入频繁导致显存波动时非常有效。 |
+| `block_size` | `--block-size` | PagedAttention 块大小 | 默认 16。影响内存碎片化率。 |
+
+### 7.2 模型加载参数
+| Python 参数 | CLI 参数 | 说明 | 建议/备注 |
+| :--- | :--- | :--- | :--- |
+| `dtype` | `--dtype` | 权重精度 | `auto`, `half` (FP16), `bfloat16`, `float`。T4 必须强制设为 `half`。 |
+| `quantization` | `--quantization` | 量化方式 | 支持 `awq`, `gptq`, `squeezellm`, `fp8` 等。 |
+| `trust_remote_code` | `--trust-remote-code` | 信任远程代码 | 对于包含自定义算子或层的模型（如 Jina, ChatGLM）必设。 |
+| `download_dir` | `--download-dir` | 模型下载目录 | 默认使用 `~/.cache/huggingface`。 |
+| `swap_space` | `--swap-space` | CPU 交换空间 (GiB) | 每个 GPU 的 CPU 交换空间大小，默认为 4 GiB。 |
+
+### 7.3 运行时性能参数
+| Python 参数 | CLI 参数 | 说明 | 建议/备注 |
+| :--- | :--- | :--- | :--- |
+| `max_num_batched_tokens` | `--max-num-batched-tokens` | 批处理最大 token 数 | 影响并发吞吐，内存富余时可适当增加。 |
+| `max_num_seqs` | `--max-num-seqs` | 最大并发序列数 | 控制同时处理的请求数，与显存、`max_model_len` 协同调优。 |
+| `cpu_offload_gb` | `--cpu-offload-gb` | CPU 卸载显存 (GB) | 显存不足时，将部分 KV Cache 换出到 CPU 内存。 |
+| `distributed_executor_backend` | `--distributed-executor-backend` | 分布式后端 | `ray`（默认）或 `mp`（多进程）。在单机多卡时 `mp` 更轻量。 |
+
+### 7.4 代码示例：并行配置
+```python
+from vllm import LLM
+
+# 2 GPU 张量并行 + 流水线并行（若模型层数足够多）
+llm = LLM(
+    model="Qwen/Qwen2.5-72B-Instruct",
+    tensor_parallel_size=2,          # 将模型权重切分到 2 块 GPU 上
+    pipeline_parallel_size=1,        # 启用流水线并行（通常 1 表示禁用，>1 才激活）
+    gpu_memory_utilization=0.85,     # 控制显存占用比例
+    max_model_len=8192,              # 限制最大上下文长度以控制 KV Cache 大小
+    enforce_eager=True,              # 为稳定性关闭 CUDA Graph
+    dtype="half",                    # FP16 精度，T4 兼容
+    trust_remote_code=True,          # 允许模型自定义代码
+    max_num_batched_tokens=4096,     # 批处理 token 上限
+    max_num_seqs=128                 # 最大并发请求数
+)
+```
+
+**并行模式说明**：
+- **张量并行 (Tensor Parallelism)**：将单个权重矩阵拆分到多块 GPU 上。适合单机多卡，能同时提升吞吐和显存容量。
+- **流水线并行 (Pipeline Parallelism)**：将模型层序列拆分到不同 GPU 组。适合超大模型跨节点部署，降低单卡显存压力。
+- **数据并行 (Data Parallelism)**：vLLM 天然支持，通过多个 `LLM` 实例在不同节点上同时服务不同请求。
+
+### 7.5 批处理优化参数详解
+
+**批处理规模与吞吐量关系**：
+```python
+# 吞吐优化配置示例
+llm = LLM(
+    model="Qwen/Qwen2.5-7B-Instruct",
+    max_num_batched_tokens=4096,    # 批处理 token 数上限
+    max_num_seqs=128,               # 并发序列数上限
+    max_model_len=8192              # 每条序列最大长度
+)
+```
+
+| 批处理参数 | 影响 | 建议值 |
 | :--- | :--- | :--- |
-| `--tensor-parallel-size` | GPU 数量 | 多卡部署必设 |
-| `--gpu-memory-utilization` | 显存利用率 | 默认 0.9，OOM 时调低至 0.7-0.8 |
-| `--max-model-len` | 最大上下文长度 | 显存压力大时适当减小 |
-| `--enforce-eager` | 强制使用 Eager 模式 | T4 GPU 或显存吃紧时，禁用 CUDA Graph 节省显存 |
-| `--dtype` | 权重精度 | T4 不支持 bfloat16，建议强设为 `half` |
-| `--quantization` | 量化方式 | 支持 awq, gptq, squeezellm 等 |
+| `max_num_batched_tokens` | 单批最大 token 数 | `2048` ~ `8192`，取决于 GPU 显存 |
+| `max_num_seqs` | 并发序列数 | `64` ~ `256`，与请求队列深度匹配 |
+| `max_model_len` | 每条序列最大长度 | 应根据业务需求（如 4K、8K、16K）设置 |
+
+**批处理调优策略**：
+1. **吞吐优先**：提高 `max_num_batched_tokens`，增加并发 token 数。
+2. **延迟敏感**：降低 `max_num_seqs`，减少排队等待时间。
+3. **长文本场景**：增大 `max_model_len`，但要相应降低 `max_num_seqs`。
+4. **混合调度**：vLLM 自动根据输入长度动态调度批处理。
+
 
 ---
 
-## 8. 生产实战避坑 (T4 GPU / Jina 案例)
+## 8. 生产实战避坑与性能调优
 
-1.  **GCC 版本冲突**：CUDA 12.2 不支持 GCC 13。务必降级到 GCC 12 并显式设置 `CC/CXX`。
-2.  **向量模型任务不匹配**：部署 Embedding 模型若不加 `--runner pooling`，会报任务类型错误。
-3.  **显存溢出 (OOM)**：
-    *   降低 `--gpu-memory-utilization`。
-    *   使用 `--enforce-eager` 牺牲微量性能换取显存稳定性。
-4.  **Jina v4 精度优化**：在搜索场景下，`input` 建议携带 `retrieval.query: ` 前缀。
+### 8.1 T4 GPU 特殊配置
+- **GCC 版本冲突**：CUDA 12.2 不支持 GCC 13。务必降级到 GCC 12 并显式设置 `CC=/usr/bin/gcc-12`, `CXX=/usr/bin/g++-12`。
+- **FlashInfer 编译缓存**：清理损坏的编译缓存：`rm -rf ~/.cache/flashinfer/`。
+- **精度强制指定**：T4 不支持 bfloat16，需强制 `--dtype half` (FP16)。
+- **Eager 模式强制**：`--enforce-eager` 关闭 CUDA Graph，减少显存波动，稳定压倒性能。
+
+### 8.2 向量模型任务不匹配
+- **Jina/BGE/E5 等向量模型**：启动命令**必须**包含 `--runner pooling`。
+- **转换器参数**：`--convert embed`（向量）或 `--convert reward`（打分）。
+- **避免旧版参数**：v0.13.0+ 弃用 `--task`，改用 `--runner` + `--convert`。
+
+### 8.3 显存溢出 (OOM) 解决策略
+- **降低显存占用率**：`--gpu-memory-utilization 0.7` ~ `0.8`。
+- **减小上下文长度**：`--max-model-len 4096`（或更低）。
+- **启用 CPU 卸载**：`--cpu-offload-gb 4`（将部分 KV Cache 换出至 CPU）。
+- **牺牲性能换稳定**：`--enforce-eager`。
+
+### 8.4 Jina v4 最佳实践
+- **前缀优化**：查询时添加 `"retrieval.query: "` 前缀可提升检索精度。
+- **版本区别**：
+  - `jina-embeddings-v4-vllm-retrieval`：通用向量模型。
+  - `jina-embeddings-v4-vllm-text-matching`：文本匹配专用。
+- **多 GPU 推荐**：T4（16GB）单卡最多支持 `--max-model-len 8192`，建议 2 卡张量并行以服务更长序列。
+
+### 8.5 部署后监控与日志
+- **启动日志观察**：首次启动会编译算子（2-5 分钟），成功后生成 `~/.cache/flashinfer/` 二进制缓存。
+- **吞吐监控**：通过 `prometheus` 或 `vLLM` 内置监控接口观察 `requests_per_second`, `tokens_per_second`。
+- **错误日志关键词**：
+  - `CUDA out of memory` → 降低 `--gpu-memory-utilization`。
+  - `unsupported GNU version` → 设置 `CC/CXX`。
+  - `The model does not support Embeddings API` → 检查 `--runner pooling`。
+
 
 ---
 
