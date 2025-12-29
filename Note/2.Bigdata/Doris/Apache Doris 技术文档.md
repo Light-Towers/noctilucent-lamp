@@ -69,9 +69,26 @@ Doris 提供了丰富的索引结构，以加速数据检索，减少数据扫�
 
 ## 四、部署方式
 
-> **版本说明**：本指南采用 Docker (4.0.1) 进行快速功能测试（尝鲜最新特性），生产集群部署则基于 3.1.3 稳定版（长期支持版）。
+> **版本说明**：本指南采用 Docker (4.0.2) 进行快速功能测试（尝鲜最新特性），生产集群部署则基于 3.1.3 稳定版（长期支持版）。
 
 ### 1. 快速体验（仅开发测试）
+> **警告**：快速部署方法仅用于本地开发和测试，请勿用于生产环境。原因如下：
+> 1. **数据易丢失**：Docker 部署在容器销毁时会丢失数据；手动部署单副本实例不具备数据冗余备份能力，机器宕机可能导致数据丢失。
+> 2. **单副本配置**：示例中的建表语句均为单副本，生产环境应使用多副本存储数据，以保证数据可靠性。
+
+自 Doris 2.1.8 版本起支持 Docker 部署。推荐使用官方提供的快速启动脚本：
+
+```bash
+# 下载启动脚本
+wget https://github.com/apache/doris/raw/master/quickstart/start-doris.sh
+chmod 755 start-doris.sh
+
+# 启动Doris集群（使用最新版本）
+bash start-doris.sh -v 4.0.2
+```
+
+脚本会生成 `docker-compose-doris.yaml` 配置文件，您也可以根据需要自定义配置。
+
 使用 Docker Compose 快速启动单节点集群：
 
 ```yaml
@@ -120,6 +137,44 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/24
+```
+
+#### 配置说明：
+
+##### 1. 网络变更
+默认脚本生成的配置使用 `network_mode: host`，但此模式会占用宿主机端口。为不占用宿主机端口，建议将网络模式改为 `bridge` 模式，容器端口使用端口映射方式。
+
+因 `apache/doris` 镜像中的启动脚本 `/usr/local/bin/init_fe.sh` 做了 `FE_SERVERS` 的检验限制：必须是 `name:ip:port` 格式，所以需要显式设置固定IP。
+
+> **init_fe.sh 相关源码片段：**
+> ```shell
+> # Verify election mode configuration
+> validate_election_mode() {
+>     run_mode="ELECTION"
+>     # Verify FE_SERVERS format
+>     local fe_servers_regex="^.+:[1-2]{0,1}[0-9]{0,1}[0-9]{1}(\.[1-2]{0,1}[0-9]{0,1}[0-9]{1}){3}:[1-6]{0,1}[0-9]{1,4}(,.+:[1-2]{0,1}[0-9]{0,1}[0-9]{1}(\.[1-2]{0,1}[0-9]{0,1}[0-9]{1}){3}:[1-6]{0,1}[0-9]{1,4})*$"
+> 
+>     if ! [[ $FE_SERVERS =~ $fe_servers_regex ]]; then
+>         log_error "Invalid FE_SERVERS format. Expected: name:ip:port[,name:ip:port]..."
+>     fi
+> }
+> ```
+
+##### 2. 目录挂载
+容器启动时，会自动创建 `/opt/apache-doris/fe/doris-meta` 和 `/opt/apache-doris/be/storage` 目录，用于保存 FE 和 BE 的元数据和数据。通过目录挂载可以持久化这些数据，避免容器重启后数据丢失。
+
+#### 替代方案：独立容器镜像
+如果您希望更简单的部署方式，可以使用第三方提供的独立容器镜像：
+
+```yaml
+# yagagagaga/doris-standalone 镜像（FE和BE集成在一个容器中）
+services:
+  doris:
+    image: yagagagaga/doris-standalone
+    ports:
+      - "28030:8030"  # FE HTTP
+      - "28040:8040"  # BE HTTP
+      - "29030:9030"  # MySQL
 ```
 
 ### 2. 生产集群部署（存算一体）
@@ -967,7 +1022,7 @@ export DORIS_NEW_HOME=/opt/doris/apache-doris-3.1.3-bin-x64
    ```
 
 3. **启动测试 FE**：使用元数据故障恢复模式启动：
-> **🛑 安全提示**：官方文档明确说明 **"metadata recovery mode" (--metadata_failure_recovery)** 的使用存在风险，误用可能导致不可逆的数据损坏。非必要情况下，**不建议普通用户自行操作此模式**。请优先参考官方的“集群升级”流程进行验证。
+> **🛑 安全提示**：官方文档明确说明 **"metadata recovery mode" (--metadata_failure_recovery)** 的使用存在风险，误用可能导致不可逆的数据损坏。非必要情况下，**不建议普通用户自行操作此模式**。请优先参考官方的"集群升级"流程进行验证。
 
    ```bash
    sh ${DORIS_NEW_HOME}/bin/start_fe.sh --daemon --metadata_failure_recovery
@@ -1091,6 +1146,39 @@ admin set frontend config("disable_tablet_scheduler" = "false");
 
 至此，集群升级完成。
 
+
+
+## 十一、进阶学习路径与资源推荐
+
+对于希望深入学习和掌握 Apache Doris 的开发者、数据分析师和运维人员，我们提供以下系统化的学习路径建议：
+
+### 11.1 学习路径建议
+
+1. **入门阶段**：从 Docker 快速部署开始，掌握基本的数据导入和查询操作。
+2. **进阶阶段**：深入了解 Doris 的存储模型、索引机制和查询优化原理。
+3. **实战阶段**：参与生产环境部署，掌握性能调优、故障排查和高可用架构。
+4. **专家阶段**：深入研究源码，理解 Doris 的内部机制和扩展开发。
+
+### 11.2 学习资源推荐
+
+1. **[官方文档](https://doris.apache.org/docs/)**：最权威的学习资料，建议从快速入门开始系统学习。
+2. **[GitHub Issues](https://github.com/apache/doris/issues)**：了解社区最新动态、常见问题和技术讨论。
+3. **[最佳实践指南](https://doris.apache.org/docs/data-operate/export/export-best-practice)**：官方推荐的部署、优化和运维最佳实践。
+4. **《Apache Doris 技术内幕》**（机械工业出版社）：深度解析 Doris 存储引擎与执行器的实现原理。
+
+### 11.3 社区参与建议
+
+1. **加入社区**：参与 Doris 官方邮件列表、Slack 频道和 Meetup 活动。
+2. **贡献代码**：从修复简单 bug 开始，逐步参与新功能开发和性能优化。
+3. **分享经验**：通过博客、技术分享会等形式分享自己的使用经验和最佳实践。
+
+### 11.4 认证与培训
+
+1. **官方认证**：关注 Apache Doris 官方发布的认证体系。
+2. **在线课程**：参与相关的在线技术培训课程。
+3. **实践项目**：通过实际项目积累经验，构建完整的 Doris 应用案例。
+
+通过以上系统化的学习路径，您将能够逐步深入掌握 Apache Doris 的各项技术特性，并在实际工作中充分发挥其高性能分析数据库的优势。
 
 
 
