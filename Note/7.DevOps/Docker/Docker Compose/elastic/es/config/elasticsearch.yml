@@ -1,0 +1,39 @@
+# 集群名称
+#cluster.name: es-cluster
+# 节点名称, 本集群节点名
+#node.name: es3
+# 是不是有资格竞选主节点
+node.master: true
+# 是否存储数据
+node.data: true
+# 最大集群节点数
+node.max_local_storage_nodes: 10
+# ============= 网络相关 ===============
+# 本节点 主机ip
+network.host: 0.0.0.0
+http.cors.enabled: true        # 是否支持跨域
+http.cors.allow-origin: "*"    # 表示支持所有域名
+# 在docker中可以通过 -p out-port:9200 暴露为宿主网卡的别的端口
+# 本服务节点的服务端口
+#http.port: 9200
+# 本服务节点暴露出为集群节点之间的沟通端口
+#transport.tcp.port: 9300
+
+#---------------------security------------------
+indices.fielddata.cache.size: 40%
+#xpack.security.enabled: true
+#xpack.monitoring.enabled: true
+#xpack.graph.enabled: true
+#xpack.watcher.enabled: false
+#xpack.ml.enabled: true
+#xpack.security.http.ssl.enabled: false
+#xpack.security.transport.ssl.enabled: true
+#xpack.security.transport.ssl.verification_mode: certificate
+# 默认扫描路径/usr/share/elasticsearch/config
+#xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+#xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+#xpack.monitoring.history.duration: 1d
+
+## 存储
+path.repo: ["/usr/share/elasticsearch/backup"]
+#repositories.url.allowed_urls: ["https://*.wenshushu.cn/fileicons/*"]

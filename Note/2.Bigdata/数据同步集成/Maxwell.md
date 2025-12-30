@@ -338,7 +338,11 @@ bootstrap形式的数据格式：
 ```bash
 # 捕获 MySQL 数据库变更，打印到终端
 # --producer=kafka --kafka.bootstrap.servers=master01:9092,master02:9092,master03:9092 --kafka_topic=maxwell  输出到kafka
+<<<<<<< HEAD
 bin/maxwell --user='maxwell' --password='maxwell' --host='192.168.100.38' --port=13306 --producer=stdout
+=======
+bin/maxwell --user='maxwell' --password='maxwell' --host='192.168.0.38' --port=13306 --producer=stdout
+>>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
 ```
 
 

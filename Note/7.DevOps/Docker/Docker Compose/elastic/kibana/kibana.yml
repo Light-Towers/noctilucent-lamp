@@ -1,0 +1,10 @@
+server.name: kibana
+server.host: "0"
+#访问kibana地址，不能以/结尾
+elasticsearch.hosts: ["http://es1:9200","http://es2:9201","http://es3:9202"]
+#monitoring.ui.container.elasticsearch.enabled: true
+#汉化
+i18n.locale: "zh-CN"
+#elasticsearch 用户名、密码
+elasticsearch.username: "elastic"
+elasticsearch.password: "123456"

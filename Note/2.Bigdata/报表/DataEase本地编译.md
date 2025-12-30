@@ -65,7 +65,11 @@ spring:
       max-file-size: 500MB
       max-request-size: 500MB
 datasource:
+<<<<<<< HEAD
   url: jdbc:mysql://192.168.100.21:33306/dataeaseV2demo?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+=======
+  url: jdbc:mysql://192.168.0.21:33306/dataeaseV2demo?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+>>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
   username: root
   password: 123456
 

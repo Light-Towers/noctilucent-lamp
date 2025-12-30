@@ -234,7 +234,11 @@ source:
     stateful_ingestion:
       enabled: true
       ignore_old_state: true  # 忽略旧状态
+<<<<<<< HEAD
     host_port: '192.168.100.xx:10000'
+=======
+    host_port: '192.168.0.xx:10000'
+>>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
     profiling:
       enabled: false
       profile_table_level_only: true
@@ -287,7 +291,11 @@ python3 -m datahub docker nuke
 **备份 DataHub**：
 ```bash
 python3 -m datahub docker quickstart --backup   # 默认存放路径
+<<<<<<< HEAD
 python3 -m datahub docker quickstart --backup --backup-file ./backup-2025-12-23.sql  # 指定备份文件
+=======
+python3 -m datahub docker quickstart --backup --backup-file ./backup_$(date +%Y-%m-%d).sql  # 指定备份文件
+>>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
 ```
 
 **恢复 DataHub**：

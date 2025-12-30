@@ -1,0 +1,10 @@
+version: '3'
+services:
+  sentinel:
+    image: matecloud/sentinel-dashboard:1.8.1
+    container_name: "sentinel-dashboard"
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-Xms=64m -Xmx=128m -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dsentinel.dashboard.auth.username=sentinel -Dsentinel.dashboard.auth.password=sentinel -Dserver.servlet.session.timeout=7200
+    ports:
+      - 8888:8080

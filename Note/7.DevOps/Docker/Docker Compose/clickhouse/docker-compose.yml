@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    ports:
+      - "8123:8123"
+      - "19000:9000"
+    volumes:
+      - /home/quant_group/docker-compose/clickhouse-docker/conf/config.xml:/etc/clickhouse-server/config.xml
+      - /home/quant_group/data/clickhouse/data:/var/lib/clickhouse/
+      - /home/quant_group/data/clickhouse/log:/val/log/clickhouse-server/
+#    environment:
+#      - CLICKHOUSE_UID=0
+#      - CLICKHOUSE_GID=0
+    ulimits:
+      nofile:
+        soft: 262144  
+        hard: 262144  
+    privileged: true
