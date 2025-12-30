@@ -78,7 +78,7 @@ services:
       - 9216:9216
     restart: always
     environment:
-      MONGODB_URI: "mongodb://monitor:monitor@192.168.100.24:27017/admin?connectTimeoutMS=10000&ssl=false"
+      MONGODB_URI: "mongodb://monitor:monitor@192.168.0.24:27017/admin?connectTimeoutMS=10000&ssl=false"
     command:
       - '--collect-all'
       - '--compatible-mode'

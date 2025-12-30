@@ -18,7 +18,7 @@ vi /etc/elasticsearch/elasticsearch.yml
 
 修改以下配置项：
 ```yaml
-network.host: 192.168.100.79
+network.host: 192.168.0.79
 node.name: node-1
 discovery.seed_hosts: ["127.0.0.1"]
 cluster.initial_master_nodes: ["node-1"]
@@ -70,7 +70,7 @@ sudo systemctl stop elasticsearch.service   # 停止
 ## 2. 启动命令
 ```bash
 STORAGE_TYPE=elasticsearch \
-ES_HOSTS=192.168.100.79:9200 \
+ES_HOSTS=192.168.0.79:9200 \
 ES_USERNAME=elastic \
 ES_PASSWORD=123456 \
 nohup java -jar zipkin-server-2.23.2-exec.jar >/data/myedu/zipkin/logs/zipkin-server.log 2>&1 &
@@ -85,7 +85,7 @@ nohup java -jar zipkin-server-2.23.2-exec.jar >/data/myedu/zipkin/logs/zipkin-se
 ### 启动命令
 ```bash
 STORAGE_TYPE=elasticsearch \
-ES_HOSTS=192.168.100.79:9200 \
+ES_HOSTS=192.168.0.79:9200 \
 ES_USERNAME=elastic \
 ES_PASSWORD=123456 \
 nohup java -jar zipkin-dependencies-2.6.3.jar >/data/myedu/zipkin/logs/zipkin-dependencies.log 2>&1 &
@@ -99,7 +99,7 @@ nohup java -jar zipkin-dependencies-2.6.3.jar >/data/myedu/zipkin/logs/zipkin-de
 Zipkin-dependencies 下载（可选）
 https://gitee.com/mirrors/zipkin-dependencies#quick-start
 启动命令:
-STORAGE_TYPE=elasticsearch ES_HOSTS=192.168.100.79:9200 ES_USERNAME=elastic ES_PASSWORD=123456 nohup java -jar zipkin-dependencies-2.6.3.jar >/data/myedu/zipkin/logs/zipkin-dependencies.log 2>&1 &
+STORAGE_TYPE=elasticsearch ES_HOSTS=192.168.0.79:9200 ES_USERNAME=elastic ES_PASSWORD=123456 nohup java -jar zipkin-dependencies-2.6.3.jar >/data/myedu/zipkin/logs/zipkin-dependencies.log 2>&1 &
 
 可以使用阿里云maven仓库下载jar 比较快
 https://developer.aliyun.com/mvn/search
@@ -120,7 +120,7 @@ https://developer.aliyun.com/mvn/search
 spring:
   zipkin:
     enabled: true  # 开启链路追踪
-    base-url: http://192.168.100.136:9411/
+    base-url: http://192.168.0.136:9411/
   sleuth:
     sampler:
       probability: 1 # 生产环境建议改为0.1采样率
@@ -128,7 +128,7 @@ spring:
 
 ## 3. MySQL 集成配置
 ```bash
-jdbc:mysql://192.168.100.21:33307/my_news_dev?useUnicode=true&characterEncoding=UTF-8&queryInterceptors=brave.mysql8.TracingQueryInterceptor&exceptionInterceptors=brave.mysql8.TracingExceptionInterceptor
+jdbc:mysql://192.168.0.21:33307/my_news_dev?useUnicode=true&characterEncoding=UTF-8&queryInterceptors=brave.mysql8.TracingQueryInterceptor&exceptionInterceptors=brave.mysql8.TracingExceptionInterceptor
 ```
 
 # 四、清理过期索引数据
@@ -150,12 +150,12 @@ function delete_indices() {
 
     if [ $t1 -le $t2 ]; then
         echo "$1时间早于$comp_date，进行索引删除"
-        curl -XDELETE "http://elastic:123456@192.168.100.79:9200/zipkin-*-$1"
+        curl -XDELETE "http://elastic:123456@192.168.0.79:9200/zipkin-*-$1"
     fi
 }
 
 # 获取所有zipkin索引并删除
-curl -XGET "http://elastic:123456@192.168.100.79:9200/_cat/indices" \
+curl -XGET "http://elastic:123456@192.168.0.79:9200/_cat/indices" \
   | egrep "zipkin*" \
   | sort \
   | uniq \

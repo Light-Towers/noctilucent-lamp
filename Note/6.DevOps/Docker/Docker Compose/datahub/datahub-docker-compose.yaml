@@ -9,7 +9,7 @@ services:
     environment:
     - KAFKA_BROKER_ID=1
     - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-    # - KAFKA_ZOOKEEPER_CONNECT=192.168.100.39:2181
+    # - KAFKA_ZOOKEEPER_CONNECT=192.168.0.39:2181
     - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
     - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
     - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
@@ -86,11 +86,11 @@ services:
     # - EBEAN_DATASOURCE_URL=jdbc:mysql://mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
     - EBEAN_DATASOURCE_USERNAME=root
     - EBEAN_DATASOURCE_PASSWORD=123456
-    - EBEAN_DATASOURCE_HOST=192.168.100.38:13308
-    - EBEAN_DATASOURCE_URL=jdbc:mysql://192.168.100.38:13308/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
+    - EBEAN_DATASOURCE_HOST=192.168.0.38:13308
+    - EBEAN_DATASOURCE_URL=jdbc:mysql://192.168.0.38:13308/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
 
     # - ELASTICSEARCH_HOST=elasticsearch
-    - ELASTICSEARCH_HOST=192.168.100.38
+    - ELASTICSEARCH_HOST=192.168.0.38
     - ELASTICSEARCH_INDEX_BUILDER_MAPPINGS_REINDEX=true
     - ELASTICSEARCH_INDEX_BUILDER_SETTINGS_REINDEX=true
     - ELASTICSEARCH_PORT=9200
@@ -139,13 +139,13 @@ services:
     # - EBEAN_DATASOURCE_URL=jdbc:mysql://mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
     - EBEAN_DATASOURCE_USERNAME=root
     - EBEAN_DATASOURCE_PASSWORD=123456
-    - EBEAN_DATASOURCE_HOST=192.168.100.38:13308
-    - EBEAN_DATASOURCE_URL=jdbc:mysql://192.168.100.38:13308/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
+    - EBEAN_DATASOURCE_HOST=192.168.0.38:13308
+    - EBEAN_DATASOURCE_URL=jdbc:mysql://192.168.0.38:13308/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
     - EBEAN_DATASOURCE_DRIVER=com.mysql.jdbc.Driver
     - KAFKA_BOOTSTRAP_SERVER=broker:29092
     - KAFKA_SCHEMAREGISTRY_URL=http://schema-registry:8081
     # - ELASTICSEARCH_HOST=elasticsearch
-    - ELASTICSEARCH_HOST=192.168.100.38
+    - ELASTICSEARCH_HOST=192.168.0.38
     - ELASTICSEARCH_PORT=9200
     - ELASTICSEARCH_INDEX_BUILDER_MAPPINGS_REINDEX=true
     - ELASTICSEARCH_INDEX_BUILDER_SETTINGS_REINDEX=true
@@ -190,7 +190,7 @@ services:
     - ELASTICSEARCH_USE_SSL=${ELASTICSEARCH_USE_SSL:-false}
     - USE_AWS_ELASTICSEARCH=${USE_AWS_ELASTICSEARCH:-false}
     # - ELASTICSEARCH_HOST=elasticsearch
-    - ELASTICSEARCH_HOST=192.168.100.38
+    - ELASTICSEARCH_HOST=192.168.0.38
     - ELASTICSEARCH_PORT=9200
     - ELASTICSEARCH_PROTOCOL=http
     hostname: elasticsearch-setup
@@ -207,7 +207,7 @@ services:
     - DATAHUB_PRECREATE_TOPICS=${DATAHUB_PRECREATE_TOPICS:-false}
     - KAFKA_BOOTSTRAP_SERVER=broker:29092
     - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-    # - KAFKA_ZOOKEEPER_CONNECT=192.168.100.39:2181
+    # - KAFKA_ZOOKEEPER_CONNECT=192.168.0.39:2181
     - USE_CONFLUENT_SCHEMA_REGISTRY=TRUE
     hostname: kafka-setup
     image: ${DATAHUB_KAFKA_SETUP_IMAGE:-acryldata/datahub-kafka-setup}:${DATAHUB_VERSION:-head}
@@ -243,7 +243,7 @@ services:
     # - MYSQL_PORT=3306
     # - MYSQL_USERNAME=datahub
     # - MYSQL_PASSWORD=datahub
-    - MYSQL_HOST=192.168.100.38
+    - MYSQL_HOST=192.168.0.38
     - MYSQL_PORT=13308
     - MYSQL_USERNAME=root
     - MYSQL_PASSWORD=123456

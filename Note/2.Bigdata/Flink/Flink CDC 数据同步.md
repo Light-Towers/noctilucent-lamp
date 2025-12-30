@@ -19,7 +19,7 @@
 # ################################################################################
 source:
   type: mysql
-  hostname: 192.168.100.41
+  hostname: 192.168.0.41
   port: 23306
   username: root
   password: 123456
@@ -34,8 +34,8 @@ source:
 
 sink:
   type: doris
-  fenodes: 192.168.100.39:28030
-  benodes: 192.168.100.39:28040
+  fenodes: 192.168.0.39:28030
+  benodes: 192.168.0.39:28040
   username: root
   password: ""
   # 表创建参数

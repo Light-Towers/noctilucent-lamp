@@ -87,7 +87,7 @@ python -m site --user-site
 import pandas as pd
 
 # 1.读取某一个excel的某一个sheet
-df = pd.read_excel('D:/0-mingyang/文档/会刊/2023-04-08 300家 2023第28届中国中西部（合肥）医疗器械展览会  第二版.xlsx', sheet_name=0)
+df = pd.read_excel('D:/0-test/文档/会刊/2023-04-08 300家 2023第28届中国中西部（合肥）医疗器械展览会  第二版.xlsx', sheet_name=0)
 # print(df)
 # 2.获取列标题
 df.columns

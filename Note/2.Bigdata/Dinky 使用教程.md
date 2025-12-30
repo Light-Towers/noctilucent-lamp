@@ -95,7 +95,7 @@ sh auto.sh start 1.20  # 指定 Flink 版本
   ```sql
   EXECUTE CDCSOURCE demo_doris WITH (
     'connector' = 'mysql-cdc',
-    'hostname' = '192.168.100.xx',
+    'hostname' = '192.168.0.xx',
     'port' = '3306',
     'username' = 'root',
     'password' = '123456',
@@ -104,9 +104,9 @@ sh auto.sh start 1.20  # 指定 Flink 版本
     'parallelism' = '1',
     'table-name' = 'app_db\.orders',    -- 整库同步： app_db\..* ； 单表同步： app_db\.orders
     'sink.connector' = 'doris',
-    'sink.jdbc-url' = 'jdbc:mysql://192.168.100.xx:9030',
-    'sink.fenodes' = '192.168.100.xx:8030',
-    'sink.benodes' = '192.168.100.xx:8040',
+    'sink.jdbc-url' = 'jdbc:mysql://192.168.0.xx:9030',
+    'sink.fenodes' = '192.168.0.xx:8030',
+    'sink.benodes' = '192.168.0.xx:8040',
     'sink.username' = 'root',
     'sink.password' = '',
     'sink.doris.batch.size' = '1000',

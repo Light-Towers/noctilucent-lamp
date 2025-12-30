@@ -256,7 +256,7 @@ git remote -v
 git remote show [remote]
 
 # 增加一个新的远程仓库，并命名
-# 例子：git remote add local-source D:/0-mingyang/code/ruoshui-bigdata-business
+# 例子：git remote add local-source D:/0-test/code/ruoshui-bigdata-business
 git remote add [shortname] [url]
 
 # 取回远程仓库的变化，并与本地分支合并

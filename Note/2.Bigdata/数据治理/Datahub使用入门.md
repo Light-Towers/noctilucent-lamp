@@ -234,7 +234,7 @@ source:
     stateful_ingestion:
       enabled: true
       ignore_old_state: true  # 忽略旧状态
-    host_port: '192.168.100.xx:10000'
+    host_port: '192.168.0.xx:10000'
     profiling:
       enabled: false
       profile_table_level_only: true

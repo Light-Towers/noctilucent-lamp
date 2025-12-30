@@ -3,7 +3,7 @@ import matplotlib.patches as patches
 from PIL import Image
 
 # 1. 加载展位图文件
-img_path = 'd:/0-mingyang\img_handle\场馆展位图\第十一届世界猪业博览会.jpeg'  # 请确保图片在当前目录下
+img_path = 'd:/0-test\img_handle\场馆展位图\第十一届世界猪业博览会.jpeg'  # 请确保图片在当前目录下
 img = Image.open(img_path)
 fig, ax = plt.subplots(figsize=(12, 16))
 
