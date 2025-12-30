@@ -19,11 +19,7 @@
 # ################################################################################
 source:
   type: mysql
-<<<<<<< HEAD
-  hostname: 192.168.100.41
-=======
   hostname: 192.168.0.41
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
   port: 23306
   username: root
   password: 123456
@@ -38,13 +34,8 @@ source:
 
 sink:
   type: doris
-<<<<<<< HEAD
-  fenodes: 192.168.100.39:28030
-  benodes: 192.168.100.39:28040
-=======
   fenodes: 192.168.0.39:28030
   benodes: 192.168.0.39:28040
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
   username: root
   password: ""
   # 表创建参数

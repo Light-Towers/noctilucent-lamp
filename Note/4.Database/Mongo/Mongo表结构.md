@@ -17,32 +17,19 @@ tar -zxvf mongodb-shell-linux-x86_64-rhel70-3.6.23.tgz
 #使用方式
 mongo DATABASE_NAME --eval "var collection = 'COLL_NAME', query = {'caredAbout':true}" variety.js
 #或者
-<<<<<<< HEAD
-./mongo --host "mongodb://root:123456@192.168.100.23:27017/enterprise?replicaSet=rs0&connectTimeoutMS=10000&authSource=admin" --eval "var collection = 'ITJuZiInfo'" /root/mongo-test/variety-master/variety.js
-=======
 ./mongo --host "mongodb://root:123456@192.168.0.23:27017/enterprise?replicaSet=rs0&connectTimeoutMS=10000&authSource=admin" --eval "var collection = 'ITJuZiInfo'" /root/mongo-test/variety-master/variety.js
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
 ```
 
 显示结果如下
 
 ```bash
 MongoDB shell version v3.6.23
-<<<<<<< HEAD
-connecting to: mongodb://192.168.100.23:27017/enterprise?authSource=admin&connectTimeoutMS=10000&gssapiServiceName=mongodb&replicaSet=rs0
-2023-06-26T05:16:47.858-0400 I NETWORK  [thread1] Starting new replica set monitor for rs0/192.168.100.23:27017
-2023-06-26T05:16:47.863-0400 I NETWORK  [thread1] Successfully connected to 192.168.100.23:27017 (1 connections now open to 192.168.100.23:27017 with a 5 second timeout)
-2023-06-26T05:16:47.864-0400 I NETWORK  [thread1] changing hosts to rs0/192.168.100.22:27017,192.168.100.23:27017,192.168.100.24:27017 from rs0/192.168.100.23:27017
-2023-06-26T05:16:47.865-0400 I NETWORK  [ReplicaSetMonitor-TaskExecutor-0] Successfully connected to 192.168.100.22:27017 (1 connections now open to 192.168.100.22:27017 with a 5 second timeout)
-2023-06-26T05:16:47.866-0400 I NETWORK  [ReplicaSetMonitor-TaskExecutor-0] Successfully connected to 192.168.100.24:27017 (1 connections now open to 192.168.100.24:27017 with a 5 second timeout)
-=======
 connecting to: mongodb://192.168.0.23:27017/enterprise?authSource=admin&connectTimeoutMS=10000&gssapiServiceName=mongodb&replicaSet=rs0
 2023-06-26T05:16:47.858-0400 I NETWORK  [thread1] Starting new replica set monitor for rs0/192.168.0.23:27017
 2023-06-26T05:16:47.863-0400 I NETWORK  [thread1] Successfully connected to 192.168.0.23:27017 (1 connections now open to 192.168.0.23:27017 with a 5 second timeout)
 2023-06-26T05:16:47.864-0400 I NETWORK  [thread1] changing hosts to rs0/192.168.0.22:27017,192.168.0.23:27017,192.168.0.24:27017 from rs0/192.168.0.23:27017
 2023-06-26T05:16:47.865-0400 I NETWORK  [ReplicaSetMonitor-TaskExecutor-0] Successfully connected to 192.168.0.22:27017 (1 connections now open to 192.168.0.22:27017 with a 5 second timeout)
 2023-06-26T05:16:47.866-0400 I NETWORK  [ReplicaSetMonitor-TaskExecutor-0] Successfully connected to 192.168.0.24:27017 (1 connections now open to 192.168.0.24:27017 with a 5 second timeout)
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
 Implicit session: session { "id" : UUID("209b3f54-24a1-4149-9652-1a672f667fd5") }
 MongoDB server version: 6.0.6
 WARNING: shell and server versions do not match

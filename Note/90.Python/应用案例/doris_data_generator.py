@@ -22,11 +22,7 @@ def generate_mock_data(num_rows=10000):
 def write_to_doris(df, table_name="test_orders"):
     # Doris连接参数
     conn = pymysql.connect(
-<<<<<<< HEAD
-        host='192.168.100.41',
-=======
         host='192.168.0.41',
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
         port=6030,  # Doris MySQL协议端口
         user='root',
         password='',

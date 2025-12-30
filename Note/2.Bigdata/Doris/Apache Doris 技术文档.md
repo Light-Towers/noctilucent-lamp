@@ -289,11 +289,7 @@ Doris 的各个实例通过网络进行通信，其正常运行需要网络环�
    - 修改 `fe/conf/fe.conf`：
      ```properties
      JAVA_HOME = /opt/java/jdk-17
-<<<<<<< HEAD
-     priority_networks = 192.168.100.0/24
-=======
      priority_networks = 192.168.0.0/24
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
      
      # 高级配置选项
      # 启用proxy_protocol（用于负载均衡器场景，如Nginx、HAProxy）
@@ -328,11 +324,7 @@ Doris 的各个实例通过网络进行通信，其正常运行需要网络环�
    - 修改 `be/conf/be.conf`：
      ```properties
      JAVA_HOME = /opt/java/jdk-17
-<<<<<<< HEAD
-     priority_networks = 192.168.100.0/24
-=======
      priority_networks = 192.168.0.0/24
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
      ```
    - **在启动 BE 节点前，需要先在 FE 集群中注册 BE 节点**（通过 MySQL 客户端连接 FE）：
      ```sql
@@ -558,11 +550,7 @@ SELECT * FROM HDFS(
 CREATE TABLE `internal`.`hz_venue_data_governance`.`vb_belong_record`
 PROPERTIES('replication_num' = '1')
 AS
-<<<<<<< HEAD
-SELECT * FROM `mysql_catalog`.`db_mingyang_venue_booking2.0`.`vb_belong_record`;
-=======
 SELECT * FROM `mysql_catalog`.`db_test_venue_booking2.0`.`vb_belong_record`;
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
 ```
 
 ### 6. Flink Doris Connector (整库同步与 CDC)

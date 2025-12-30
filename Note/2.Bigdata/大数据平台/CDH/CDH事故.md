@@ -48,11 +48,7 @@ raid其实是服务器领域最便宜的存储高可用方案，最低端服务�
 2.  节点恢复：我们首先将39节点和41节点恢复到正常状态，并确保磁盘空间恢复至16T。
    1. 39节点重装系统，修改hostname，SSH免密、时间同步服务ntp。
 3. CDH平台恢复：
-<<<<<<< HEAD
-   1. 39重新离线安装CM所需软件([安装步骤](http://wiki.mingyang100.com:8190/pages/viewpage.action?pageId=17007040)：Mysql、JDK、Cloudera-scm-agent等)
-=======
    1. 39重新离线安装CM所需软件([安装步骤](http://wiki.test100.com:8190/pages/viewpage.action?pageId=17007040)：Mysql、JDK、Cloudera-scm-agent等)
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
    2. 将39节点加入guoran_dw1集群失败。**39节点剔除集群后，无法再加入集群，后来重启cloudera-scm-server后自动识别加入成功。**
    3. 在39节点上创建NN实例，从SNN中拷贝恢复的数据。并创建DN等其它实例。
    4. 遇到DN下线问题：删除DN实例(解除授权、删除)，重新创建DN实例，DN正常，数据开始正常同步。

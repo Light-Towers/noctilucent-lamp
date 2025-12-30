@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-# DataHub 元数据查询
-
-## 一、认证配置（建议设置为环境变量）
-```bash
-# 设置DataHub服务地址（根据实际环境修改）
-export DATAHUB_URL="http://192.168.100.242:9002/api/graphql"
-
-# 设置访问令牌（有效期有限，请及时更新）
-export TOKEN="Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY3RvclR5cGUiOiJVU0VSIiwiYWN0b3JJZCI6ImRhdGFodWIiLCJ0eXBlIjoiUEVSU09OQUwiLCJ2ZXJzaW9uIjoiMiIsImp0aSI6IjIzNzkzMWIxLTY0MmYtNDUxNS04MTAwLTMyM2NkOWE0MDY4ZCIsInN1YiI6ImRhdGFodWIiLCJpc3MiOiJkYXRhaHViLW1ldGFkYXRhLXNlcnZpY2UifQ._kaiqSxkuj9R8sRAQ0iHdLZlnV1qhvTTWkz5v68Iw-s"
-=======
 # DataHub 元数据查询指南（基于 GraphQL）
 
 ## 一、概述与基础配置
@@ -97,21 +86,10 @@ query GetDataset($urn: String!) {
 {
   "urn": "urn:li:dataset:(urn:li:dataPlatform:mysql,test_db.table,PROD)"
 }
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
 ```
 
 ## 二、核心查询操作
 
-<<<<<<< HEAD
-### 1. 域名管理
-#### 查询子域名列表
-```graphql
-query listDomains {
-  listDomains(input: { 
-    start: 0, 
-    count: 100, 
-    parentDomain: "urn:li:domain:73a053bb-a7b4-4723-a418-3918359839ed"
-=======
 ### 2.1 域名管理
 
 #### 查询所有域名（根域名）
@@ -121,7 +99,6 @@ query listRootDomains {
     start: 0, 
     count: 100
     # 不指定parentDomain则查询根域名
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
   }) {
     start
     count
@@ -130,10 +107,7 @@ query listRootDomains {
       urn
       properties { 
         name 
-<<<<<<< HEAD
-=======
         description
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
       }
     }
   }
@@ -144,20 +118,6 @@ query listRootDomains {
 curl -X POST "$DATAHUB_URL" \
   -H "Authorization: $TOKEN" \
   -H "Content-Type: application/json" \
-<<<<<<< HEAD
-  -d '{ "query": "query listDomains { listDomains(input: {start: 0, count: 100, parentDomain: \"urn:li:domain:73a053bb-a7b4-4723-a418-3918359839ed\"}) {start,count,total,domains {urn,properties{name}}} }"}'
-```
-
-### 2. 数据集查询
-#### 查询特定域名下的数据集
-```graphql
-query search {
-  search(input: {
-    type: DATASET
-    query: "*"
-    orFilters: [
-      {and: { field: "domains", values: ["urn:li:domain:a3a0f5a5-7228-400f-bc51-6b8c715b5be1"] }}
-=======
   -d '{ "query": "query { listDomains(input: {start: 0, count: 100}) { start count total domains { urn properties { name description } } } }" }'
 ```
 
@@ -200,7 +160,6 @@ query searchDatasetsByDomain {
           values: ["urn:li:domain:target-domain-urn"] 
         }
       }
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
     ]
   }) {
     start
@@ -211,13 +170,10 @@ query searchDatasetsByDomain {
         ... on Dataset {
           urn
           name
-<<<<<<< HEAD
-=======
           type
           platform {
             name
           }
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
         }
       }
     }
@@ -226,15 +182,6 @@ query searchDatasetsByDomain {
 ```
 
 #### 查询特定数据源的表（MySQL示例）
-<<<<<<< HEAD
-```graphql
-query search {
-  search(input: {
-    type: DATASET,
-    query: "app_mall.*",
-    start: 0,
-    count: 50,
-=======
 ```json
 query searchMySQLTables {
   search(input: {
@@ -242,7 +189,6 @@ query searchMySQLTables {
     query: "app_mall.*",  # 支持通配符
     start: 0,
     count: 100,
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
     orFilters: [
       {
         and: [
@@ -264,13 +210,10 @@ query searchMySQLTables {
           urn
           name
           type
-<<<<<<< HEAD
-=======
           properties {
             qualifiedName
             description
           }
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
         }
       }
     }
@@ -278,11 +221,6 @@ query searchMySQLTables {
 }
 ```
 
-<<<<<<< HEAD
-### 3. 数据平台管理
-#### 查询所有可接入平台
-```graphql
-=======
 #### 查询数据集详细信息
 ```json
 query getDatasetDetails {
@@ -325,7 +263,6 @@ query getDatasetDetails {
 
 #### 查询所有可接入平台
 ```json
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
 query listDataPlatforms {
   search(input: {
     type: DATA_PLATFORM
@@ -341,10 +278,7 @@ query listDataPlatforms {
           type
           properties {
             displayName
-<<<<<<< HEAD
-=======
             description
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
           }
         }
       }
@@ -354,20 +288,13 @@ query listDataPlatforms {
 ```
 
 #### 查询已集成的数据源
-<<<<<<< HEAD
-```graphql
-=======
 ```json
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
 query listIngestionSources {
   listIngestionSources(input: {start: 0, count: 100}) {
     ingestionSources {
       urn
       type
       name
-<<<<<<< HEAD
-      config
-=======
       config {
         version
         debugMode
@@ -376,7 +303,6 @@ query listIngestionSources {
         interval
         timezone
       }
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
     }
   }
 }
@@ -386,17 +312,6 @@ query listIngestionSources {
 curl -X POST "$DATAHUB_URL" \
   -H "Authorization: $TOKEN" \
   -H "Content-Type: application/json" \
-<<<<<<< HEAD
-  -d '{"query":"{ listIngestionSources(input: {start: 0, count: 100}) { ingestionSources { urn type name config } } }"}'
-```
-
-## 三、使用说明
-1. **令牌管理**：访问令牌有效期有限，建议通过DataHub UI生成新令牌
-2. **URN获取**：通过`listDomains`查询获取目标域名的URN
-3. **分页参数**：`start`和`count`用于控制分页，`total`返回总记录数
-4. **字段过滤**：在`search`查询中可通过`orFilters`精确筛选结果
-5. **平台标识**：`platform`字段使用DataHub内部标识（如"mysql"、"snowflake"）
-=======
   -d '{"query":"{ listIngestionSources(input: {start: 0, count: 100}) { ingestionSources { urn type name config schedule { interval timezone } } } }"}'
 ```
 
@@ -1013,4 +928,3 @@ query_datahub 'query { dataset(urn: "urn:li:dataset:(urn:li:dataPlatform:mysql,d
 - [DataHub官方文档](https://datahubproject.io/docs/)
 - [GraphQL官方文档](https://graphql.org/learn/)
 - [DataHub GitHub仓库](https://github.com/datahub-project/datahub)
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c

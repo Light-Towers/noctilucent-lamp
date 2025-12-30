@@ -4,35 +4,6 @@ The noctilucent-lamp accompanying your study
 
 <img src="https://raw.githubusercontent.com/Light-Towers/picture/master/noctilucent-lamp/lamp.jpg" alt="lamp" style="zoom: 50%;" />
 
-<<<<<<< HEAD
-## 项目目录描述
-* Code: 项目代码样例⬇️，详见各demo的`README.md`
-  * algorithm
-  * es-demo
-  * flink-demo
-  * hbase-demo
-  * hive-demo
-  * java9-ReactiveStream-demo
-  * kafka-demo
-  * my-spring-cloud
-  * nio-demo
-* Interview: 面试题📄
-* Note: 笔记📒
-  * 1.Algorithm: 算法
-  * 2.Bigdata: 大数据
-  * 3.Java: Java
-  * 4.Database: 数据库
-  * 4.Elastic: Elastic
-  * 5.Network: 网络
-  * 6.DevOps: DevOps
-  * 7.OperatingSystem: 操作系统
-  * 8.Software: 软件
-  * 9.AGI: 人工智能
-  * 90.Python: Python
-  * 91.JavaScript: JavaScript
-  * 92.Scala: Scala
-* Other: 杂七杂八
-=======
 ## 📚 项目目录结构
 
 ### 🧪 Code - 项目代码样例
@@ -83,4 +54,3 @@ The noctilucent-lamp accompanying your study
 ## 🔄 更新说明
 * 优化了Note文件夹结构，修复了编号连续性（原4.Elastic重命名为5.Elastic，后续文件夹顺延）
 * 完善了目录描述，便于快速导航和学习
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c

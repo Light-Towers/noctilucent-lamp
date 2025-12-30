@@ -86,8 +86,8 @@ services:
     # - EBEAN_DATASOURCE_URL=jdbc:mysql://mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
     - EBEAN_DATASOURCE_USERNAME=root
     - EBEAN_DATASOURCE_PASSWORD=123456
-    - EBEAN_DATASOURCE_HOST=192.168.0.38:13308
-    - EBEAN_DATASOURCE_URL=jdbc:mysql://192.168.0.38:13308/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
+    - EBEAN_DATASOURCE_HOST=192.168.0.38:3306
+    - EBEAN_DATASOURCE_URL=jdbc:mysql://192.168.0.38:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
 
     # - ELASTICSEARCH_HOST=elasticsearch
     - ELASTICSEARCH_HOST=192.168.0.38
@@ -139,8 +139,8 @@ services:
     # - EBEAN_DATASOURCE_URL=jdbc:mysql://mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
     - EBEAN_DATASOURCE_USERNAME=root
     - EBEAN_DATASOURCE_PASSWORD=123456
-    - EBEAN_DATASOURCE_HOST=192.168.0.38:13308
-    - EBEAN_DATASOURCE_URL=jdbc:mysql://192.168.0.38:13308/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
+    - EBEAN_DATASOURCE_HOST=192.168.0.38:3306
+    - EBEAN_DATASOURCE_URL=jdbc:mysql://192.168.0.38:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
     - EBEAN_DATASOURCE_DRIVER=com.mysql.jdbc.Driver
     - KAFKA_BOOTSTRAP_SERVER=broker:29092
     - KAFKA_SCHEMAREGISTRY_URL=http://schema-registry:8081
@@ -244,7 +244,7 @@ services:
     # - MYSQL_USERNAME=datahub
     # - MYSQL_PASSWORD=datahub
     - MYSQL_HOST=192.168.0.38
-    - MYSQL_PORT=13308
+    - MYSQL_PORT=3306
     - MYSQL_USERNAME=root
     - MYSQL_PASSWORD=123456
     - DATAHUB_DB_NAME=datahub

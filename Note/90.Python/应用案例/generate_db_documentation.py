@@ -41,19 +41,11 @@ document = Document()       # 新建文档
 # document = Document('test.docx')      # 读取现有文档，建立文档对象
 
 # 建立数据库连接
-<<<<<<< HEAD
-conn = pymysql.connect(host="192.168.100.21",
-                           port=33306,
-                           user="root",
-                           password="123456",
-                        #    db="db_mingyang_home_court",
-=======
 conn = pymysql.connect(host="127.0.0.1",
                            port=3306,
                            user="root",
                            password="123456",
                         #    db="db_test_home_court",
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
                            charset="utf8")
 cursor = conn.cursor()
 
@@ -178,13 +170,8 @@ set_heading('', 1, '表结构')
 要查询的表初始化
 '''
 # 需要查询的库名
-<<<<<<< HEAD
-# db_name_list = ['db_mingyang_builder']
-db_name_list = ['db_mingyang_builder', 'db_mingyang_certificate', 'db_mingyang_common', 'db_mingyang_common_service', 'db_mingyang_home_court', 'db_mingyang_matching', 'db_mingyang_pay', 'db_mingyang_pubilc', 'db_mingyang_venue_booking', 'db_mingyang_venue_services_manage', 'db_seata']
-=======
 # db_name_list = ['db_test_builder']
 db_name_list = ['db_test_builder', 'db_test_certificate', 'db_test_common', 'db_test_common_service', 'db_test_home_court', 'db_test_matching', 'db_test_pay', 'db_test_pubilc', 'db_test_venue_booking', 'db_test_venue_services_manage', 'db_seata']
->>>>>>> 3c4181f7e07feb1892a8b680b63799f5f5dfde4c
 
  
 '''
