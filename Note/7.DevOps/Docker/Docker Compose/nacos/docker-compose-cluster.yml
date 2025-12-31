@@ -1,4 +1,3 @@
-version: "3"
 services:
   nacos1:
     hostname: nacos1

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   redis:
     image: redis:7.2-alpine  # 使用官方 Redis 镜像（轻量级 alpine 版本）

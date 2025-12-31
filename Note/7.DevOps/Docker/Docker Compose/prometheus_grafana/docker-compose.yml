@@ -1,4 +1,3 @@
-version: '3'
 services:
   grafana:
     image: grafana/grafana-enterprise   # 开源版 image: grafana/grafana

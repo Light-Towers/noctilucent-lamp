@@ -1,4 +1,3 @@
-version: "3"
 services:
   griffin:
     image: apachegriffin/griffin_spark2:0.3.0

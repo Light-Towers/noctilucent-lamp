@@ -1,4 +1,3 @@
-version: '3'
 services:
   sentinel:
     image: matecloud/sentinel-dashboard:1.8.1

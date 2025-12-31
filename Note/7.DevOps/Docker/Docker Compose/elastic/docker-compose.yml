@@ -1,4 +1,3 @@
-version: '3'
 services:
   es1:
     image: elasticsearch:7.12.1

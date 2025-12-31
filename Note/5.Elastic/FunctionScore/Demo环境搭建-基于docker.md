@@ -7,8 +7,8 @@
 
 # 2. 项目结构
 
-```
-$ tree efk-demo-compose
+```bash
+tree efk-demo-compose
 efk-demo-compose
 ├── docker-compose.yml
 ├── elasticsearch_conf
@@ -26,12 +26,9 @@ efk-demo-compose
 4 directories, 8 files
 ```
 
-docker-compose.yml：
+docker-compose.yml 的内容如下：
 
-```
-version: "3"
-
-
+```yml
 services:
   elasticsearch:
     container_name: elasticsearch
@@ -102,9 +99,9 @@ volumes:
     driver: local
 ```
 
-elasticsearch_conf/elasticsearch.yml：
+elasticsearch_conf/elasticsearch.yml 文件内容如下：
 
-```
+```properties
 cluster.name: "docker-cluster"
 network.host: "0.0.0.0"
 cluster.routing.allocation.disk.threshold_enabled: true
@@ -128,7 +125,7 @@ xpack.security.audit.enabled: true
 
 filebeat_conf/create_pipeline.sh：
 
-```
+```bash
 curl \
     -X PUT \
     -H "Content-Type: application/json" \
@@ -139,7 +136,7 @@ curl \
 
 filebeat_conf/filebeat.yml：
 
-```
+```yml
 filebeat.inputs:
   - type: filestream
     id: filestream-1
@@ -166,7 +163,7 @@ output.elasticsearch:
 
 filebeat_conf/pipeline.json：
 
-```
+```json
 {
     "description": "access log pipeline",
     "processors": [
@@ -184,7 +181,7 @@ filebeat_conf/pipeline.json：
 
 kibana_conf/kibana.yml：
 
-```
+```yml
 server.name: "kibana"
 server.host: "0.0.0.0"
 server.shutdownTimeout: "5s"
@@ -197,17 +194,13 @@ i18n.locale: "zh-CN"
 
 nginx_conf/start.sh：
 
-```
+```shell
 #!/bin/sh
-
-
 logfile=/var/log/nginx/access.log
-
 
 if [ -L "$logfile" ] ; then
     rm -f "$logfile"
 fi
-
 
 exec /usr/sbin/nginx -g "daemon off;"
 ```
@@ -218,50 +211,46 @@ exec /usr/sbin/nginx -g "daemon off;"
 
 ### 3.1. 创建 Elasticsearch 证书
 
-```
+```bash
 # 启动 ES 容器
-$ docker run -itd --name es elasticsearch:8.6.1
+docker run -itd --name es elasticsearch:8.6.1
 
-
-$ docker exec -it es ./bin/elasticsearch-certutil ca
+docker exec -it es ./bin/elasticsearch-certutil ca
 # 第一次提示输入时，按回车
 # 第二次提示输入时，输入 123456
 
-
-$ docker exec -it es ./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+docker exec -it es ./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
 # 第一次提示输入时，输入 123456
 # 第二次提示输入时，按回车
 # 第三次提示输入时，输入 123456
 
-
 # 先 cd 到 efk-demo-compose/ 目录
-$ docker cp es:/usr/share/elasticsearch/elastic-certificates.p12 elasticsearch_conf/
+docker cp es:/usr/share/elasticsearch/elastic-certificates.p12 elasticsearch_conf/
 
-
-# 关闭、删除容器
-$ docker kill es
-$ docker rm es
+关闭、删除容器
+docker kill es
+docker rm es
 ```
 
 ### 3.2. 启动 Docker Compose
 
-```
-$ docker compose up -d
+```bash
+docker compose up -d
 ```
 
 ### 3.3. 设置 Elasticsearch 密码
 
-```
-$ docker exec -it elasticsearch ./bin/elasticsearch-setup-passwords interactive
+```bash
+docker exec -it elasticsearch ./bin/elasticsearch-setup-passwords interactive
 # 第一次提示输入时，输入 y
 # 接下来都输入 123456
 ```
 
 ### 3.4. 创建 Elasticsearch Ingest Pipeline
 
-```
+```bash
 # 先 cd 到 efk-demo-compose/filebeat_conf/ 目录
-$ sh create_pipeline.sh
+sh create_pipeline.sh
 {
   "acknowledged" : true
 }
@@ -281,9 +270,9 @@ $ sh create_pipeline.sh
 
 ```bash
 # 启动
-$ docker compose up -d
+docker compose up -d
 # 重启
-$ docker compose restart
+docker compose restart
 # 关闭
-$ docker compose down
+docker compose down
 ```
