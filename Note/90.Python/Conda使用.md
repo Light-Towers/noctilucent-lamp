@@ -5,7 +5,10 @@
 1.下载Miniconda安装脚本。可以从Miniconda的官方网站下载脚本，或者使用以下命令来下载最新版本的脚本：
 
 ```bash
+# 下载最新版
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+# 下载指定 python-conda 版本
+wget https://repo.anaconda.com/miniconda/Miniconda3-py312_24.11.1-0-Linux-x86_64.sh
 ```
 
 2.运行安装脚本。运行以下命令：
