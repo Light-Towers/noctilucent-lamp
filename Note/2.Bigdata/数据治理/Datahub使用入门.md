@@ -287,7 +287,7 @@ python3 -m datahub docker nuke
 **备份 DataHub**：
 ```bash
 python3 -m datahub docker quickstart --backup   # 默认存放路径
-python3 -m datahub docker quickstart --backup --backup-file ./backup_$(date +%Y-%m-%d).sql  # 指定备份文件
+python3 -m datahub docker quickstart --backup --backup-file ./datahub_bak_$(date +%Y-%m-%d).sql  # 指定备份文件
 ```
 
 **恢复 DataHub**：
