@@ -296,6 +296,13 @@ datahub docker quickstart --restore  # 默认恢复
 datahub docker quickstart --restore --restore-file /home/my_user/datahub_backups/quickstart_backup_2002_22_01.sql  # 指定从备份文件恢复
 datahub docker quickstart --restore-indices  # 只恢复索引
 datahub docker quickstart --restore --no-restore-indices  # 只恢复主数据状态
+
+
+# 使用 api 重置索引
+curl --location --request POST 'http://192.168.100.40:18080/operations?action=restoreIndices' \
+  --header 'Authorization: Bearer <token>' \
+  --header 'Content-Type: application/json' \
+  -d '{ "urnLike": "urn:li:dataset:%" }'
 ```
 
 ### 6.2 删除操作

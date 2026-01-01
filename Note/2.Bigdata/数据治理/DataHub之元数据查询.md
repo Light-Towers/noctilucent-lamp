@@ -1,5 +1,76 @@
 # DataHub 元数据查询指南（基于 GraphQL）
 
+## 📖 目录
+
+- [DataHub 元数据查询指南（基于 GraphQL）](#datahub-元数据查询指南基于-graphql)
+  - [📖 目录](#-目录)
+  - [一、概述与基础配置](#一概述与基础配置)
+    - [1.1 认证配置（建议设置为环境变量）](#11-认证配置建议设置为环境变量)
+    - [1.2 GraphiQL 工具使用指南](#12-graphiql-工具使用指南)
+    - [1.3 GraphQL 基础语法](#13-graphql-基础语法)
+      - [查询（Query） - 读取数据](#查询query---读取数据)
+      - [变更（Mutation） - 修改数据](#变更mutation---修改数据)
+      - [变量（Variables） - 参数化查询](#变量variables---参数化查询)
+  - [二、核心查询操作](#二核心查询操作)
+    - [2.1 域名管理](#21-域名管理)
+      - [查询所有域名（根域名）](#查询所有域名根域名)
+      - [查询子域名列表](#查询子域名列表)
+    - [2.2 数据集查询](#22-数据集查询)
+      - [查询特定域名下的数据集](#查询特定域名下的数据集)
+      - [查询特定数据源的表（MySQL示例）](#查询特定数据源的表mysql示例)
+      - [查询数据集详细信息](#查询数据集详细信息)
+    - [2.3 数据平台管理](#23-数据平台管理)
+      - [查询所有可接入平台](#查询所有可接入平台)
+      - [查询已集成的数据源](#查询已集成的数据源)
+  - [三、高级查询功能](#三高级查询功能)
+    - [3.1 数据血缘查询](#31-数据血缘查询)
+      - [查询数据集的血缘关系](#查询数据集的血缘关系)
+      - [查询字段级血缘](#查询字段级血缘)
+      - [查询血缘影响分析（数据溯源）](#查询血缘影响分析数据溯源)
+    - [3.2 数据指标查询](#32-数据指标查询)
+      - [查询数据集的使用统计](#查询数据集的使用统计)
+      - [查询数据质量指标](#查询数据质量指标)
+      - [查询数据集新鲜度指标](#查询数据集新鲜度指标)
+    - [3.3 标签与术语查询](#33-标签与术语查询)
+      - [查询业务术语表](#查询业务术语表)
+      - [查询数据集标签](#查询数据集标签)
+    - [3.4 用户与权限查询](#34-用户与权限查询)
+      - [查询数据资产的所有者](#查询数据资产的所有者)
+      - [查询访问权限信息](#查询访问权限信息)
+  - [四、运维与管理查询](#四运维与管理查询)
+    - [4.1 索引管理与重建](#41-索引管理与重建)
+      - [4.1.1 为什么需要重建索引？](#411-为什么需要重建索引)
+      - [4.1.2 API 方式重建索引](#412-api-方式重建索引)
+      - [4.1.3 CLI 方式重建索引](#413-cli-方式重建索引)
+      - [4.1.4 查询索引状态](#414-查询索引状态)
+    - [4.2 系统状态查询](#42-系统状态查询)
+      - [4.2.1 查询系统配置信息](#421-查询系统配置信息)
+      - [4.2.2 查询服务健康状态](#422-查询服务健康状态)
+      - [4.2.3 查询系统统计信息](#423-查询系统统计信息)
+    - [4.3 备份与恢复查询](#43-备份与恢复查询)
+      - [4.3.1 查询备份状态](#431-查询备份状态)
+      - [4.3.2 执行备份操作](#432-执行备份操作)
+      - [4.3.3 查询恢复选项](#433-查询恢复选项)
+  - [五、实用查询示例](#五实用查询示例)
+    - [5.1 常用查询片段](#51-常用查询片段)
+      - [批量查询多个数据集信息](#批量查询多个数据集信息)
+      - [分页查询所有表及字段信息](#分页查询所有表及字段信息)
+    - [5.2 变量使用示例](#52-变量使用示例)
+      - [使用变量进行参数化查询](#使用变量进行参数化查询)
+    - [5.3 变更（Mutation）操作示例](#53-变更mutation操作示例)
+      - [给数据集添加标签](#给数据集添加标签)
+      - [更新数据集描述](#更新数据集描述)
+      - [添加数据资产所有者](#添加数据资产所有者)
+  - [六、注意事项与最佳实践](#六注意事项与最佳实践)
+    - [6.1 性能优化建议](#61-性能优化建议)
+    - [6.2 安全注意事项](#62-安全注意事项)
+    - [6.3 常见问题解答](#63-常见问题解答)
+    - [6.4 实用脚本示例](#64-实用脚本示例)
+      - [Python查询脚本示例](#python查询脚本示例)
+      - [Shell脚本批量查询示例](#shell脚本批量查询示例)
+
+---
+
 ## 一、概述与基础配置
 
 ### 1.1 认证配置（建议设置为环境变量）
@@ -665,9 +736,199 @@ query accessPermissions {
 }
 ```
 
-## 四、实用查询示例
+## 四、运维与管理查询
 
-### 4.1 常用查询片段
+### 4.1 索引管理与重建
+
+#### 4.1.1 为什么需要重建索引？
+- **数据不一致**：搜索不到新添加的元数据
+- **性能问题**：查询响应变慢
+- **元数据结构变更**：字段类型或映射发生变化
+- **索引损坏**：系统异常或存储问题导致索引损坏
+
+#### 4.1.2 API 方式重建索引
+```bash
+# 重建指定模式的数据集索引（支持通配符）
+curl --location --request POST 'http://192.168.100.40:18080/operations?action=restoreIndices' \
+  --header 'Authorization: Bearer <your-token>' \
+  --header 'Content-Type: application/json' \
+  -d '{ "urnLike": "urn:li:dataset:%" }'
+
+# 重建所有类型的索引
+curl --location --request POST 'http://localhost:18080/operations?action=restoreIndices' \
+  --header 'Authorization: Bearer <your-token>' \
+  --header 'Content-Type: application/json' \
+  -d '{}'
+
+# 重建特定平台的索引（如MySQL）
+curl --location --request POST 'http://localhost:18080/operations?action=restoreIndices' \
+  --header 'Authorization: Bearer <your-token>' \
+  --header 'Content-Type: application/json' \
+  -d '{ "urnLike": "urn:li:dataset:(urn:li:dataPlatform:mysql,%,PROD)" }'
+```
+
+#### 4.1.3 CLI 方式重建索引
+```bash
+# 重建特定平台的索引
+datahub actions reindex --platform mysql
+
+# 使用 DataHub docker 命令重建索引
+datahub docker quickstart --restore-indices
+
+# 重建所有索引
+datahub actions reindex --all
+```
+
+#### 4.1.4 查询索引状态
+```json
+query checkIndexStatus {
+  # 查询系统健康状况，间接了解索引状态
+  appConfig {
+    configurations {
+      key
+      value
+    }
+  }
+  
+  # 查询搜索功能是否正常
+  search(input: {
+    type: DATASET,
+    query: "*",
+    start: 0,
+    count: 1
+  }) {
+    total
+    searchResults {
+      entity {
+        ... on Dataset {
+          name
+          urn
+        }
+      }
+    }
+  }
+}
+```
+
+### 4.2 系统状态查询
+
+#### 4.2.1 查询系统配置信息
+```json
+query getSystemConfig {
+  appConfig {
+    configurations {
+      key
+      value
+      description
+    }
+  }
+}
+```
+
+#### 4.2.2 查询服务健康状态
+```json
+query getHealthStatus {
+  # 查看系统运行状况
+  appConfig {
+    configurations {
+      key
+      value
+    }
+  }
+  
+  # 检查关键组件状态
+  search(input: {
+    type: INGESTION_SOURCE,
+    query: "",
+    start: 0,
+    count: 10
+  }) {
+    total
+    searchResults {
+      entity {
+        ... on IngestionSource {
+          name
+          type
+          config {
+            version
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#### 4.2.3 查询系统统计信息
+```json
+query getSystemStats {
+  # 查询实体数量统计
+  search(input: {
+    type: DATASET,
+    query: "*",
+    start: 0,
+    count: 0
+  }) {
+    total
+  }
+  
+  # 查询用户数量
+  search(input: {
+    type: CORP_USER,
+    query: "*",
+    start: 0,
+    count: 0
+  }) {
+    total
+  }
+  
+  # 查询标签数量
+  search(input: {
+    type: TAG,
+    query: "*",
+    start: 0,
+    count: 0
+  }) {
+    total
+  }
+}
+```
+
+### 4.3 备份与恢复查询
+
+#### 4.3.1 查询备份状态
+```bash
+# 查看备份文件列表
+ls -la ~/.datahub/quickstart/backups/
+
+# 使用CLI查看备份信息
+datahub docker quickstart --backup --dry-run
+```
+
+#### 4.3.2 执行备份操作
+```bash
+# 创建完整备份
+datahub docker quickstart --backup
+
+# 创建带时间戳的备份
+datahub docker quickstart --backup --backup-file ./datahub_bak_$(date +%Y-%m-%d_%H-%M-%S).sql
+
+# 仅备份数据（不包含索引）
+datahub docker quickstart --backup --no-backup-indices
+```
+
+#### 4.3.3 查询恢复选项
+```bash
+# 查看可用的恢复选项
+datahub docker quickstart --restore --dry-run
+
+# 检查备份文件完整性
+head -n 10 ~/.datahub/quickstart/backups/quickstart_backup_*.sql
+```
+
+## 五、实用查询示例
+
+### 5.1 常用查询片段
 
 #### 批量查询多个数据集信息
 ```json
@@ -725,7 +986,7 @@ query allDatasetsWithSchema {
 }
 ```
 
-### 4.2 变量使用示例
+### 5.2 变量使用示例
 
 #### 使用变量进行参数化查询
 ```json
@@ -753,7 +1014,7 @@ query getDatasetWithVariables($urn: String!, $includeSchema: Boolean = true) {
 }
 ```
 
-### 4.3 变更（Mutation）操作示例
+### 5.3 变更（Mutation）操作示例
 
 #### 给数据集添加标签
 ```json
@@ -786,16 +1047,17 @@ mutation addDatasetOwner {
 }
 ```
 
-## 五、注意事项与最佳实践
+## 六、注意事项与最佳实践
 
-### 5.1 性能优化建议
+### 6.1 性能优化建议
 
 1. **分页查询**：始终使用 `start` 和 `count` 参数控制返回数据量
 2. **字段选择**：只查询需要的字段，避免查询 `*` 所有字段
 3. **缓存策略**：对于不常变的数据，可适当缓存查询结果
 4. **批量操作**：使用变量和批量查询减少请求次数
+5. **索引优化**：定期重建索引以保持查询性能
 
-### 5.2 安全注意事项
+### 6.2 安全注意事项
 
 1. **令牌管理**：
    - 访问令牌有效期有限，定期更新
@@ -812,7 +1074,7 @@ mutation addDatasetOwner {
    - 生产环境使用HTTPS
    - 启用查询日志审计
 
-### 5.3 常见问题解答
+### 6.3 常见问题解答
 
 **Q1: 如何获取数据集的URN？**
 - 方法1：在DataHub UI中打开数据集详情页，点击"Copy URN"按钮
@@ -823,6 +1085,7 @@ mutation addDatasetOwner {
 2. 确认查询的URN格式正确
 3. 验证数据是否已成功摄取到DataHub
 4. 检查是否有权限访问该数据资产
+5. **尝试重建索引**：使用 `datahub docker quickstart --restore-indices`
 
 **Q3: 如何查询特定时间范围的数据？**
 - 使用时间戳参数：`startTimeMillis` 和 `endTimeMillis`
@@ -838,7 +1101,12 @@ mutation addDatasetOwner {
 2. 使用分页参数控制返回数据量
 3. 考虑使用异步查询或后台任务处理
 
-### 5.4 实用脚本示例
+**Q6: 搜索功能不正常怎么办？**
+1. 检查索引状态，使用 `datahub docker quickstart --restore-indices` 重建索引
+2. 验证数据是否已成功摄取
+3. 检查Elasticsearch服务是否正常运行
+
+### 6.4 实用脚本示例
 
 #### Python查询脚本示例
 ```python
@@ -916,15 +1184,25 @@ query_datahub '{ search(input: {type: DATASET, query: "*", start: 0, count: 10})
 # 示例：查询数据血缘
 echo "查询数据血缘..."
 query_datahub 'query { dataset(urn: "urn:li:dataset:(urn:li:dataPlatform:mysql,db.table,PROD)") { name upstream: relationships(input: { types: ["DownstreamOf"], direction: INCOMING, start: 0, count: 10 }) { total relationships { entity { ... on Dataset { name } } } } } }'
+
+# 示例：重建索引
+echo "重建索引..."
+curl --location --request POST 'http://localhost:18080/operations?action=restoreIndices' \
+  --header "Authorization: $TOKEN" \
+  --header "Content-Type: application/json" \
+  -d '{ "urnLike": "urn:li:dataset:%" }'
 ```
 
 ---
 
 **更新记录**：
 - 2025-12-29：全面优化文档结构，新增数据血缘、数据指标查询，整合GraphiQL指南
-- 原始内容保留在备份文件：`DataHub之元数据查询_backup.md`
+- 2026-01-01：新增运维与管理查询章节，补充索引重建API和CLI命令
 
 **参考资料**：
 - [DataHub官方文档](https://datahubproject.io/docs/)
 - [GraphQL官方文档](https://graphql.org/learn/)
 - [DataHub GitHub仓库](https://github.com/datahub-project/datahub)
+
+**相关文档**：
+- [DataHub使用入门指南](./Datahub使用入门.md) - 包含更多部署、配置和CLI操作
