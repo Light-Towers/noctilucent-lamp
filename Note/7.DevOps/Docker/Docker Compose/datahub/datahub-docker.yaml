@@ -1,19 +1,59 @@
 name: datahub
 
-## 使用 .env 文件
+## 不使用 .env 文件，直接在 docker-compose.yaml 中定义环境变量
+
+# # 嵌入的环境变量配置
+# # --- 基础镜像版本控制 ---
+# DATAHUB_VERSION: v1.3.0
+# UI_INGESTION_DEFAULT_CLI_VERSION: v1.3.0
+
+# # --- MySQL 配置 ---
+# DATASOURCE_DRIVER: com.mysql.cj.jdbc.Driver
+# DATASOURCE_HOST: 192.168.100.41
+# DATASOURCE_PORT: 3306
+# DATASOURCE_USERNAME: root
+# DATASOURCE_PASSWORD: "mingyang100"
+# DATASOURCE_DATABASE: datahub
+
+# # --- Elasticsearch 配置 ---
+# DATAHUB_SEARCH_IMAGE: elasticsearch
+# DATAHUB_SEARCH_TAG: 7.10.1
+# DATAHUB_MAPPED_ELASTIC_PORT: 9200
+
+# # --- Kafka 配置 ---
+# DATAHUB_KAFKA_BROKER_PORT: 9092
+
+# # --- 路径配置 ---
+# HOME: /root  # 假设使用root用户，根据需要调整
 
 # 1. 定义一个通用的配置块
 x-common-env: &common-env
-  env_file:
-    - .env 
+  environment:
+    # MySQL配置
+    DATASOURCE_DRIVER: com.mysql.cj.jdbc.Driver
+    DATASOURCE_HOST: 192.168.100.41
+    DATASOURCE_PORT: 3306
+    DATASOURCE_USERNAME: root
+    DATASOURCE_PASSWORD: "mingyang100"
+    DATASOURCE_DATABASE: datahub
+    
+    # 版本配置
+    DATAHUB_VERSION: v1.3.0
+    UI_INGESTION_DEFAULT_CLI_VERSION: v1.3.0
+    
+    # Elasticsearch配置
+    DATAHUB_SEARCH_IMAGE: elasticsearch
+    DATAHUB_SEARCH_TAG: 7.10.1
+    DATAHUB_MAPPED_ELASTIC_PORT: 9200
+    DATAHUB_KAFKA_BROKER_PORT: 9092
 # 2.定义数据库配置锚点
 x-database-config: &db-config
-  # 外部MySQL连接配置 (通过环境变量或直接修改)
-  EBEAN_DATASOURCE_DRIVER: ${DATASOURCE_DRIVER}
-  EBEAN_DATASOURCE_HOST: ${DATASOURCE_HOST}:${DATASOURCE_PORT}
-  EBEAN_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
-  EBEAN_DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
-  EBEAN_DATASOURCE_URL: jdbc:mysql://${DATASOURCE_HOST}:${DATASOURCE_PORT}/${DATASOURCE_DATABASE}?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2&allowPublicKeyRetrieval=true
+  # 外部MySQL连接配置
+  EBEAN_DATASOURCE_DRIVER: com.mysql.cj.jdbc.Driver
+  EBEAN_DATASOURCE_HOST: 192.168.100.41:3306
+  EBEAN_DATASOURCE_USERNAME: root
+  EBEAN_DATASOURCE_PASSWORD: "mingyang100"
+  EBEAN_DATASOURCE_URL: jdbc:mysql://192.168.100.41:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2&allowPublicKeyRetrieval=true
 
 services:
   datahub-actions:
