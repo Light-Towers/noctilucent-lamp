@@ -1,5 +1,9 @@
 nvm安装路径不能有`空格、中文`
 
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+```
+
 安装完nvm后，可打开安装文件夹中的目录下的setting.txt文件，修改镜像
 
 ```bash
@@ -16,6 +20,8 @@ nvm list [available]
 nvm install 14.15.4
 #安装最新版本node
 nvm install latest
+# 安装最新LTS版本
+nvm install --lts
 #切换版本
 nvm use 14.15.4
 #卸载指定版本
