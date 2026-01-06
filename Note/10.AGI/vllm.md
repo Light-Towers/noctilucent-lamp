@@ -182,19 +182,82 @@ def generate_service(content_type, topic):
 
 ---
 
-## 5. CLI 服务部署 (`vllm serve`)
+## 5. 模型下载与处理
+
+### 5.1 模型下载方法
+```bash
+# 使用 HuggingFace CLI 下载 GGUF 格式
+huggingface-cli download Qwen/QwQ-32B-GGUF \
+  --include "qwq-32b-q5_k_m-00006-of-00006.gguf" \
+  --local-dir . \
+  --local-dir-use-symlinks False
+
+# 使用 ModelScope 下载 AWQ 格式
+pip install modelscope
+modelscope download --model="qwen/QwQ-32B-AWQ"
+```
+
+### 5.2 环境变量设置
+```bash
+# HuggingFace 国内镜像代理
+export HF_ENDPOINT=https://hf-mirror.com
+# 设置模型缓存目录
+export HF_HOME="/home/aistudio/model"
+```
+
+---
+
+## 6. CLI 服务部署 (`vllm serve`)
 
 vLLM v0.13.0+ 推荐使用 `vllm serve` 命令。
 
-### 5.1 启动 LLM 生成服务
+### 6.1 基础部署命令
 ```bash
+# 通用部署命令
 vllm serve /path/to/model \
-  --served-model-name qwen2.5 \
+  --served-model-name model-name \
   --max-model-len 16384 \
+  --gpu-memory-utilization 0.8
+
+# 针对特定硬件的优化配置
+vllm serve /path/to/model \
+  --served-model-name model-name \
+  --max-model-len 16384 \
+  --max-num-seqs 2 \
+  --gpu-memory-utilization 0.8 \
+  --tensor-parallel-size 2 \
+  --enforce-eager \
+  --swap-space=1
+```
+
+### 6.2 具体模型部署示例
+```bash
+# 部署 DeepSeek-Qwen2.5-7B 模型
+vllm serve /home/aistudio/script/model/deepseek-Qwen2.5-7B/ \
+  --served-model-name Qwen2.5:0.5B \
+  --max-model-len 16384 \
+  --max-num-seqs 2 \
+  --gpu-memory-utilization 0.8 \
+  --tensor-parallel-size 2 \
+  --enforce-eager \
+  --swap-space=1
+
+# 部署 QwQ-32B-AWQ 模型
+vllm serve .cache/modelscope/hub/models/qwen/QwQ-32B-AWQ \
+  --served-model-name QwQ:32B \
+  --max-model-len 4096
+
+# 使用 vLLM 部署 GGUF 模型
+vllm serve ./qwq-32b-q5_k_m.gguf \
+  --served-model-name QwQ:32B \
+  --max-model-len 6384 \
+  --max-num-seqs 2 \
   --gpu-memory-utilization 0.8
 ```
 
-### 5.2 启动向量模型服务 (Embedding/Pooling)
+> **注意**：GGUF 文件合并和 llama.cpp 部署属于 llama.cpp 工具链，与 vLLM 无关。如需合并分割的 GGUF 文件，请使用 `llama-gguf-split` 工具。
+
+### 6.3 向量模型服务 (Embedding/Pooling)
 针对 Jina-v4 等向量模型，必须指定 `pooling` 运行器。
 
 ```bash
@@ -223,7 +286,7 @@ vllm serve jinaai/jina-embeddings-v4-vllm-text-matching \
   --port 8000
 ```
 
-### 5.3 Embedding/Reranking 模型参数详解
+### 6.4 Embedding/Reranking 模型参数详解
 | CLI 参数 | 说明 | 默认值 |
 | :--- | :--- | :--- |
 | `--runner` | 模型运行模式 | `default` (生成式) / `pooling` (向量模型) |
@@ -240,10 +303,39 @@ vllm serve jinaai/jina-embeddings-v4-vllm-text-matching \
 
 ---
 
-## 6. API 交互指南
+## 7. API 交互指南
 
-### 6.1 Curl 调用示例
+### 7.1 Curl 调用示例
 ```bash
+# 使用 Completions 接口
+curl http://localhost:8000/v1/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "QwQ:32B",
+    "prompt": "2019第十届上海国际冷冻冷藏食品博览会，这个展会简称是什么？",
+    "max_tokens": 2048,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 40,
+    "repetition_penalty": 1.1
+  }'
+
+# 使用 Chat Completions 接口
+curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "Qwen2.5:0.5B",
+    "messages": [
+      {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."},
+      {"role": "user", "content": "深圳举办的展会有哪些？"}
+    ],
+    "temperature": 0,
+    "top_p": 0.8,
+    "repetition_penalty": 1.05,
+    "max_tokens": 512
+  }'
+
+# 流式调用示例
 curl http://localhost:8000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
@@ -253,7 +345,7 @@ curl http://localhost:8000/v1/chat/completions \
   }'
 ```
 
-### 6.2 基于 OpenAI SDK 调用
+### 7.2 基于 OpenAI SDK 调用
 ```python
 from openai import OpenAI
 client = OpenAI(api_key="EMPTY", base_url="http://localhost:8000/v1")
@@ -267,9 +359,11 @@ print(response.choices[0].message.content)
 
 ---
 
-## 7. 核心参数详解 (Python `LLM()` / CLI `vllm serve`)
+## 8. 核心参数详解 (Python `LLM()` / CLI `vllm serve`)
 
-### 7.1 并行与性能参数
+> **参考文档**：更多详细参数请查看 [vLLM 官方文档](https://docs.vllm.ai/en/latest/)
+
+### 8.1 并行与性能参数
 | Python 参数 | CLI 参数 | 说明 | 建议/备注 |
 | :--- | :--- | :--- | :--- |
 | `tensor_parallel_size` | `-tp` | **张量并行**数 (GPU 数量) | 将模型权重切分到多块 GPU 上，增加显存并加速推理。通常设为卡数。 |
@@ -279,7 +373,7 @@ print(response.choices[0].message.content)
 | `enforce_eager` | `--enforce-eager` | 强制使用 Eager 模式 | 禁用 CUDA Graph。在 T4/旧架构或变长输入频繁导致显存波动时非常有效。 |
 | `block_size` | `--block-size` | PagedAttention 块大小 | 默认 16。影响内存碎片化率。 |
 
-### 7.2 模型加载参数
+### 8.2 模型加载参数
 | Python 参数 | CLI 参数 | 说明 | 建议/备注 |
 | :--- | :--- | :--- | :--- |
 | `dtype` | `--dtype` | 权重精度 | `auto`, `half` (FP16), `bfloat16`, `float`。T4 必须强制设为 `half`。 |
@@ -288,7 +382,7 @@ print(response.choices[0].message.content)
 | `download_dir` | `--download-dir` | 模型下载目录 | 默认使用 `~/.cache/huggingface`。 |
 | `swap_space` | `--swap-space` | CPU 交换空间 (GiB) | 每个 GPU 的 CPU 交换空间大小，默认为 4 GiB。 |
 
-### 7.3 运行时性能参数
+### 8.3 运行时性能参数
 | Python 参数 | CLI 参数 | 说明 | 建议/备注 |
 | :--- | :--- | :--- | :--- |
 | `max_num_batched_tokens` | `--max-num-batched-tokens` | 批处理最大 token 数 | 影响并发吞吐，内存富余时可适当增加。 |
@@ -296,7 +390,7 @@ print(response.choices[0].message.content)
 | `cpu_offload_gb` | `--cpu-offload-gb` | CPU 卸载显存 (GB) | 显存不足时，将部分 KV Cache 换出到 CPU 内存。 |
 | `distributed_executor_backend` | `--distributed-executor-backend` | 分布式后端 | `ray`（默认）或 `mp`（多进程）。在单机多卡时 `mp` 更轻量。 |
 
-### 7.4 代码示例：并行配置
+### 8.4 代码示例：并行配置
 ```python
 from vllm import LLM
 
@@ -320,7 +414,7 @@ llm = LLM(
 - **流水线并行 (Pipeline Parallelism)**：将模型层序列拆分到不同 GPU 组。适合超大模型跨节点部署，降低单卡显存压力。
 - **数据并行 (Data Parallelism)**：vLLM 天然支持，通过多个 `LLM` 实例在不同节点上同时服务不同请求。
 
-### 7.5 批处理优化参数详解
+### 8.5 批处理优化参数详解
 
 **批处理规模与吞吐量关系**：
 ```python
@@ -345,36 +439,35 @@ llm = LLM(
 3. **长文本场景**：增大 `max_model_len`，但要相应降低 `max_num_seqs`。
 4. **混合调度**：vLLM 自动根据输入长度动态调度批处理。
 
-
 ---
 
-## 8. 生产实战避坑与性能调优
+## 9. 生产实战避坑与性能调优
 
-### 8.1 T4 GPU 特殊配置
+### 9.1 T4 GPU 特殊配置
 - **GCC 版本冲突**：CUDA 12.2 不支持 GCC 13。务必降级到 GCC 12 并显式设置 `CC=/usr/bin/gcc-12`, `CXX=/usr/bin/g++-12`。
 - **FlashInfer 编译缓存**：清理损坏的编译缓存：`rm -rf ~/.cache/flashinfer/`。
 - **精度强制指定**：T4 不支持 bfloat16，需强制 `--dtype half` (FP16)。
 - **Eager 模式强制**：`--enforce-eager` 关闭 CUDA Graph，减少显存波动，稳定压倒性能。
 
-### 8.2 向量模型任务不匹配
+### 9.2 向量模型任务不匹配
 - **Jina/BGE/E5 等向量模型**：启动命令**必须**包含 `--runner pooling`。
 - **转换器参数**：`--convert embed`（向量）或 `--convert reward`（打分）。
 - **避免旧版参数**：v0.13.0+ 弃用 `--task`，改用 `--runner` + `--convert`。
 
-### 8.3 显存溢出 (OOM) 解决策略
+### 9.3 显存溢出 (OOM) 解决策略
 - **降低显存占用率**：`--gpu-memory-utilization 0.7` ~ `0.8`。
 - **减小上下文长度**：`--max-model-len 4096`（或更低）。
 - **启用 CPU 卸载**：`--cpu-offload-gb 4`（将部分 KV Cache 换出至 CPU）。
 - **牺牲性能换稳定**：`--enforce-eager`。
 
-### 8.4 Jina v4 最佳实践
+### 9.4 Jina v4 最佳实践
 - **前缀优化**：查询时添加 `"retrieval.query: "` 前缀可提升检索精度。
 - **版本区别**：
   - `jina-embeddings-v4-vllm-retrieval`：通用向量模型。
   - `jina-embeddings-v4-vllm-text-matching`：文本匹配专用。
 - **多 GPU 推荐**：T4（16GB）单卡最多支持 `--max-model-len 8192`，建议 2 卡张量并行以服务更长序列。
 
-### 8.5 部署后监控与日志
+### 9.5 部署后监控与日志
 - **启动日志观察**：首次启动会编译算子（2-5 分钟），成功后生成 `~/.cache/flashinfer/` 二进制缓存。
 - **吞吐监控**：通过 `prometheus` 或 `vLLM` 内置监控接口观察 `requests_per_second`, `tokens_per_second`。
 - **错误日志关键词**：
@@ -382,6 +475,19 @@ llm = LLM(
   - `unsupported GNU version` → 设置 `CC/CXX`。
   - `The model does not support Embeddings API` → 检查 `--runner pooling`。
 
+---
+
+## 10. 关键参数总结
+
+| 参数 | 说明 |
+|------|------|
+| `--tensor-parallel-size` | 张量并行度（多卡分割） |
+| `--max-model-len` | 模型最大上下文长度 |
+| `--gpu-memory-utilization` | GPU 显存利用率阈值 |
+| `--enforce-eager` | 禁用 CUDA Graph 优化 |
+| `--swap-space` | CPU 交换空间大小 (GB) |
+| `top_k` + `top_p` | 采样策略控制输出多样性 |
+| `repetition_penalty` | 重复惩罚系数 (>1.0 抑制重复) |
 
 ---
 
@@ -392,5 +498,12 @@ vLLM 凭借 **PagedAttention** 成为大模型推理的性能标杆。无论是�
 **关键速记**：
 - **快**：比 HF 快 24 倍。
 - **省**：96% 显存利用率。
-- **全**：支持 HF/AWQ/GGUF，兼容 OpenAI 接口.
+- **全**：支持 HF/AWQ/GGUF，兼容 OpenAI 接口。
 - **稳**：分布式、量化、Eager 模式多重调优保障。
+
+**官方资源**：
+- [vLLM 官方文档](https://docs.vllm.ai/en/latest/)
+- [GitHub 仓库](https://github.com/vllm-project/vllm)
+- [API 参考](https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html)
+
+> **注意**：Qwen2.5 架构在 Unsloth 中的支持可能不完善，建议优先使用 Hugging Face 原生方法进行微调。AWQ/GGUF 格式适用于资源受限环境，但会损失部分精度。
