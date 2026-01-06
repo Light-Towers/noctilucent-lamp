@@ -476,6 +476,7 @@ reporting:
 MCP Server 需要 Python 环境和 [uv](https://github.com/astral-sh/uv) 工具。请在本地终端执行：
 
 ```bash
+# 参考文档：https://docs.astral.sh/uv/getting-started/installation/
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
@@ -528,6 +529,9 @@ MCP Server 启动后，会监听本地端口（默认 8081），AI Agent 可通�
 
 - [DataHub MCP Server 官方文档](https://docs.datahub.com/docs/features/feature-guides/mcp)
 - [MCP Server GitHub 说明](https://github.com/datahub-project/datahub/blob/master/docs/features/feature-guides/mcp.md)
+
+TODO 如需提供sse服务，可以借助 MCPHub 工具，供dify使用
+
 
 ## 九、环境变量与版本信息
 

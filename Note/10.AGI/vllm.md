@@ -211,13 +211,16 @@ vllm serve jinaai/jina-embeddings-v4-vllm-retrieval \
 
 # 同样适用于 text-matching 版本
 vllm serve jinaai/jina-embeddings-v4-vllm-text-matching \
-  --served-model-name jina-text-match \
+  --served-model-name jina-embeddings-v4 \
   --runner pooling \
   --convert embed \
   --dtype half \
-  --max-model-len 8192 \
+  --max-model-len 32768 \
   --enforce-eager \
-  --trust-remote-code
+  --trust-remote-code \
+  --disable-custom-all-reduce \
+  --gpu-memory-utilization 0.9 \
+  --port 8000
 ```
 
 ### 5.3 Embedding/Reranking 模型参数详解
