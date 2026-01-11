@@ -54,6 +54,17 @@ cd bin && ls -lh llama-cli llama-server  # 主程序名可能为 llama-cli 而�
 
 # 启动API服务器
 ./llama-server -m <模型路径> --host 0.0.0.0 --port <端口> -ngl <GPU层数>
+
+# 示例
+./llama-server \
+  -m ~/models/Qwen3-Next-80B-A3B-Instruct-UD-TQ1_0.gguf \
+  --host 0.0.0.0 \
+  --port 11435 \
+  --no-webui \
+  -c 8192 \
+  -ngl 999 
+  -ot ".ffn_gate.=CUDA0" -ot ".ffn_up.=CPU" -ot ".ffn_down.=CPU" \    # **关键：卸载FFN层到CPU**     # -ot ".ffn_.*_exps.=CPU" \  # **关键：卸载MoE专家层到CPU**
+  --threads $(nproc)
 ```
 
 ### ✅ 参数使用要点
