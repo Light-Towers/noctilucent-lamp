@@ -34,6 +34,7 @@ export HF_ENDPOINT=https://hf-mirror.com
 huggingface-cli download Qwen/Qwen2.5-7B-Instruct --local-dir ./model
 
 # 方法 B: 使用 ModelScope 下载 (国内速度最快)
+# 格式：modelscope download --model [模型ID] [文件名] --local_dir [本地路径]
 pip install modelscope
 modelscope download --model="qwen/Qwen2.5-7B-Instruct" --local_dir ./model
 ```

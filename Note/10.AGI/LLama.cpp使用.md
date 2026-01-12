@@ -64,7 +64,9 @@ cd bin && ls -lh llama-cli llama-server  # 主程序名可能为 llama-cli 而�
   -c 8192 \
   -ngl 999 
   -ot ".ffn_gate.=CUDA0" -ot ".ffn_up.=CPU" -ot ".ffn_down.=CPU" \    # **关键：卸载FFN层到CPU**     # -ot ".ffn_.*_exps.=CPU" \  # **关键：卸载MoE专家层到CPU**
-  --threads $(nproc)
+  --threads $(nproc) \
+  --flash-attn on \
+  --jinja
 ```
 
 ### ✅ 参数使用要点
