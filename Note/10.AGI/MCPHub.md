@@ -22,16 +22,11 @@ flowchart TD
 
 #### 基本运行命令
 ```bash
-# 前台运行（测试推荐，可查看实时日志）
-docker run -p 3000:3000 \
-  -v ./mcp_settings.json:/app/mcp_settings.json \
-  -v ./data:/app/data \
-  samanhappy/mcphub
-
 # 后台运行（生产推荐）
 docker run -d \
   --name mcphub \
   --restart unless-stopped \
+  -e LOG_LEVEL=debug \
   -p 3000:3000 \
   -v ./mcp_settings.json:/app/mcp_settings.json \
   -v ./data:/app/data \
