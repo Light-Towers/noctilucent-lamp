@@ -547,6 +547,33 @@ query datasetUsageStats {
     }
   }
 }
+
+# 数据集字段统计相关指标
+query datasetFieldStats {
+  dataset(urn: "urn:li:dataset:(urn:li:dataPlatform:mysql,db.table,PROD)") {
+    datasetProfiles(limit: 1) {
+      timestampMillis
+      rowCount
+      columnCount
+      fieldProfiles {
+        fieldPath
+        uniqueCount
+        uniqueProportion
+        nullCount
+        nullProportion
+        quantiles{
+          quantile
+          value
+        }
+        min
+        max
+        mean
+        median
+        stdev
+      }   
+    }
+  }
+}
 ```
 
 #### 查询数据质量指标
@@ -784,12 +811,15 @@ datahub actions reindex --all
 query checkIndexStatus {
   # 查询系统健康状况，间接了解索引状态
   appConfig {
-    configurations {
-      key
-      value
+    appVersion
+    featureFlags {
+      showBrowseV2
+      showSearchFiltersV2
+    }
+    authConfig{
+      tokenAuthEnabled
     }
   }
-  
   # 查询搜索功能是否正常
   search(input: {
     type: DATASET,
@@ -826,6 +856,7 @@ query getSystemConfig {
 ```
 
 #### 4.2.2 查询服务健康状态
+// TODO 查询语法都是错的，需要重构
 ```json
 query getHealthStatus {
   # 查看系统运行状况
@@ -862,29 +893,8 @@ query getHealthStatus {
 #### 4.2.3 查询系统统计信息
 ```json
 query getSystemStats {
-  # 查询实体数量统计
   search(input: {
-    type: DATASET,
-    query: "*",
-    start: 0,
-    count: 0
-  }) {
-    total
-  }
-  
-  # 查询用户数量
-  search(input: {
-    type: CORP_USER,
-    query: "*",
-    start: 0,
-    count: 0
-  }) {
-    total
-  }
-  
-  # 查询标签数量
-  search(input: {
-    type: TAG,
+    type: DATASET,    # DATASET: 查询实体数量; CORP_USER: 查询用户数量; TAG: 查询标签数量
     query: "*",
     start: 0,
     count: 0
