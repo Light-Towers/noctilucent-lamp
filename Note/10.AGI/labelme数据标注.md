@@ -96,7 +96,7 @@ labelme /path/to/image/folder
 
 例如：
 ```bash
-labelme --autosave --autosave-path /path/to/save
+labelme --autosave --output /path/to/save
 ```
 
 ### 5. 环境要求
@@ -111,6 +111,7 @@ pip install labelme
 
 
 ## 目标检测
+// TODO 下面使用的是paddlex推理遇到的问题
 
 ### 目标检测-模型推理
 paddlex --pipeline object_detection \
