@@ -1,4 +1,4 @@
-# paddlex 二开优化指南
+# paddlex 实战优化指南
 > 官方文档：[PaddleX OCR模块文档](https://paddlepaddle.github.io/PaddleX/latest/module_usage/tutorials/ocr_modules/seal_text_detection.html)
 
 ## 目录
