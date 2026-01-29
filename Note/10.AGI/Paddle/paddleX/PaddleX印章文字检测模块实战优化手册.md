@@ -384,7 +384,7 @@ Skipping import of the encryption module
 
 ## 11. 问题与解决
 ### 问题1：`matplotlib` 依赖错误
-``bash
+```bash
 RuntimeError: `deep_analyse` is not ready for use, because the following dependencies are not available: matplotlib
 ```
 
