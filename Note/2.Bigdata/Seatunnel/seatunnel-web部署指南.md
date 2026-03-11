@@ -105,7 +105,7 @@ mysql -h localhost -u root -pyour_mysql_password seatunnel_web < /opt/seatunnel-
 ```bash
 export ST_WEB_BASEDIR_PATH=/opt/seatunnel-web/apache-seatunnel-web-1.0.3-SNAPSHOT
 cd $ST_WEB_BASEDIR_PATH
-./bin/seatunnel-web-backend.sh -d
+./bin/seatunnel-backend-daemon.sh start
 ```
 
 ## 四、遇到的问题及解决方案
@@ -227,10 +227,10 @@ jps | grep SeaTunnel
 tail -f /opt/seatunnel-web/apache-seatunnel-web-1.0.3-SNAPSHOT/logs/seatunnel-web-backend.log
 
 # 停止服务
-./bin/seatunnel-web-backend.sh stop
+./bin/seatunnel-backend-daemon.sh stop
 
 # 重启服务
-./bin/seatunnel-web-backend.sh restart
+./bin/seatunnel-backend-daemon.sh restart
 ```
 
 ## 八、访问信息
