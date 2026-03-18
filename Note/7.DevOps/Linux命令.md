@@ -450,6 +450,87 @@ ps auxf
 ps -ef | grep java
 ```
 
+#### kill - 终止进程
+
+**原理解析**：`kill` 命令用于向进程发送信号,最常用的是终止进程。
+
+**常用信号**：
+```bash
+kill -l              # 查看所有信号
+kill <PID>           # 发送SIGTERM(15)信号,优雅终止
+kill -15 <PID>       # 同上
+kill -9 <PID>        # 发送SIGKILL(9)信号,强制终止
+kill -1 <PID>        # 发送SIGHUP(1)信号,重新加载配置
+kill -2 <PID>        # 发送SIGINT(2)信号,相当于Ctrl+C
+```
+
+**实用示例**：
+```bash
+# 先查找进程获取PID
+ps aux | grep python
+# 根据PID终止进程
+kill -9 12345
+
+# 优雅终止进程(允许进程清理资源)
+kill 12345
+
+# 强制终止进程
+kill -9 12345
+```
+
+#### pkill/killall - 根据进程名终止
+
+**原理解析**：`pkill` 和 `killall` 可以根据进程名终止进程,无需先查找PID。
+
+**pkill示例**：
+```bash
+# 终止匹配的进程
+pkill python
+
+# 终止特定用户的进程
+pkill -u username python
+
+# 终止匹配完整命令行的进程
+pkill -f "python script.py"
+```
+
+**killall示例**：
+```bash
+# 终止所有同名进程
+killall python3
+
+# 交互式终止
+killall -i python
+
+# 终止指定用户的进程
+killall -u username python
+```
+
+#### pstree - 查看进程树
+
+**原理解析**：`pstree` 以树状图显示进程之间的父子关系。
+
+**常用选项**：
+```bash
+pstree          # 显示进程树
+pstree -p       # 显示PID
+pstree -u       # 显示用户
+pstree -h       # 高亮当前进程及其祖先
+pstree -H <PID> # 高亮指定进程
+```
+
+**实用示例**：
+```bash
+# 查看进程树
+pstree
+
+# 显示PID
+pstree -p
+
+# 查看特定进程的进程树
+pstree -p 12345
+```
+
 #### free - 内存使用情况
 
 **原理解析**：`free` 命令显示系统的内存使用情况。
