@@ -274,6 +274,24 @@ python3 -m datahub docker quickstart
 python3 -m datahub docker quickstart --quickstart-compose-file docker-compose.yaml
 ```
 
+**高级用法**：
+```bash
+# 指定版本启动（如 head 表示最新版本）
+datahub docker quickstart --version head --quickstart-compose-file /path/to/docker-compose.yaml
+
+# 使用自定义 compose 文件并指定项目名
+datahub docker quickstart --quickstart-compose-file /data/docker-compose-flie/datahub/docker-compose-datahub-test.yml
+
+# 直接使用 docker compose 命令启动（适用于高级配置场景）
+docker compose --profile quickstart -f /data/docker-compose-flie/datahub/docker-compose-datahub-test.yml -p datahub
+
+# 停止指定配置的 DataHub
+datahub docker quickstart --stop --quickstart-compose-file /data/docker-compose-flie/datahub/docker-compose-datahub-test.yml
+
+# 备份到指定文件
+datahub docker quickstart --backup --backup-file ./backup-v2.sql --quickstart-compose-file /data/docker-compose-flie/datahub/docker-compose-datahub-test.yml
+```
+
 **停止 DataHub**：
 ```bash
 python3 -m datahub docker quickstart --stop

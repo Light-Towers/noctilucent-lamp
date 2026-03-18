@@ -140,5 +140,101 @@ PUT /_cluster/settings { "persistent": { "cluster.routing.allocation.exclude._ip
 * **查看节点投票权排除列表**：`GET /_cluster/state` (查看 `voting_config_exclusions` 路径)
 * **查看集群健康度**：`GET _cluster/health`
 * **查看节点状态**：`GET _cat/nodes?v`
+* **查看分片恢复进度**：`GET _cat/recovery?v&active_only=true`
+* **查看磁盘分配情况**：`GET _cat/allocation?v`
+* **查看分片详细状态**：`GET _cat/shards?v&h=index,shard,prirep,state,unassigned.reason`
+
+---
+
+## 🔧 分片分配高级控制
+
+### 1. 分片重平衡控制
+
+```http
+# 禁用分片自动均衡（迁移过程中避免分片乱分配）
+PUT /_cluster/settings
+{
+  "persistent": {
+    "cluster.routing.rebalance.enable": "none"
+  }
+}
+
+# 启用分片自动均衡（恢复正常状态）
+PUT /_cluster/settings
+{
+  "persistent": {
+    "cluster.routing.rebalance.enable": "all"
+  }
+}
+```
+
+**`cluster.routing.rebalance.enable` 可选值**：
+- `all`：允许所有分片重平衡（默认）
+- `none`：禁止所有重平衡
+- `primaries`：只允许主分片重平衡
+- `replicas`：只允许副本分片重平衡
+
+### 2. 分片恢复速度控制
+
+```http
+# 控制单个节点并发恢复数（加快或限制迁移速度）
+PUT /_cluster/settings
+{
+  "persistent": {
+    "indices.recovery.node_concurrent_recoveries": 2
+  }
+}
+```
+
+### 3. 强制分片分配到指定节点
+
+```http
+# 方式1：按节点 IP 指定（集群级别）
+PUT /_cluster/settings
+{
+  "persistent": {
+    "cluster.routing.allocation.include._ip": "192.168.0.10"
+  }
+}
+
+# 方式2：按节点名称指定（索引级别，推荐）
+PUT /exhibition_20250605/_settings
+{
+  "index.routing.allocation.include._name": "node-1"
+}
+
+# 查看该索引的分配规则
+GET /exhibition_20250605/_settings?flat_settings=true
+```
+
+### 4. 清除排除规则
+
+```http
+# 清除所有排除规则（恢复默认分配）
+PUT /_cluster/settings
+{
+  "persistent": {
+    "cluster.routing.allocation.exclude._ip": null,
+    "cluster.routing.allocation.exclude._name": null,
+    "cluster.routing.allocation.exclude._host": null
+  }
+}
+```
+
+### 5. 投票配置排除操作
+
+```http
+# 添加投票排除（支持超时设置）
+POST /_cluster/voting_config_exclusions/node-2,node-3?timeout=1m
+
+# 查看投票排除列表
+GET /_cluster/state?filter_path=metadata.cluster_coordination.voting_config_exclusions
+
+# 清除所有投票排除
+DELETE /_cluster/voting_config_exclusions
+
+# 清除但不等待节点移除
+DELETE /_cluster/voting_config_exclusions?wait_for_removal=false
+```
 
 ---

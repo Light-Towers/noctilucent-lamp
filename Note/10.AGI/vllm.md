@@ -287,7 +287,43 @@ vllm serve jinaai/jina-embeddings-v4-vllm-text-matching \
   --port 8000
 ```
 
-### 6.4 Embedding/Reranking 模型参数详解
+### 6.4 推理模型部署（Reasoning Models）
+
+针对支持思维链（Chain-of-Thought）的推理模型，如 DeepSeek-R1、Qwen3-Next 等。
+
+```bash
+# 部署 Qwen3-Next-80B 推理模型
+vllm serve /workspace/models/Qwen3-Next-80B-A3B-Thinking-Q2_K.gguf \
+  --served-model-name Qwen3-Next-80B-A3B-Think-Q2_K \
+  --port 8000 \
+  --gpu-memory-utilization 0.9 \
+  --max-model-len 16384 \
+  --reasoning-parser deepseek_r1
+
+# 部署支持工具调用的推理模型
+vllm serve /path/to/reasoning-model \
+  --served-model-name reasoning-model \
+  --port 8000 \
+  --gpu-memory-utilization 0.9 \
+  --max-model-len 16384 \
+  --reasoning-parser deepseek_r1 \
+  --tool-call-parser hermes \
+  --enable-auto-tool-choice
+```
+
+**推理模型参数说明**：
+| CLI 参数 | 说明 | 可选值 |
+| :--- | :--- | :--- |
+| `--reasoning-parser` | 推理内容解析器 | `deepseek_r1` / `auto` |
+| `--tool-call-parser` | 工具调用解析器 | `hermes` / `mistral` / `llama3_json` / `qwen2` |
+| `--enable-auto-tool-choice` | 启用自动工具选择 | 布尔标志（无需值） |
+
+**重要提示**：
+- **`--reasoning-parser`**：用于解析模型的思维链内容，将推理过程与最终答案分离。
+- **`--tool-call-parser`**：用于解析模型的工具调用请求，支持 Function Calling。
+- **`--enable-auto-tool-choice`**：允许模型自动选择合适的工具进行调用。
+
+### 6.5 Embedding/Reranking 模型参数详解
 | CLI 参数 | 说明 | 默认值 |
 | :--- | :--- | :--- |
 | `--runner` | 模型运行模式 | `default` (生成式) / `pooling` (向量模型) |
