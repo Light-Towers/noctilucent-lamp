@@ -149,3 +149,12 @@ ALTER TABLE test.users ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY;
 | 仅全量同步              | **不需要**       | 直接读取表数据，无需主键。                                                  |
 | 无主键且无法修改表结构  | **需要变通**     | 使用 Kafka 等中间件捕获变更，或通过业务逻辑构造唯一标识。                   |
 
+---
+
+## 💻 关联源码
+在项目中，你可以参考以下 Flink CDC 的代码实现：
+- [参考代码: Flink CDC 核心工程](../../../Code/flink-demo/flink-cdc)
+- [参考代码: MySQL CDC 到 Doris 实现](../../../Code/flink-demo/flink-cdc/src/main/java/com/study/cdc/MysqlToDoris.java)
+- [参考代码: Oracle CDC 到 Kafka 实现](../../../Code/flink-demo/flink-cdc/src/main/java/com/study/cdc/OracleToKafka.java)
+
+
